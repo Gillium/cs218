@@ -1,0 +1,116 @@
+#ifndef QUICKSORTERTEMPLATE
+#define QUICKSORTERTEMPLATE
+
+#include "quicksorter.h"
+
+template <class ItemType>
+QuickSorter<ItemType>::QuickSorter(ItemType* items)
+// Pre:
+// Post:
+{
+	int size = sizeof(items) + 1;
+	data = new ItemType[size];
+
+	for (int i = 0; i < size; i++)
+	{
+		data[i] = items[i];
+	}
+}
+
+template <class ItemType>
+void QuickSorter<ItemType>::Sort()
+// Function:
+// Pre:
+// Post:
+{
+	QuickSort(0, sizeof(data));
+}
+
+template <class ItemType>
+ItemType* QuickSorter<ItemType>::GetData()
+// Function:
+// Pre:
+// Post:
+{
+	int size = sizeof(data)+1;
+	ItemType* temp = new ItemType[size];
+
+	for (int i = 0; i < size; i++)
+		temp[i] = data[i];
+
+	return temp;
+}
+
+template <class ItemType>
+void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
+// Function:
+// Pre:
+// Post:
+{
+	ItemType splitVal = data[first];
+	int saveFirst = first;
+	bool onCorrectSide;
+
+	first++;
+	do
+	{
+		onCorrectSide = true;
+		while (onCorrectSide)
+			if (data[first] > splitVal)
+				onCorrectSide = false;
+			else
+			{
+				first++;
+				onCorrectSide = (first <= last);
+			}
+
+		onCorrectSide = (first <= last);
+		while (onCorrectSide)
+			if (data[last] <= splitVal)
+				onCorrectSide = false;
+			else
+			{
+				last--;
+				onCorrectSide = (first <= last);
+			}
+
+		if (first < last)
+		{
+			Swap(first, last);
+			first++;
+			last--;
+		}
+	} while (first <= last);
+
+	splitPoint = last;
+	Swap(saveFirst, splitPoint);
+}
+
+template <class ItemType>
+void QuickSorter<ItemType>::Swap(int index1, int index2)
+// Function:
+// Pre:
+// Post:
+{
+	ItemType temp = data[index1];
+	data[index1] = data[index2];
+	data[index2] = temp;
+}
+
+template <class ItemType>
+void QuickSorter<ItemType>::QuickSort(int first, int last)
+// Function:
+// Pre:
+// Post:
+{
+	if (first < last)
+	{
+		int splitPoint;
+
+		Split(first, last, splitPoint);
+		QuickSort(first, splitPoint - 1);
+		QuickSort(splitPoint + 1, last);
+	}
+}
+
+#endif
