@@ -1,51 +1,181 @@
 #include"quicksorter.h"
+#include"mergesorter.h"
+#include<ctime>
 #include<iostream>
+#include<sstream>
 #include<string>
 using namespace std;
 
+const int SIZE = 1000;
+
+double diffclock(clock_t clock1,clock_t clock2)
+{
+	double diffticks=clock1-clock2;
+	double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
+	return diffms;
+} 
+
 int main()
 {
+	string orginalTestArray[SIZE];
+	string testArray[SIZE];
 	string command = "Menu";
+	srand((unsigned int)time(0));
+	char arrayOption;
+	char arrayOptionType;
 
-	while (command != "Quit")
+	// Asks user if they want a preconstructed array or an inputed array
+	do
 	{
-		if (command == "Quick")
+		cout << "Would you like to input your <O>wn or <R>andom array? Type <Q> to quit program." << endl;
+		cin  >> arrayOption;
+		cout << endl;
+
+		if (arrayOption == 'Q' || arrayOption == 'q')
+			return 1;
+
+		if (arrayOption != 'O' && arrayOption != 'o' && arrayOption != 'R' && arrayOption != 'r')
+			cout << "You entered an incorrect option. Please try again." << endl << endl;
+	}while(arrayOption != 'O' && arrayOption != 'o' && arrayOption != 'R' && arrayOption != 'r');
+
+	// Sets values for a preconstructed array to user specification
+	if (arrayOption == 'R' || arrayOption == 'r')
+	{
+		cout << "Would you like to create a <C>haracter, <I>nteger, <S>tring array or <Q>uit" << endl;
+		cin  >> arrayOptionType;
+		cout << endl;
+		
+		if (arrayOptionType == 'Q' || arrayOptionType == 'q')
+			return 1;
+
+		if (arrayOptionType == 'C' || arrayOptionType == 'c')
 		{
-			char testArray[5] = {'A', 'E', 'D', 'C', 'B'};
-			QuickSorter<char> qs = QuickSorter<char>(testArray);
-			qs.Sort();
-			char* sorted = qs.GetData();
+			for (int i = 0; i < SIZE; i++)
+			{
+				char ch = 'a' + rand()%(('z'-'a') + 1);
+				testArray[i] = ch;
+			}
+		}
 
-			for (int i = 0; i < 5; i++)
-				cout << sorted[i] << " ";
+		if (arrayOptionType == 'I' || arrayOptionType == 'i')
+		{
+			for (int i = 0; i < SIZE; i++)
+			{
+				int num = rand() % 1000;
+				// Cast num to a string
+				stringstream ss;
+				ss << num;
+				testArray[i] = ss.str(); 
+			}
+		}
 
+		if (arrayOptionType == 'S' || arrayOptionType == 's')
+		{
+			char temp[10];
+			for (int i = 0; i < SIZE; i++)
+			{
+				int run = rand() % 7 + 3;
+				for (int j = 0; j < run; j++)
+				{
+					temp[j] = rand() % 26 + 'a';
+				}
+				temp[run] = '\0';
+				testArray[i] = temp;
+			}
+
+		}
+	}
+
+	// Sets values of array as user inputs
+	else
+	{
+		cout << "User Input: The default size of array is " << SIZE << " index's" << endl;
+
+		string choice;
+		for (int index = 0; index < SIZE; index++)
+		{
+			cout << "What item do you want to input in index " << index << endl;
+			cin  >> choice;
+			testArray[index] = choice;
+		}
+
+		cout << endl;
+	}
+
+	// Capture the orginal array before sorting
+	for (int i = 0; i < SIZE; i++)
+		orginalTestArray[i] = testArray[i];
+
+	// Main functions
+	while (command != "Exit")
+	{
+		if (command == "Q" || command == "q")
+		{
+			cout << "Unsorted: ";
+			for (int i = 0; i <SIZE; i++)
+				cout << orginalTestArray[i] << " ";
 			cout << endl << endl;
+
+			QuickSorter<string> qs = QuickSorter<string>(testArray, SIZE);
+			clock_t begin=clock();
+			qs.Sort();
+			clock_t end = clock();
+			string* sorted = qs.GetData();
+
+			cout << "Sorted: ";
+			for (int i = 0; i < SIZE; i++)
+				cout << sorted[i] << " ";
+			cout << endl;
+			cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+			cout << "Comparisons: " << qs.GetComparisons() << endl << endl;
+
 			command = "Menu";
 		}
-		else if (command == "Merge")
+		else if (command == "M" || command == "m")
+		{
+			MergeSorter<string> ms = MergeSorter<string>(testArray, SIZE);
+			ms.Sort();
+			string* sorted = ms.GetData();
+
+			for (int i = 0; i < SIZE; i++)
+				cout << sorted[i] << " ";
+			cout << endl << endl;
+
+			command = "Menu";
+		}
+		else if (command == "R" || command == "r")
 		{
 
 		}
-		else if (command == "Radix")
+		else if (command == "C" || command == "c")
 		{
 
 		}
-		else if (command == "All")
+		else if (command == "E" || command == "e")
 		{
-
+			return 1;
 		}
 		else if (command == "Menu")
 		{
 			do
 			{
-				cout << "Choose type of sort (Quick, Merge, Radix, All) or type Quit to exit program" << endl;
+				cout << "What type of sort would you like to execute?" << endl;
+				cout << "<Q>uick Sort" << endl;
+				cout << "<M>erge Sort" << endl;
+				cout << "<R>adix Sort" << endl;
+				cout << "<C>ompair Sorts" << endl;
+				cout << "<E>xit program" << endl;
 				cin  >> command;
 				cout << endl;
 
-				if (command != "Quick" && command != "Merge" && command != "Radix" && command != "All" && command != "Quit" && command != "Menu")
-					cout << "Sorry, that command is not an offered" << endl;
+				if (command != "Q" && command != "q" && command != "M" && command != "m" &&
+					command != "R" && command != "r" && command != "C" && command != "c" &&
+					command != "E" && command != "e" && command != "Menu")
+					cout << "You entered an incorrect option. Please try again." << endl;
 
-			}while (command != "Quick" && command != "Merge" && command != "Radix" && command != "All" && command != "Quit" && command != "Menu");
+			}while (command != "Q" && command != "q" && command != "M" && command != "m" &&
+					command != "R" && command != "r" && command != "C" && command != "c" &&
+					command != "E" && command != "e" && command != "Menu");
 		}
 	}
 

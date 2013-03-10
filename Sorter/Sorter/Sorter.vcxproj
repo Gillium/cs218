@@ -81,7 +81,7 @@
     <ClInclude Include="sorter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mergesorter.cpp" />
+    <ClCompile Include="mergesorter.template" />
     <ClCompile Include="quicksorter.template" />
     <ClCompile Include="radixsorter.cpp" />
     <ClCompile Include="sorter.cpp" />

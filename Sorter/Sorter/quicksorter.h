@@ -9,9 +9,8 @@ template<class ItemType>
 class QuickSorter
 {
 public:
-	QuickSorter(ItemType* items);
-	// Pre:
-	// Post:
+	// Constructor
+	QuickSorter(ItemType* items, int size);
 
 	void Sort();
 	// Function:
@@ -23,7 +22,15 @@ public:
 	// Pre:
 	// Post:
 
+	int GetComparisons();
+	// Function:
+	// Pre:
+	// Post:
+
 private:
+	int arraySize;
+	int comparisons;
+
 	void Split(int first, int last, int& splitPoint);
 	// Function:
 	// Pre:

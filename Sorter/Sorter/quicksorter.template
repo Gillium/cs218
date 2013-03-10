@@ -4,14 +4,15 @@
 #include "quicksorter.h"
 
 template <class ItemType>
-QuickSorter<ItemType>::QuickSorter(ItemType* items)
-// Pre:
-// Post:
+// Constructor
+QuickSorter<ItemType>::QuickSorter(ItemType* items, int size)
 {
-	int size = sizeof(items) + 1;
-	data = new ItemType[size];
+	//int size = sizeof(items) + 1; // WHY IS THIS WRONG SIZE SHOULD BE 3 NOT 5
+	arraySize = size;
+	data = new ItemType[arraySize];
+	comparisons = 0;
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < arraySize; i++)
 	{
 		data[i] = items[i];
 	}
@@ -19,33 +20,42 @@ QuickSorter<ItemType>::QuickSorter(ItemType* items)
 
 template <class ItemType>
 void QuickSorter<ItemType>::Sort()
-// Function:
-// Pre:
-// Post:
+// Function: Calls recursive function QuickSort
+// Pre: an array is created to be sorted
+// Post:????????
 {
-	QuickSort(0, sizeof(data));
+	QuickSort(0, arraySize - 1);
 }
 
 template <class ItemType>
 ItemType* QuickSorter<ItemType>::GetData()
-// Function:
-// Pre:
-// Post:
+// Function: Returns the new sorted array
+// Pre: a sorted array exisits
+// Post: sorted array is returned
 {
-	int size = sizeof(data)+1;
-	ItemType* temp = new ItemType[size];
+	//int size = sizeof(data) + 1;
+	ItemType* temp = new ItemType[arraySize];//size
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < arraySize; i++)
 		temp[i] = data[i];
 
 	return temp;
 }
 
-template <class ItemType>
-void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
+template<class ItemType>
+int QuickSorter<ItemType>::GetComparisons()
 // Function:
 // Pre:
 // Post:
+{
+	return comparisons;
+}
+
+template <class ItemType>
+void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
+// Function: Splits the array into smaller arrays
+// Pre: an array exists
+// Post: array index's are split to individual arrays of 1 index each
 {
 	ItemType splitVal = data[first];
 	int saveFirst = first;
@@ -56,6 +66,9 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 	{
 		onCorrectSide = true;
 		while (onCorrectSide)
+		{
+			comparisons++;
+
 			if (data[first] > splitVal)
 				onCorrectSide = false;
 			else
@@ -63,9 +76,13 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 				first++;
 				onCorrectSide = (first <= last);
 			}
+		}
 
 		onCorrectSide = (first <= last);
 		while (onCorrectSide)
+		{
+			comparisons++;
+
 			if (data[last] <= splitVal)
 				onCorrectSide = false;
 			else
@@ -73,6 +90,7 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 				last--;
 				onCorrectSide = (first <= last);
 			}
+		}
 
 		if (first < last)
 		{
@@ -88,9 +106,9 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 
 template <class ItemType>
 void QuickSorter<ItemType>::Swap(int index1, int index2)
-// Function:
-// Pre:
-// Post:
+// Function: Swaps index's
+// Pre: an array exists
+// Post: index's are swapped
 {
 	ItemType temp = data[index1];
 	data[index1] = data[index2];
@@ -99,9 +117,9 @@ void QuickSorter<ItemType>::Swap(int index1, int index2)
 
 template <class ItemType>
 void QuickSorter<ItemType>::QuickSort(int first, int last)
-// Function:
-// Pre:
-// Post:
+// Function: Recursively sorts the array
+// Pre: an array exists
+// Post: the array is sorted
 {
 	if (first < last)
 	{

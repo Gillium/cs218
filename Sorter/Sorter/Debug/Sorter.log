@@ -1,5 +1,5 @@
-﻿Build started 1/28/2013 11:47:59 PM.
-     1>Project "C:\Users\Gillium\Desktop\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" on node 2 (build target(s)).
+﻿Build started 3/10/2013 12:49:27 PM.
+     1>Project "C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Sorter.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -8,7 +8,7 @@
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Gillium\Desktop\Spring 2013\cs218\Sorter\Debug\Sorter.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Sorter.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Gillium\Desktop\Spring 2013\cs218\Sorter\Debug\Sorter.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Gillium\Desktop\Spring 2013\cs218\Sorter\Debug\Sorter.lib" /MACHINE:X86 Debug\Sorter.exe.embed.manifest.res
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Sorter.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.lib" /MACHINE:X86 Debug\Sorter.exe.embed.manifest.res
          Debug\mergesorter.obj
          Debug\quicksorter.obj
          Debug\radixsorter.obj
@@ -19,12 +19,12 @@
          All outputs are up-to-date.
        LinkEmbedManifest:
          All outputs are up-to-date.
-         Sorter.vcxproj -> C:\Users\Gillium\Desktop\Spring 2013\cs218\Sorter\Debug\Sorter.exe
+         Sorter.vcxproj -> C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.exe
        FinalizeBuildStatus:
          Deleting file "Debug\Sorter.unsuccessfulbuild".
          Touching "Debug\Sorter.lastbuildstate".
-     1>Done Building Project "C:\Users\Gillium\Desktop\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.32
+Time Elapsed 00:00:02.35

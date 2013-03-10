@@ -21,13 +21,13 @@
     <ClCompile Include="sorter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mergesorter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="radixsorter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="quicksorter.template">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mergesorter.template">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

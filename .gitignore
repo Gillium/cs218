@@ -12,5 +12,12 @@
 *.la
 *.a
 
-*.pdf
-*.pptx
+# Generated files
+*.tlog
+*.log
+*.lastbuildstate
+*.obj
+*.filters
+*.idb
+*.pdb
+*.ipch
