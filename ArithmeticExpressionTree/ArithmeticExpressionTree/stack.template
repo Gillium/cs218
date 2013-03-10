@@ -1,0 +1,106 @@
+#ifndef TEMPLATE_STACK
+#define TEMPLATE_STACK
+
+#include "stack.h"
+
+template<class T>
+Stack<T>::Stack()
+// Pre: None
+// Post: Stack has been initialized
+{
+	topPtr = NULL;
+}
+
+template<class T>
+Stack<T>::~Stack()
+// Pre: stack is initialized
+// Post: stack is empty
+{
+	NodeType<T>* tempPtr;
+
+	while (topPtr != NULL)
+	{
+		tempPtr = topPtr;
+		topPtr = topPtr->next;
+		delete tempPtr;
+	}
+}
+
+template<class T>
+void Stack<T>::Push(T newItem)
+// Function: Adds newItem to the top of the stack
+// Pre: Stack has been initialized
+// Post: If (stack is full), exception FullStack is thrown, else item is at the top
+//		 of the stack
+{
+	if (IsFull())
+		throw FullStack();
+	else
+	{
+		NodeType<T>* location;
+		location = new NodeType<T>;
+		location->data = newItem;
+		location->next = topPtr;
+		topPtr = location;
+	}
+}
+
+template<class T>	
+void Stack<T>::Pop()
+// Function: Removes top item from the stack
+// Pre: Stack has been initialized
+// Post: If (stack is empty), exception EmptyStack is thrown, else top item has been
+//		 removed from the stack
+{
+	if (IsEmpty())
+		throw EmptyStack();
+	else
+	{
+		NodeType<T>* tempPtr;
+		tempPtr = topPtr;
+		topPtr = topPtr->next;
+		delete tempPtr;
+	}
+}
+
+template<class T>
+T Stack<T>::Top() const
+// Function: Returns a copy of the top item on the stack
+// Pre: Stack has been initialized
+// Post: If (stack is empty), exception EmptyStack is thrown, else a copy of the top
+//		 element is returned.
+{
+	if (IsEmpty())
+		throw EmptyStack();
+	else
+		return topPtr->data;
+}
+
+template<class T>
+bool Stack<T>::IsEmpty () const
+// Function: Determines whether the stack is empty
+// Pre: Stack has been initialized
+// Post: returns if stack is empty
+{
+	return (topPtr == NULL);
+}
+
+template<class T>
+bool Stack<T>::IsFull () const
+// Function: Determines whether the stack is empty
+// Pre: Stack has been initialized
+// Post: returns if stack is full
+{
+	NodeType<char>* location;
+	try
+	{
+		location = new NodeType<char>;
+		delete location;
+		return false;
+	}
+	catch(std::bad_alloc exception)
+	{
+		return true;
+	}
+}
+#endif

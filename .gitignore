@@ -21,3 +21,9 @@
 *.idb
 *.pdb
 *.ipch
+*.user
+*.ilk
+*.sdf
+*.manifest
+*.res
+*.exe
