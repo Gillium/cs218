@@ -8,10 +8,10 @@ using namespace std;
 
 const int SIZE = 1000;
 
-double diffclock(clock_t clock1,clock_t clock2)
+double diffclock(clock_t clock1, clock_t clock2)
 {
-	double diffticks=clock1-clock2;
-	double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
+	double diffticks = clock1 - clock2;
+	double diffms = (diffticks * 1000) / CLOCKS_PER_SEC;
 	return diffms;
 } 
 
@@ -90,13 +90,44 @@ int main()
 	else
 	{
 		cout << "User Input: The default size of array is " << SIZE << " index's" << endl;
-
+		cout << "Would you like to create a <C>haracter, <I>nteger, <S>tring array or <Q>uit" << endl;
+		cin  >> arrayOptionType;
+		cout << endl;
+		
 		string choice;
-		for (int index = 0; index < SIZE; index++)
+
+		if (arrayOptionType == 'Q' || arrayOptionType == 'q')
+			return 1;
+
+		if (arrayOptionType == 'C' || arrayOptionType == 'c')
 		{
-			cout << "What item do you want to input in index " << index << endl;
-			cin  >> choice;
-			testArray[index] = choice;
+			for (int index = 0; index < SIZE; index++)
+			{
+				cout << "What item do you want to input in index " << index << endl;
+				cin  >> choice;
+				testArray[index] = choice;
+			}
+		}
+
+		if (arrayOptionType == 'I' || arrayOptionType == 'i')
+		{
+			for (int index = 0; index < SIZE; index++)
+			{
+				cout << "What item do you want to input in index " << index << endl;
+				cin  >> choice;
+				testArray[index] = choice;
+			}
+		}
+
+		if (arrayOptionType == 'S' || arrayOptionType == 's')
+		{
+			for (int index = 0; index < SIZE; index++)
+			{
+				cout << "What item do you want to input in index " << index << endl;
+				cin  >> choice;
+				testArray[index] = choice;
+			}
+
 		}
 
 		cout << endl;
@@ -116,7 +147,7 @@ int main()
 				cout << orginalTestArray[i] << " ";
 			cout << endl << endl;
 
-			QuickSorter<string> qs = QuickSorter<string>(testArray, SIZE);
+			QuickSorter<string> qs = QuickSorter<string>(testArray, SIZE, arrayOptionType);
 			clock_t begin=clock();
 			qs.Sort();
 			clock_t end = clock();

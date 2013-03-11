@@ -1,16 +1,20 @@
 #include <cstdlib>
+#include <string>
 #ifndef MYQUICKSORTTEMPLATE
 #define MYQUICKSORTTEMPLATE
 #include <sys/stat.h>
 
 using namespace std;
 
+enum compType{GT, GTEQ, EQ, LT, LTEQ};
+enum dataType{STR, INT};
+
 template<class ItemType>
 class QuickSorter
 {
 public:
 	// Constructor
-	QuickSorter(ItemType* items, int size);
+	QuickSorter(ItemType* items, int size, char dType);
 
 	void Sort();
 	// Function:
@@ -30,6 +34,8 @@ public:
 private:
 	int arraySize;
 	int comparisons;
+	ItemType* data;
+	dataType dt;
 
 	void Split(int first, int last, int& splitPoint);
 	// Function:
@@ -46,7 +52,10 @@ private:
 	// Pre:
 	// Post:
 
-	ItemType* data;
+	bool CompareValues(string v1, string v2, compType cType);
+	// Function:
+	// Pre:
+	// Post:
 };
 
 #include "quicksorter.template"

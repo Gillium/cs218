@@ -5,36 +5,37 @@
 
 template <class ItemType>
 // Constructor
-QuickSorter<ItemType>::QuickSorter(ItemType* items, int size)
+QuickSorter<ItemType>::QuickSorter(ItemType* items, int size, char dType)
 {
-	//int size = sizeof(items) + 1; // WHY IS THIS WRONG SIZE SHOULD BE 3 NOT 5
 	arraySize = size;
 	data = new ItemType[arraySize];
 	comparisons = 0;
 
+	if (dType == 'I' || dType == 'i')
+		dt = INT;
+	else
+		dt = STR;
+
 	for (int i = 0; i < arraySize; i++)
-	{
 		data[i] = items[i];
-	}
 }
 
 template <class ItemType>
 void QuickSorter<ItemType>::Sort()
 // Function: Calls recursive function QuickSort
-// Pre: an array is created to be sorted
-// Post:????????
+// Pre: data is unsorted
+// Post: data is sorted
 {
 	QuickSort(0, arraySize - 1);
 }
 
 template <class ItemType>
 ItemType* QuickSorter<ItemType>::GetData()
-// Function: Returns the new sorted array
-// Pre: a sorted array exisits
-// Post: sorted array is returned
+// Function: Returns a copy of data
+// Pre: data array is initialized
+// Post: Copy data is returned
 {
-	//int size = sizeof(data) + 1;
-	ItemType* temp = new ItemType[arraySize];//size
+	ItemType* temp = new ItemType[arraySize];
 
 	for (int i = 0; i < arraySize; i++)
 		temp[i] = data[i];
@@ -44,24 +45,26 @@ ItemType* QuickSorter<ItemType>::GetData()
 
 template<class ItemType>
 int QuickSorter<ItemType>::GetComparisons()
-// Function:
-// Pre:
-// Post:
+// Function: Returns the number of comparisons while executing Sort
+// Pre: data array is initialized
+// Post: comparisons is returned
 {
 	return comparisons;
 }
 
 template <class ItemType>
 void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
-// Function: Splits the array into smaller arrays
-// Pre: an array exists
-// Post: array index's are split to individual arrays of 1 index each
+// Function: Swaps elements of data within first and last so that elements before
+//			 splitPoint are less than or equal to elements after splitPoint
+// Pre:		 data array is initialized
+// Post:	 the elements of data before splitPoint are less than or equal to the elements
+//			 after splitPoint
 {
-	ItemType splitVal = data[first];
-	int saveFirst = first;
+	ItemType splitVal = data[last];
+	int saveLast = last;
 	bool onCorrectSide;
 
-	first++;
+	last--;
 	do
 	{
 		onCorrectSide = true;
@@ -69,7 +72,7 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 		{
 			comparisons++;
 
-			if (data[first] > splitVal)
+		    if (CompareValues(data[first], splitVal, GT))
 				onCorrectSide = false;
 			else
 			{
@@ -83,7 +86,7 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 		{
 			comparisons++;
 
-			if (data[last] <= splitVal)
+			if (CompareValues(data[last], splitVal, LTEQ))
 				onCorrectSide = false;
 			else
 			{
@@ -100,15 +103,15 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 		}
 	} while (first <= last);
 
-	splitPoint = last;
-	Swap(saveFirst, splitPoint);
+	splitPoint = first;
+	Swap(saveLast, splitPoint);
 }
 
 template <class ItemType>
 void QuickSorter<ItemType>::Swap(int index1, int index2)
-// Function: Swaps index's
-// Pre: an array exists
-// Post: index's are swapped
+// Function: Swaps the value of data at index1 with data at index2
+// Pre: data array is initialized
+// Post: The value of data at index1 is swapped with the data at index 2
 {
 	ItemType temp = data[index1];
 	data[index1] = data[index2];
@@ -117,9 +120,9 @@ void QuickSorter<ItemType>::Swap(int index1, int index2)
 
 template <class ItemType>
 void QuickSorter<ItemType>::QuickSort(int first, int last)
-// Function: Recursively sorts the array
-// Pre: an array exists
-// Post: the array is sorted
+// Function: Recursively sorts data array
+// Pre: data array is initialized
+// Post: data array is sorted
 {
 	if (first < last)
 	{
@@ -128,6 +131,56 @@ void QuickSorter<ItemType>::QuickSort(int first, int last)
 		Split(first, last, splitPoint);
 		QuickSort(first, splitPoint - 1);
 		QuickSort(splitPoint + 1, last);
+	}
+}
+
+template <class ItemType>
+bool QuickSorter<ItemType>::CompareValues(string v1, string v2, compType cType)
+// Function: Compares two values using a string or integer comparison
+// Pre: data array is initialized
+// Post: returns bool value of comparison
+{
+	if (dt == INT)
+	{
+		switch(cType)
+		{
+			case GT:
+				return (atoi(v1.c_str()) > atoi(v2.c_str()));
+				break;
+			case GTEQ:
+				return (atoi(v1.c_str()) >= atoi(v2.c_str()));
+				break;
+			case EQ:
+				return (atoi(v1.c_str()) == atoi(v2.c_str()));
+				break;
+			case LT:
+				return (atoi(v1.c_str()) < atoi(v2.c_str()));
+				break;
+			case LTEQ:
+				return (atoi(v1.c_str()) <= atoi(v2.c_str()));
+				break;
+		}
+	}
+	else
+	{
+		switch(cType)
+		{
+			case GT:
+				return (v1 > v2);
+				break;
+			case GTEQ:
+				return (v1 >= v2);
+				break;
+			case EQ:
+				return (v1 == v2);
+				break;
+			case LT:
+				return (v1 < v2);
+				break;
+			case LTEQ:
+				return (v1 <= v2);
+				break;
+		}
 	}
 }
 
