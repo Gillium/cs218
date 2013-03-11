@@ -1,0 +1,173 @@
+#ifndef MERGESORTERTEMPLATE
+#define MERGESORTERTEMPLATE
+
+#include "mergesorter.h"
+
+template<class ItemType>
+MergeSorter<ItemType>::MergeSorter(ItemType* items, int size, char dType)
+// Constructor
+{
+	arraySize = size;
+	data = new ItemType[size];
+	comparisons = 0;
+
+	if (dType == 'I' || dType == 'i')
+		dt = INT;
+	else
+		dt = STR;
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		data[i] = items[i];
+	}
+}
+
+template<class ItemType>
+void MergeSorter<ItemType>::Sort()
+// Function: Calls recursive function MergeSort
+// Pre: data array is initialized
+// Post: data is sorted
+{
+	MergeSort(0, arraySize - 1);
+}
+
+template<class ItemType>
+ItemType* MergeSorter<ItemType>::GetData()
+// Function: Returns a copy of data
+// Pre: data array is initialized
+// Post: Copy data is returned
+{
+	ItemType* temp = new ItemType[arraySize];
+
+	for (int i = 0; i < arraySize; i++)
+		temp[i] = data[i];
+
+	return temp;
+}
+
+template<class ItemType>
+int MergeSorter<ItemType>::GetComparisons()
+// Function: Returns the number of comparisons while executing Sort
+// Pre: data array is initialized
+// Post: comparisons is returned
+{
+	return comparisons;
+}
+
+template<class ItemType>
+void MergeSorter<ItemType>::MergeSort(int first, int last)
+// Function: recusively sorts data array
+// Pre: data array is initialized
+// Post: data array is sorted
+{
+	if(first < last)
+	{
+		int middle = (first + last) / 2;
+		MergeSort(first, middle);
+		MergeSort(middle + 1, last); 
+		Merge(first, middle, middle + 1, last); 
+	}
+}
+
+template<class ItemType>
+void MergeSorter<ItemType>::Merge(int leftFirst, int leftLast, int rightFirst, int rightLast)
+// Function: Merges two sub-arrays of data
+// Pre: data array is initialized
+// Post: data array values between leftFirst and rightLast are sorted
+{
+	int length = rightLast - leftFirst + 1;
+	ItemType* tempArray = new ItemType[length];
+	int index = 0;
+	int saveFirst = leftFirst;
+
+	while((leftFirst <= leftLast) && (rightFirst <= rightLast))
+	{
+		if (CompareValues(data[leftFirst], data[rightFirst], LT))
+		{
+			tempArray[index] = data[leftFirst];
+			leftFirst++;
+		}
+		else
+		{
+			tempArray[index] = data[rightFirst];
+			rightFirst++;
+		}
+
+		index++;
+	}
+
+	// Only 1 of the 2 while loops below will be executed
+	while(leftFirst <= leftLast)
+	// Copy remaining items from left half.
+	{
+		tempArray[index] = data[leftFirst];
+		leftFirst++;
+		index++;
+	}
+
+	while(rightFirst <= rightLast)
+	// Copy remaining items from the right half
+	{
+		tempArray[index] = data[rightFirst];
+		rightFirst++;
+		index++;
+	}
+
+	index = 0;
+	for(int dataIndex = saveFirst; dataIndex <= rightLast; dataIndex++)
+		data[dataIndex] = tempArray[index++];
+}
+
+template <class ItemType>
+bool MergeSorter<ItemType>::CompareValues(string v1, string v2, compType cType)
+// Function: Compares two values using a string or integer comparison
+// Pre: data array is initialized
+// Post: returns bool value of comparison
+{
+	comparisons++;
+
+	if (dt == INT)
+	{
+		switch(cType)
+		{
+			case GT:
+				return (atoi(v1.c_str()) > atoi(v2.c_str()));
+				break;
+			case GTEQ:
+				return (atoi(v1.c_str()) >= atoi(v2.c_str()));
+				break;
+			case EQ:
+				return (atoi(v1.c_str()) == atoi(v2.c_str()));
+				break;
+			case LT:
+				return (atoi(v1.c_str()) < atoi(v2.c_str()));
+				break;
+			case LTEQ:
+				return (atoi(v1.c_str()) <= atoi(v2.c_str()));
+				break;
+		}
+	}
+	else
+	{
+		switch(cType)
+		{
+			case GT:
+				return (v1 > v2);
+				break;
+			case GTEQ:
+				return (v1 >= v2);
+				break;
+			case EQ:
+				return (v1 == v2);
+				break;
+			case LT:
+				return (v1 < v2);
+				break;
+			case LTEQ:
+				return (v1 <= v2);
+				break;
+		}
+	}
+}
+
+#endif

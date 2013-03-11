@@ -21,24 +21,23 @@ template<class ItemType>
 class MergeSorter
 {
 public:
+	// Constructor
 	MergeSorter(ItemType* items, int size, char dType);
-	// Pre:
-	// Post:
 
 	void Sort();
-	// Function:
-	// Pre:
-	// Post:
+	// Function: Calls recursive function MergeSort
+	// Pre: data array is initialized
+	// Post: data is sorted
 
 	ItemType* GetData();
-	// Function:
-	// Pre:
-	// Post:
+	// Function: Returns a copy of data
+	// Pre: data array is initialized
+	// Post: Copy data is returned
 
 	int GetComparisons();
-	// Function:
-	// Pre:
-	// Post:
+	// Function: Returns the number of comparisons while executing Sort
+	// Pre: data array is initialized
+	// Post: comparisons is returned
 
 private:
 	int arraySize;
@@ -47,14 +46,14 @@ private:
 	dataType dt;
 
 	void MergeSort(int first, int last);
-	// Function:
-	// Pre:
-	// Post:
+	// Function: recusively sorts data array
+	// Pre: data array is initialized
+	// Post: data array is sorted
 
 	void Merge(int leftFirst, int leftLast, int rightFirst, int rightLast);
-	// Function:
-	// Pre:
-	// Post:
+	// Function: Merges two sub-arrays of data
+	// Pre: data array is initialized
+	// Post: data array values between leftFirst and rightLast are sorted
 
 	bool CompareValues(string v1, string v2, compType cType);
 	// Function: Compares two values using a string or integer comparison

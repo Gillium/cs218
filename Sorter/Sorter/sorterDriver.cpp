@@ -7,7 +7,7 @@
 using namespace std;
 
 // Change for the amount of index's in array
-const int SIZE = 4;
+const int SIZE = 1000;
 
 double diffclock(clock_t clock1, clock_t clock2)
 {
