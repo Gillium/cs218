@@ -1,15 +1,27 @@
 #include <cstdlib>
-#ifndef MYMERGESORTTEMPLATE
-#define MYMERGESORTTEMPLATE
+#include <string>
 #include <sys/stat.h>
 
+#ifndef MYMERGESORTTEMPLATE
+#define MYMERGESORTTEMPLATE
+
 using namespace std;
+
+#ifndef MYCOMPTYPEENUM
+#define MYCOMPTYPEENUM
+enum compType{GT, GTEQ, EQ, LT, LTEQ};
+#endif
+
+#ifndef MYDATATYPEENUM
+#define MYDATATYPEENUM
+enum dataType{STR, INT};
+#endif
 
 template<class ItemType>
 class MergeSorter
 {
 public:
-	MergeSorter(ItemType* items, int length);
+	MergeSorter(ItemType* items, int size, char dType);
 	// Pre:
 	// Post:
 
@@ -23,12 +35,17 @@ public:
 	// Pre:
 	// Post:
 
-	int Comparisons();
+	int GetComparisons();
 	// Function:
 	// Pre:
 	// Post:
 
 private:
+	int arraySize;
+	int comparisons;
+	ItemType* data;
+	dataType dt;
+
 	void MergeSort(int first, int last);
 	// Function:
 	// Pre:
@@ -39,8 +56,10 @@ private:
 	// Pre:
 	// Post:
 
-	ItemType* data;
-	int size;
+	bool CompareValues(string v1, string v2, compType cType);
+	// Function: Compares two values using a string or integer comparison
+	// Pre: data array is initialized
+	// Post: returns bool value of comparison
 };
 
 #include "mergesorter.template"

@@ -6,7 +6,8 @@
 #include<string>
 using namespace std;
 
-const int SIZE = 1000;
+// Change for the amount of index's in array
+const int SIZE = 4;
 
 double diffclock(clock_t clock1, clock_t clock2)
 {
@@ -148,7 +149,7 @@ int main()
 			cout << endl << endl;
 
 			QuickSorter<string> qs = QuickSorter<string>(testArray, SIZE, arrayOptionType);
-			clock_t begin=clock();
+			clock_t begin = clock();
 			qs.Sort();
 			clock_t end = clock();
 			string* sorted = qs.GetData();
@@ -164,13 +165,23 @@ int main()
 		}
 		else if (command == "M" || command == "m")
 		{
-			MergeSorter<string> ms = MergeSorter<string>(testArray, SIZE);
+			cout << "Unsorted: ";
+			for (int i = 0; i <SIZE; i++)
+				cout << orginalTestArray[i] << " ";
+			cout << endl << endl;
+
+			MergeSorter<string> ms = MergeSorter<string>(testArray, SIZE, arrayOptionType);
+			clock_t begin = clock();
 			ms.Sort();
+			clock_t end = clock();
 			string* sorted = ms.GetData();
 
+			cout << "Sorted: ";
 			for (int i = 0; i < SIZE; i++)
 				cout << sorted[i] << " ";
-			cout << endl << endl;
+			cout << endl;
+			cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+			cout << "Comparisons: " << ms.GetComparisons() << endl << endl;
 
 			command = "Menu";
 		}

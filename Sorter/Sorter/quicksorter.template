@@ -70,8 +70,6 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 		onCorrectSide = true;
 		while (onCorrectSide)
 		{
-			comparisons++;
-
 		    if (CompareValues(data[first], splitVal, GT))
 				onCorrectSide = false;
 			else
@@ -84,8 +82,6 @@ void QuickSorter<ItemType>::Split(int first, int last, int& splitPoint)
 		onCorrectSide = (first <= last);
 		while (onCorrectSide)
 		{
-			comparisons++;
-
 			if (CompareValues(data[last], splitVal, LTEQ))
 				onCorrectSide = false;
 			else
@@ -140,6 +136,8 @@ bool QuickSorter<ItemType>::CompareValues(string v1, string v2, compType cType)
 // Pre: data array is initialized
 // Post: returns bool value of comparison
 {
+	comparisons++;
+
 	if (dt == INT)
 	{
 		switch(cType)
