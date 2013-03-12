@@ -1,5 +1,6 @@
 #include"quicksorter.h"
 #include"mergesorter.h"
+#include"radixsorter.h"
 #include<ctime>
 #include<iostream>
 #include<sstream>
@@ -187,7 +188,25 @@ int main()
 		}
 		else if (command == "R" || command == "r")
 		{
+			cout << "Unsorted: ";
+			for (int i = 0; i <SIZE; i++)
+				cout << orginalTestArray[i] << " ";
+			cout << endl << endl;
 
+			RadixSorter<string> rs = RadixSorter<string>(testArray, SIZE);
+			clock_t begin = clock();
+			rs.Sort();
+			clock_t end = clock();
+			string* sorted = rs.GetData();
+
+			cout << "Sorted: ";
+			for (int i = 0; i < SIZE; i++)
+				cout << sorted[i] << " ";
+			cout << endl;
+			cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+			cout << "Comparisons: Does not use comparisons to sort." << endl << endl;
+
+			command = "Menu";
 		}
 		else if (command == "C" || command == "c")
 		{

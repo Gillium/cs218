@@ -1,0 +1,54 @@
+#ifndef RADIXSORTERTEMPLATE
+#define RADIXSORTERTEMPLATE
+
+#include "radixsorter.h"
+
+template<class ItemType>
+RadixSorter<ItemType>::RadixSorter(ItemType* items, int size)
+// Constructor
+{
+	arraySize = size;
+}
+
+template<class ItemType>
+void RadixSorter<ItemType>::Sort()
+// Function: 
+// Pre: 
+// Post:
+{
+
+}
+
+template<class ItemType>
+ItemType* RadixSorter<ItemType>::GetData()
+// Function: 
+// Pre: 
+// Post:
+{
+	ItemType* temp = new ItemType[arraySize];
+
+	for (int i = 0; i < arraySize; i++)
+		temp[i] = data[i];
+
+	return temp;
+}
+
+template<class ItemType>
+void RadixSorter<ItemType>::RadixSort()
+// Function: 
+// Pre: 
+// Post:
+{
+
+}
+
+template<class ItemType>
+void RadixSorter<ItemType>::CollectQueues()
+// Function: 
+// Pre: 
+// Post:
+{
+
+}
+
+#endif

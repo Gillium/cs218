@@ -1,19 +1,11 @@
-﻿Build started 3/11/2013 2:58:42 PM.
+﻿Build started 3/11/2013 9:51:56 PM.
      1>Project "C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Sorter.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt mergesorter.template quicksorter.template sorterDriver.cpp
-         mergesorter.template
-         Generating Code...
-         Compiling...
-         sorterDriver.cpp
-         Generating Code...
-     1>c:\users\gillium\documents\dwc\spring 2013\cs218\sorter\sorter\quicksorter.template(183): warning C4715: 'QuickSorter<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::CompareValues' : not all control paths return a value
-     1>c:\users\gillium\documents\dwc\spring 2013\cs218\sorter\sorter\mergesorter.template(171): warning C4715: 'MergeSorter<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::CompareValues' : not all control paths return a value
-     1>cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt mergesorter.template
          Skipping... (no relevant changes detected)
-         quicksorter.template
+         mergesorter.template
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -36,4 +28,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.98
+Time Elapsed 00:00:02.07

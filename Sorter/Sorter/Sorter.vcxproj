@@ -83,7 +83,7 @@
   <ItemGroup>
     <ClCompile Include="mergesorter.template" />
     <ClCompile Include="quicksorter.template" />
-    <ClCompile Include="radixsorter.cpp" />
+    <ClCompile Include="radixsorter.template" />
     <ClCompile Include="sorter.cpp" />
     <ClCompile Include="sorterDriver.cpp" />
   </ItemGroup>
