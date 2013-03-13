@@ -21,14 +21,14 @@ public:
 	RadixSorter(ItemType* items, int size, char dType);
 
 	void Sort();
-	// Function: 
-	// Pre: 
-	// Post:
+	// Function: Calls function RadixSort
+	// Pre:		 data array is initialized
+	// Post:	 data is sorted
 
 	ItemType* GetData();
-	// Function: 
-	// Pre: 
-	// Post:
+	// Function: Returns a copy of data
+	// Pre:		 data array is initialized
+	// Post:	 Copy data is returned
 
 private:
 	int arraySize;
@@ -39,14 +39,15 @@ private:
 	QueueType<string>* queues[NUMBER_OF_QUEUES];
 
 	void RadixSort();
-	// Function: 
-	// Pre: 
-	// Post:
+	// Function: Sorts data array
+	// Pre:		 data array is initialized
+	// Post:	 data array is sorted
 
 	void CollectQueues();
-	// Function: 
-	// Pre: 
-	// Post:
+	// Function: Partially sorts the data array by position by collecting items stored in
+	//			 queues array
+	// Pre:		 data array is initialized, queues array is initialized
+	// Post:	 data array is partially sorted by position
 };
 
 #include "radixsorter.template"

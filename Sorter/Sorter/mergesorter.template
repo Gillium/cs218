@@ -25,8 +25,8 @@ MergeSorter<ItemType>::MergeSorter(ItemType* items, int size, char dType)
 template<class ItemType>
 void MergeSorter<ItemType>::Sort()
 // Function: Calls recursive function MergeSort
-// Pre: data array is initialized
-// Post: data is sorted
+// Pre:		 data array is initialized
+// Post:	 data is sorted
 {
 	MergeSort(0, arraySize - 1);
 }
@@ -34,8 +34,8 @@ void MergeSorter<ItemType>::Sort()
 template<class ItemType>
 ItemType* MergeSorter<ItemType>::GetData()
 // Function: Returns a copy of data
-// Pre: data array is initialized
-// Post: Copy data is returned
+// Pre:		 data array is initialized
+// Post:	 Copy data is returned
 {
 	ItemType* temp = new ItemType[arraySize];
 
@@ -48,8 +48,8 @@ ItemType* MergeSorter<ItemType>::GetData()
 template<class ItemType>
 int MergeSorter<ItemType>::GetComparisons()
 // Function: Returns the number of comparisons while executing Sort
-// Pre: data array is initialized
-// Post: comparisons is returned
+// Pre:		 data array is initialized
+// Post:	 comparisons is returned
 {
 	return comparisons;
 }
@@ -57,8 +57,8 @@ int MergeSorter<ItemType>::GetComparisons()
 template<class ItemType>
 void MergeSorter<ItemType>::MergeSort(int first, int last)
 // Function: recusively sorts data array
-// Pre: data array is initialized
-// Post: data array is sorted
+// Pre:		 data array is initialized
+// Post:	 data array is sorted
 {
 	if(first < last)
 	{
@@ -72,8 +72,8 @@ void MergeSorter<ItemType>::MergeSort(int first, int last)
 template<class ItemType>
 void MergeSorter<ItemType>::Merge(int leftFirst, int leftLast, int rightFirst, int rightLast)
 // Function: Merges two sub-arrays of data
-// Pre: data array is initialized
-// Post: data array values between leftFirst and rightLast are sorted
+// Pre:		 data array is initialized
+// Post:	 data array values between leftFirst and rightLast are sorted
 {
 	int length = rightLast - leftFirst + 1;
 	ItemType* tempArray = new ItemType[length];
@@ -121,8 +121,8 @@ void MergeSorter<ItemType>::Merge(int leftFirst, int leftLast, int rightFirst, i
 template <class ItemType>
 bool MergeSorter<ItemType>::CompareValues(string v1, string v2, compType cType)
 // Function: Compares two values using a string or integer comparison
-// Pre: data array is initialized
-// Post: returns bool value of comparison
+// Pre:		 data array is initialized
+// Post:	 returns bool value of comparison
 {
 	comparisons++;
 

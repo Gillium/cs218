@@ -1,4 +1,4 @@
-﻿Build started 3/13/2013 1:59:02 AM.
+﻿Build started 3/13/2013 11:29:24 AM.
      1>Project "C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Sorter.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -34,4 +34,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.71
+Time Elapsed 00:00:03.50

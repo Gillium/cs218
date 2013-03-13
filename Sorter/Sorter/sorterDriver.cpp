@@ -25,6 +25,9 @@ int main()
 	srand((unsigned int)time(0));
 	char arrayOption;
 	char arrayOptionType;
+	clock_t begin;
+	clock_t end;
+	string* sorted;
 
 	// Asks user if they want a preconstructed array or an inputed array
 	do
@@ -150,10 +153,10 @@ int main()
 			cout << endl << endl;
 
 			QuickSorter<string> qs = QuickSorter<string>(testArray, SIZE, arrayOptionType);
-			clock_t begin = clock();
+			begin = clock();
 			qs.Sort();
-			clock_t end = clock();
-			string* sorted = qs.GetData();
+			end = clock();
+			sorted = qs.GetData();
 
 			cout << "Sorted: ";
 			for (int i = 0; i < SIZE; i++)
@@ -172,10 +175,10 @@ int main()
 			cout << endl << endl;
 
 			MergeSorter<string> ms = MergeSorter<string>(testArray, SIZE, arrayOptionType);
-			clock_t begin = clock();
+			begin = clock();
 			ms.Sort();
-			clock_t end = clock();
-			string* sorted = ms.GetData();
+			end = clock();
+			sorted = ms.GetData();
 
 			cout << "Sorted: ";
 			for (int i = 0; i < SIZE; i++)
@@ -194,10 +197,10 @@ int main()
 			cout << endl << endl;
 
 			RadixSorter<string> rs = RadixSorter<string>(testArray, SIZE, arrayOptionType);
-			clock_t begin = clock();
+			begin = clock();
 			rs.Sort();
-			clock_t end = clock();
-			string* sorted = rs.GetData();
+			end = clock();
+			sorted = rs.GetData();
 
 			cout << "Sorted: ";
 			for (int i = 0; i < SIZE; i++)
@@ -210,7 +213,47 @@ int main()
 		}
 		else if (command == "C" || command == "c")
 		{
+			cout << "Unsorted: ";
+			for (int i = 0; i <SIZE; i++)
+				cout << orginalTestArray[i] << " ";
+			cout << endl << endl;
 
+			QuickSorter<string> qs = QuickSorter<string>(testArray, SIZE, arrayOptionType);
+			begin = clock();
+			qs.Sort();
+			end = clock();
+			sorted = qs.GetData();
+
+			cout << endl;
+			cout << "Quicksort time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+			cout << "Quicksort comparisons: " << qs.GetComparisons() << endl << endl;
+
+			MergeSorter<string> ms = MergeSorter<string>(testArray, SIZE, arrayOptionType);
+			begin = clock();
+			ms.Sort();
+			end = clock();
+			sorted = ms.GetData();
+
+			cout << endl;
+			cout << "Mergesort time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+			cout << "Mergesort comparisons: " << ms.GetComparisons() << endl << endl;
+
+			RadixSorter<string> rs = RadixSorter<string>(testArray, SIZE, arrayOptionType);
+			begin = clock();
+			rs.Sort();
+			end = clock();
+			sorted = rs.GetData();
+
+			cout << endl;
+			cout << "Radixsort time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+			cout << "Radixsort comparisons: Does not use comparisons to sort." << endl << endl;
+
+			cout << "Sorted: ";
+			for (int i = 0; i < SIZE; i++)
+				cout << sorted[i] << " ";
+			cout << endl << endl;
+
+			command = "Menu";
 		}
 		else if (command == "E" || command == "e")
 		{

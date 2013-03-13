@@ -22,7 +22,7 @@ RadixSorter<ItemType>::RadixSorter(ItemType* items, int size, char dType)
 	for (int i = 0; i < arraySize; i++)
 	{
 		string padding;
-		padding.append(positions - items[i].length(), 0x00); // use nulls for padding
+		padding.append(positions - items[i].length(), NULL);
 		string temp;
 		if (dt == INT)
 		{
@@ -42,17 +42,18 @@ RadixSorter<ItemType>::RadixSorter(ItemType* items, int size, char dType)
 template<class ItemType>
 void RadixSorter<ItemType>::Sort()
 // Function: Calls function RadixSort
-// Pre: 
-// Post:
+// Pre:		 data array is initialized
+// Post:	 data is sorted
+
 {
 	RadixSort();
 }
 
 template<class ItemType>
 ItemType* RadixSorter<ItemType>::GetData()
-// Function: 
-// Pre: 
-// Post:
+// Function: Returns a copy of data
+// Pre:		 data array is initialized
+// Post:	 Copy data is returned
 {
 	ItemType* temp = new ItemType[arraySize];
 
@@ -64,9 +65,9 @@ ItemType* RadixSorter<ItemType>::GetData()
 
 template<class ItemType>
 void RadixSorter<ItemType>::RadixSort()
-// Function: 
-// Pre: 
-// Post:
+// Function: Sorts data array
+// Pre:		 data array is initialized
+// Post:	 data array is sorted
 {
 	/*
 	for position going from 1 to 3(positions)
@@ -100,15 +101,23 @@ void RadixSorter<ItemType>::RadixSort()
 
 	for (int i = 0; i < arraySize; i++)
 	{
+		string temp;
+		for (unsigned int j = 0; j < data[i].length(); j++)
+		{
+			if (int(data[i][j]) != NULL)
+				temp.append(1, data[i][j]);
+		}
 
+		data[i] = temp;
 	}
 }
 
 template<class ItemType>
 void RadixSorter<ItemType>::CollectQueues()
-// Function: 
-// Pre: 
-// Post:
+// Function: Partially sorts the data array by position by collecting items stored in
+//			 queues array
+// Pre:		 data array is initialized, queues array is initialized
+// Post:	 data array is partially sorted by position
 {
 	/*
 		Set index to 0

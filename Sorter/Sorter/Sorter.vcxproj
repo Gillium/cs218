@@ -78,13 +78,11 @@
     <ClInclude Include="queue.h" />
     <ClInclude Include="quicksorter.h" />
     <ClInclude Include="radixsorter.h" />
-    <ClInclude Include="sorter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mergesorter.template" />
     <ClCompile Include="quicksorter.template" />
     <ClCompile Include="radixsorter.template" />
-    <ClCompile Include="sorter.cpp" />
     <ClCompile Include="sorterDriver.cpp" />
   </ItemGroup>
   <ItemGroup>

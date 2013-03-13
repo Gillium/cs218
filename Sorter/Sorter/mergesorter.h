@@ -26,18 +26,18 @@ public:
 
 	void Sort();
 	// Function: Calls recursive function MergeSort
-	// Pre: data array is initialized
-	// Post: data is sorted
+	// Pre:		 data array is initialized
+	// Post:	 data is sorted
 
 	ItemType* GetData();
 	// Function: Returns a copy of data
-	// Pre: data array is initialized
-	// Post: Copy data is returned
+	// Pre:		 data array is initialized
+	// Post:	 Copy data is returned
 
 	int GetComparisons();
 	// Function: Returns the number of comparisons while executing Sort
-	// Pre: data array is initialized
-	// Post: comparisons is returned
+	// Pre:		 data array is initialized
+	// Post:	 comparisons is returned
 
 private:
 	int arraySize;
@@ -47,18 +47,18 @@ private:
 
 	void MergeSort(int first, int last);
 	// Function: recusively sorts data array
-	// Pre: data array is initialized
-	// Post: data array is sorted
+	// Pre:		 data array is initialized
+	// Post:	 data array is sorted
 
 	void Merge(int leftFirst, int leftLast, int rightFirst, int rightLast);
 	// Function: Merges two sub-arrays of data
-	// Pre: data array is initialized
-	// Post: data array values between leftFirst and rightLast are sorted
+	// Pre:		 data array is initialized
+	// Post:	 data array values between leftFirst and rightLast are sorted
 
 	bool CompareValues(string v1, string v2, compType cType);
 	// Function: Compares two values using a string or integer comparison
-	// Pre: data array is initialized
-	// Post: returns bool value of comparison
+	// Pre:		 data array is initialized
+	// Post:	 returns bool value of comparison
 };
 
 #include "mergesorter.template"
