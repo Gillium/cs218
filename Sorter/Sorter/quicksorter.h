@@ -21,7 +21,7 @@ class QuickSorter
 {
 public:
 	// Constructor
-	QuickSorter(ItemType* items, int size, char dType);
+	QuickSorter(ItemType* items, int userIndex, char dType);
 
 	void Sort();
 	// Function: Calls recursive function QuickSort

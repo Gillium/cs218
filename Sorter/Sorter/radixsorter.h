@@ -18,7 +18,7 @@ class RadixSorter
 {
 public:
 	// Constructor
-	RadixSorter(ItemType* items, int size, char dType);
+	RadixSorter(ItemType* items, int userIndex, char dType);
 
 	void Sort();
 	// Function: Calls function RadixSort

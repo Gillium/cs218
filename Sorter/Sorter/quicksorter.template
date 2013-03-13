@@ -5,9 +5,9 @@
 
 template <class ItemType>
 // Constructor
-QuickSorter<ItemType>::QuickSorter(ItemType* items, int size, char dType)
+QuickSorter<ItemType>::QuickSorter(ItemType* items, int userIndex, char dType)
 {
-	arraySize = size;
+	arraySize = userIndex;
 	data = new ItemType[arraySize];
 	comparisons = 0;
 

@@ -1,25 +1,19 @@
-﻿Build started 3/13/2013 11:29:24 AM.
+﻿Build started 3/13/2013 12:48:07 PM.
      1>Project "C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Sorter\Sorter.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Sorter.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt mergesorter.template quicksorter.template radixsorter.template sorter.cpp sorterDriver.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt sorterDriver.cpp
          sorterDriver.cpp
-         sorter.cpp
-         radixsorter.template
-         quicksorter.template
-         mergesorter.template
-         Generating Code...
      1>c:\users\gillium\documents\dwc\spring 2013\cs218\sorter\sorter\quicksorter.template(183): warning C4715: 'QuickSorter<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::CompareValues' : not all control paths return a value
      1>c:\users\gillium\documents\dwc\spring 2013\cs218\sorter\sorter\mergesorter.template(171): warning C4715: 'MergeSorter<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::CompareValues' : not all control paths return a value
        ManifestResourceCompile:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Sorter.exe.embed.manifest.res" Debug\Sorter_manifest.rc 
+         All outputs are up-to-date.
        Link:
          c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Sorter.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Gillium\Documents\DWC\Spring 2013\cs218\Sorter\Debug\Sorter.lib" /MACHINE:X86 Debug\Sorter.exe.embed.manifest.res
          Debug\mergesorter.obj
          Debug\quicksorter.obj
          Debug\radixsorter.obj
-         Debug\sorter.obj
          Debug\sorterDriver.obj
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Sorter.exe.embed.manifest" /manifest Debug\Sorter.exe.intermediate.manifest
@@ -34,4 +28,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.50
+Time Elapsed 00:00:02.00

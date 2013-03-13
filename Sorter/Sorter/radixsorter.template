@@ -4,11 +4,11 @@
 #include "radixsorter.h"
 
 template<class ItemType>
-RadixSorter<ItemType>::RadixSorter(ItemType* items, int size, char dType)
+RadixSorter<ItemType>::RadixSorter(ItemType* items, int userIndex, char dType)
 // Constructor
 {
-	arraySize = size;
-	data = new ItemType[size];
+	arraySize = userIndex;
+	data = new ItemType[userIndex];
 	positions = 0;
 
 	for (int i = 0; i < arraySize; i++)

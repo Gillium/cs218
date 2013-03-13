@@ -4,11 +4,11 @@
 #include "mergesorter.h"
 
 template<class ItemType>
-MergeSorter<ItemType>::MergeSorter(ItemType* items, int size, char dType)
+MergeSorter<ItemType>::MergeSorter(ItemType* items, int userIndex, char dType)
 // Constructor
 {
-	arraySize = size;
-	data = new ItemType[size];
+	arraySize = userIndex;
+	data = new ItemType[userIndex];
 	comparisons = 0;
 
 	if (dType == 'I' || dType == 'i')

@@ -22,7 +22,7 @@ class MergeSorter
 {
 public:
 	// Constructor
-	MergeSorter(ItemType* items, int size, char dType);
+	MergeSorter(ItemType* items, int userIndex, char dType);
 
 	void Sort();
 	// Function: Calls recursive function MergeSort
