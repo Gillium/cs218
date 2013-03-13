@@ -74,8 +74,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Documents\DWC\CS217\MedicalClinic\MedicalClinic\queue.h" />
     <ClInclude Include="mergesorter.h" />
+    <ClInclude Include="queue.h" />
     <ClInclude Include="quicksorter.h" />
     <ClInclude Include="radixsorter.h" />
     <ClInclude Include="sorter.h" />
@@ -88,7 +88,7 @@
     <ClCompile Include="sorterDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\Documents\DWC\CS217\MedicalClinic\MedicalClinic\queue.template" />
+    <None Include="queue.template" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

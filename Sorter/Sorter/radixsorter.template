@@ -4,19 +4,48 @@
 #include "radixsorter.h"
 
 template<class ItemType>
-RadixSorter<ItemType>::RadixSorter(ItemType* items, int size)
+RadixSorter<ItemType>::RadixSorter(ItemType* items, int size, char dType)
 // Constructor
 {
 	arraySize = size;
+	data = new ItemType[size];
+	positions = 0;
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		if (positions < items[i].length())
+			positions = items[i].length();
+	}
+
+	dt = (dType == 'I' || dType == 'i') ? INT : STR;
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		string padding;
+		padding.append(positions - items[i].length(), 0x00); // use nulls for padding
+		string temp;
+		if (dt == INT)
+		{
+			temp = padding;
+			temp.append(items[i]);
+		}
+		else
+		{
+			temp = items[i];
+			temp.append(padding);
+		}
+		
+		data[i] = temp;
+	}
 }
 
 template<class ItemType>
 void RadixSorter<ItemType>::Sort()
-// Function: 
+// Function: Calls function RadixSort
 // Pre: 
 // Post:
 {
-
+	RadixSort();
 }
 
 template<class ItemType>
@@ -39,7 +68,40 @@ void RadixSorter<ItemType>::RadixSort()
 // Pre: 
 // Post:
 {
+	/*
+	for position going from 1 to 3(positions)
+		for counter going from 0 to numValues(arraySize) - 1
+			Set whichQueue to digit at position "position" of values[counter]
+			queues[whichQueue].enqueue(values[counter])
+		Collect queues
+	*/
 
+	for (int pos = positions - 1; pos >= 0; pos--)
+	{
+		for (int i = 0; i < NUMBER_OF_QUEUES; i++)
+			queues[i] = NULL;
+
+		for (int j = 0; j < arraySize; j++)
+		{
+			int ascii = int(data[j][pos]);
+
+			if (queues[ascii] == NULL)
+			{
+				QueueType<string>* tempQueuePtr = new QueueType<string>();
+				tempQueuePtr->EnQueue(data[j]);
+				queues[ascii] = tempQueuePtr;
+			}
+			else
+				queues[ascii]->EnQueue(data[j]);
+		}
+
+		CollectQueues();
+	}
+
+	for (int i = 0; i < arraySize; i++)
+	{
+
+	}
 }
 
 template<class ItemType>
@@ -48,7 +110,26 @@ void RadixSorter<ItemType>::CollectQueues()
 // Pre: 
 // Post:
 {
+	/*
+		Set index to 0
+		for counter going from ascii
+			while !queues[counter].IsEmpty()
+				queues[counter].Dequeue(item)
+				Set Values[index] to item
+				Increment index
+	*/
+	int dataIndex = 0;
 
+	for (int queuesIndex = 0; queuesIndex < 128; queuesIndex++)
+	{
+		while((queues[queuesIndex] != NULL) && !queues[queuesIndex]->IsEmpty())
+		{
+			string item;
+			queues[queuesIndex]->DeQueue(item);
+			data[dataIndex] = item;
+			dataIndex++;
+		}
+	}
 }
 
 #endif

@@ -8,7 +8,7 @@
 using namespace std;
 
 // Change for the amount of index's in array
-const int SIZE = 1000;
+const int SIZE = 10;
 
 double diffclock(clock_t clock1, clock_t clock2)
 {
@@ -193,7 +193,7 @@ int main()
 				cout << orginalTestArray[i] << " ";
 			cout << endl << endl;
 
-			RadixSorter<string> rs = RadixSorter<string>(testArray, SIZE);
+			RadixSorter<string> rs = RadixSorter<string>(testArray, SIZE, arrayOptionType);
 			clock_t begin = clock();
 			rs.Sort();
 			clock_t end = clock();
