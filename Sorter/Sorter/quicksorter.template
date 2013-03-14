@@ -1,7 +1,6 @@
+#include "quicksorter.h"
 #ifndef QUICKSORTERTEMPLATE
 #define QUICKSORTERTEMPLATE
-
-#include "quicksorter.h"
 
 template <class ItemType>
 // Constructor

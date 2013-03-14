@@ -1,7 +1,6 @@
+#include "mergesorter.h"
 #ifndef MERGESORTERTEMPLATE
 #define MERGESORTERTEMPLATE
-
-#include "mergesorter.h"
 
 template<class ItemType>
 MergeSorter<ItemType>::MergeSorter(ItemType* items, int userIndex, char dType)

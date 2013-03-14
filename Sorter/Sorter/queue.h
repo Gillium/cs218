@@ -1,7 +1,7 @@
 #include <cstdlib>
+#include <sys/stat.h>
 #ifndef MYQUEUE
 #define MYQUEUE
-#include <sys/stat.h>
 
 using namespace std;
 
@@ -36,6 +36,12 @@ public:
 	// Pre: acopy is a valid QueueType 
 	// Post: Queue is initialized with values from acopy
 
+	void operator=(const QueueType<T>&acopy);
+	// Assignment operator
+	// Function: Overwrites queue with values from acopy
+	// Pre:		 Queue has been initialized
+	// Post:	 Queue has values from acopy
+
 	bool IsFull()const;
 	// Function: To check to see if the queue is full
 	// Pre:		 Queue has been initialized
@@ -68,11 +74,6 @@ public:
 	// Function: Returns length of queue
 	// Pre:		 Queue has been initialized
 	// Post:	 Function value = (length)
-
-	void operator=(const QueueType<T>&acopy);
-	// Function: Overwrites queue with values from acopy
-	// Pre:		 Queue has been initialized
-	// Post:	 Queue has values from acopy
 
 private:
 	NodeType<T>* rearPTR;

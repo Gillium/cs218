@@ -1,7 +1,6 @@
+#include "queue.h"
 #ifndef QUEUETEMPLATE
 #define QUEUETEMPLATE
-
-#include "queue.h"
 
 template <class T>
 QueueType<T>::QueueType()
@@ -24,7 +23,7 @@ QueueType<T>::~QueueType()
 
 template <class T>
 QueueType<T>::QueueType(const QueueType<T>& acopy)
-// Copy Constructor
+// Copy constructor
 // Pre:  acopy is a valid QueueType 
 // Post: Queue is initialized with values from acopy
 {
@@ -37,6 +36,43 @@ QueueType<T>::QueueType(const QueueType<T>& acopy)
 	for(int i = acopy.length; i > 0; i--)
 	{
 		NodeType<T>* temp = new NodeType<T>;
+		temp->data = currentPTR->data;
+
+		if (rearPTR == NULL)
+		{
+			rearPTR = temp;
+			temp->next = rearPTR;
+		}
+		else
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+		}
+
+		currentPTR = currentPTR->next;//
+	}
+
+	length = acopy.length;
+}
+
+template <class T>
+void QueueType<T>::operator=(const QueueType<T>& acopy)
+// Assignment operator
+// Function: Overwrites queue with values from acopy
+// Pre:		 Queue has been initialized
+// Post:	 Queue has values from acopy
+{
+	MakeEmpty();
+
+	if (acopy.IsEmpty())
+		return;
+
+	NodeType<T>* currentPTR;
+	currentPTR = acopy.rearPTR->next;
+
+	for(int i = acopy.length; i > 0; i--)
+	{
+		NodeType<T>* temp = new NodeType<T>;//
 		temp->data = currentPTR->data;
 
 		if (rearPTR == NULL)
@@ -165,39 +201,4 @@ unsigned int QueueType<T>::Length()const
 	return length;
 }
 
-template <class T>
-void QueueType<T>::operator=(const QueueType<T>& acopy)
-// Function: Overwrites queue with values from acopy
-// Pre:		 Queue has been initialized
-// Post:	 Queue has values from acopy
-{
-	MakeEmpty();
-
-	if (acopy.IsEmpty())
-		return;
-
-	NodeType<T>* currentPTR;
-	currentPTR = acopy.rearPTR->next;
-
-	for(int i = acopy.length; i > 0; i--)
-	{
-		NodeType<T>* temp = new NodeType<T>;//
-		temp->data = currentPTR->data;
-
-		if (rearPTR == NULL)
-		{
-			rearPTR = temp;
-			temp->next = rearPTR;
-		}
-		else
-		{
-			temp->next = rearPTR->next;
-			rearPTR->next = temp;
-		}
-
-		currentPTR = currentPTR->next;//
-	}
-
-	length = acopy.length;
-}
 #endif

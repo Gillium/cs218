@@ -1,10 +1,11 @@
-#include"quicksorter.h"
-#include"mergesorter.h"
-#include"radixsorter.h"
 #include<ctime>
 #include<iostream>
 #include<sstream>
 #include<string>
+#include"mergesorter.h"
+#include"quicksorter.h"
+#include"radixsorter.h"
+
 using namespace std;
 
 // Change for the amount of index's in array

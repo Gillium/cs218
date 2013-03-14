@@ -1,8 +1,8 @@
 #include <cstdlib>
 #include <string>
+#include <sys/stat.h>
 #ifndef MYQUICKSORTTEMPLATE
 #define MYQUICKSORTTEMPLATE
-#include <sys/stat.h>
 
 using namespace std;
 

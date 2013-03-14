@@ -1,7 +1,6 @@
+#include "radixsorter.h"
 #ifndef RADIXSORTERTEMPLATE
 #define RADIXSORTERTEMPLATE
-
-#include "radixsorter.h"
 
 template<class ItemType>
 RadixSorter<ItemType>::RadixSorter(ItemType* items, int userIndex, char dType)
