@@ -1,8 +1,9 @@
+#include <iomanip>
+#include <iostream>
+#include <string>
 #include "bst.h"
 #include "queue.h"
-#include <iostream>
-#include <iomanip>
-#include <string>
+
 using namespace std;
 
 int main()

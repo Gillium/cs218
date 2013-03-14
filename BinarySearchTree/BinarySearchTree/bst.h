@@ -1,9 +1,9 @@
-#include <ostream>
 #include <cstdlib>
-#ifndef MYBST
-#define MYBST
+#include <ostream>
 #include <sys/stat.h>
 #include "queue.h"
+#ifndef MYBST
+#define MYBST
 
 using namespace std;
 
@@ -78,7 +78,7 @@ public:
 	//			 GetNextItem. finished = (current position is last in tree). A copy of
 	//			 element at current position is returned.
 
-	void Print(std::ostream& outFile) const;
+	void Print(std::ostream& outFile);
 	// Function: Calls recursive function PrintTree to print item in the tree.
 	// Pre:		 outFile has been opened for writing.
 	// Post:	 Items in the tree have been printed in ascending key order. outFile is still open.
@@ -88,6 +88,8 @@ private:
 	QueueType<ItemType> preQue;
 	QueueType<ItemType> inQue;
 	QueueType<ItemType> postQue;
+	unsigned int height;
+	QueueType<ItemType>* rows;
 
 	void Destroy(TreeNode<ItemType>*& tree);
 	// Post:	tree is empty; nodes have been deallocated.
@@ -121,18 +123,38 @@ private:
 
 	void GetPredecessor(TreeNode<ItemType>* tree, ItemType& data);
 	// Function: Sets data to the info member of the rightmost node in tree.
+	// Pre:
+	// Post:
 
 	void PrintTree(TreeNode<ItemType>* tree, std::ostream& outFile) const;
 	// Function: Prints info member of items in tree in sorted order on outFile.
+	// Pre:
+	// Post:
 
 	void PreOrder(TreeNode<ItemType>*, QueueType<ItemType>&);
 	// Function: Enqueues tree items in preorder
+	// Pre:
+	// Post:
 
 	void InOrder(TreeNode<ItemType>*, QueueType<ItemType>&);
 	// Function: Enqueues tree items in inorder
+	// Pre:
+	// Post:
 
 	void PostOrder(TreeNode<ItemType>*, QueueType<ItemType>&);
 	// Function: Enqueues tree items in postorder
+	// Pre:
+	// Post:
+
+	void SetHeight(TreeNode<ItemType>* tree, unsigned int level);
+	// Function:
+	// Pre:
+	// Post:
+
+	void EnqueueRows(TreeNode<ItemType>* tree, unsigned int level);
+	// Function:
+	// Pre:
+	// Post:
 };
 
 #include "bst.template"
