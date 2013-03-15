@@ -1,3 +1,4 @@
+#include <math.h>
 #include "bst.h"
 #ifndef TEMPLATE_BST
 #define TEMPLATE_BST
@@ -16,6 +17,8 @@ BST<ItemType>::~BST()
 // Function: Calls recursive function Destroy to destroy the tree
 {
 	Destroy(root);
+	root = NULL;
+	height = 0;
 }
 
 // Copy constructor
@@ -47,6 +50,7 @@ void BST<ItemType>::MakeEmpty()
 {
 	Destroy(root);
 	root = NULL;
+	height = 0;
 }
 
 template <class ItemType>
@@ -169,17 +173,27 @@ void BST<ItemType>::Print(std::ostream& outFile)
 // Pre:		 outFile has been opened for writing.
 // Post:	 Items in the tree have been printed in ascending key order. outFile is still open.
 {
-	SetHeight(root, 0);
-
-	rows = new QueueType<ItemType>[height];
-	
-	for (unsigned int i = 0; i < height; i++)
+	if (root == NULL)
+		cout << "The tree is empty!" << endl;
+	else
 	{
-		rows[i] = QueueType<ItemType>();
+		SetHeight(root, 0);
+
+		rows = new QueueType<TreeNode<ItemType>*>[height];
+	
+		for (unsigned int i = 0; i < height; i++)
+		{
+			rows[i] = QueueType<TreeNode<ItemType>*>();
+		}
+
+		EnqueueRows(root, 0);
+		PrintTree(outFile);
+
+		for (unsigned int i = 0; i < height; i++)
+		{
+			rows[i].~QueueType<TreeNode<ItemType>*>();
+		}
 	}
-
-
-	PrintTree(root, outFile);
 }
 
 template <class ItemType>
@@ -376,18 +390,29 @@ void BST<ItemType>::PostOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
 }
 
 template <class ItemType>
-void BST<ItemType>::PrintTree(TreeNode<ItemType>* tree, std::ostream& outFile) const
-// Function: Prints info member of items in tree in sorted order on outFile.
-// Pre:
-// Post:
+void BST<ItemType>::PrintTree(std::ostream& outFile) const
+// Function: Prints visual representation of tree
+// Pre:		 tree needs to be initialized
+// Post:	 tree is displayed
 {
-	if (tree != NULL)
+	for (unsigned int i = 0; i < height; i++)
 	{
-		// Print left subtree.
-		PrintTree(tree->left, outFile);
-		outFile << tree->info;
-		// Print right subtree.
-		PrintTree(tree->right, outFile);
+		while (!rows[i].IsEmpty())
+		{
+			TreeNode<ItemType>* tempPtr;
+			rows[i].DeQueue(tempPtr);
+
+			for (int j = 0; j < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)i) + 1)); j++)
+			{
+				cout << "  ";
+			}
+
+			if (tempPtr == NULL)
+				cout << "x";
+			else
+				cout << tempPtr->info;
+		}
+		cout << endl;
 	}
 }
 
@@ -417,7 +442,22 @@ void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, unsigned int level)
 {
 	if (tree == NULL)
 	{
-		//rows[level]
+		if (level < height)
+		{
+			for (unsigned int i = 0; i < (height - level); i++)
+			{
+				for (unsigned int j = 0; j < pow(2.0, (double)i); j++)
+				{
+					rows[level + i].EnQueue(NULL);
+				}
+			}
+		}
+	}
+	else
+	{
+		rows[level].EnQueue(tree);
+		EnqueueRows(tree->left, level + 1);
+		EnqueueRows(tree->right, level + 1);
 	}
 }
 

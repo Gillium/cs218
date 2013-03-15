@@ -6,26 +6,88 @@
 
 using namespace std;
 
+enum types {VAR_INT, VAR_STR};
+
+struct my_variant_t {
+	int type;
+	union {
+		int int_val;
+		char* str_val;
+	};
+
+	void operator= (int obj)
+	{
+		type = VAR_INT;
+		int_val = obj;
+	}
+	
+	void operator= (char* obj)
+	{
+		type = VAR_STR;
+		str_val = _strdup(obj);
+	}
+};
+
+ostream& operator<< (ostream& os, my_variant_t& obj)
+{
+	switch(obj.type)
+	{
+		case VAR_INT:
+			os << obj.int_val;
+			break;
+		case VAR_STR:
+			os << obj.str_val;
+			break;
+	}
+
+	return os;
+}
+
+bool operator< (my_variant_t& obj1, my_variant_t& obj2)
+{
+	switch(obj1.type)
+	{
+		case VAR_INT:
+			return (obj1.int_val < obj2.int_val);
+		case VAR_STR:
+			return (obj1.str_val < obj2.str_val);
+		default:
+			return false;
+			// throw exception
+	}
+}
+
+bool operator> (my_variant_t& obj1, my_variant_t& obj2)
+{
+	switch(obj1.type)
+	{
+		case VAR_INT:
+			return (obj1.int_val > obj2.int_val);
+		case VAR_STR:
+			return (obj1.str_val > obj2.str_val);
+		default:
+			return false;
+			// throw exception
+	}
+}
+
 int main()
 {
 	char command;
-	int number;
-	char letter;
+	my_variant_t input;
 	char choice;
+	string temp;
 
-	cout << "What type of tree would you like to build today, (L)etters or (N)umbers?" << endl;
+	cout << "What type of tree would you like to build today, (S)trings or (N)umbers?" << endl;
 	cin  >> choice;
 	cout << endl;
 
-	QueueType<char> queueTypeC;
-	BST<char> bstC = BST<char>();
-
-	QueueType<int> queueTypeI;
-	BST<int> bstI = BST<int>();
+	QueueType<my_variant_t> queueType;
+	BST<my_variant_t> bst = BST<my_variant_t>();
 
 	command = 'M';
 
-	while (command != 'Q')
+	while (command != 'Q' && command != 'q')
 	{
 		if (command == 'M')
 		{
@@ -44,18 +106,22 @@ int main()
 			if (choice == 'N' || choice == 'n')
 			{
 				cout << "What number would you like to input?" << endl;
-				cin  >> number;
+				cin.ignore();
+				getline(cin, temp);
+				input = atoi(temp.c_str());
 				cout << endl;
-				bstI.PutItem(number);
-				cout << number << " is inputed!" << endl << endl;
+				bst.PutItem(input);
+				cout << input << " is inputed!" << endl << endl;
 			}
 			else
 			{
-				cout << "What letter would you like to input?" << endl;
-				cin >> letter;
+				cout << "What is the string you would like to input?" << endl;
+				cin.ignore();
+				getline(cin, temp);
+				input = (char*)temp.c_str();
 				cout << endl;
-				bstC.PutItem(letter);
-				cout << letter << " is inputed!" << endl << endl;
+				bst.PutItem(input);
+				cout << input << " is inputed!" << endl << endl;
 			}
 
 			command = 'M';
@@ -65,53 +131,38 @@ int main()
 			if (choice == 'N' || choice == 'n')
 			{
 				cout << "What number would you like to remove?" << endl;
-				cin  >> number;
-				bstI.DeleteItem(number);
-				cout << endl << number << " is removed!" << endl << endl;
+				cin.ignore();
+				getline(cin, temp);
+				input = atoi(temp.c_str());
+				bst.DeleteItem(input);
+				cout << endl << input << " is removed!" << endl << endl;
 			}
 			else
 			{
-				cout << "What letter would you like to remove?" << endl;
-				cin >> letter;
-				bstC.DeleteItem(letter);
-				cout << endl << letter << " is removed!" << endl << endl;
+				cout << "What is the string you would like to remove?" << endl;
+				cin.ignore();
+				getline(cin, temp);
+				input = (char*)temp.c_str();
+				bst.DeleteItem(input);
+				cout << endl << input << " is removed!" << endl << endl;
 			}
 
 			command = 'M';
 		}
 		else if (command == 'D' || command == 'd')
 		{
-			if (choice == 'N' || choice == 'n')
-			{
-				cout << endl << "Displaying..." << endl;
-				bstI.Print(cout);
-				cout << endl << endl;
-			}
-			else
-			{
-				cout << endl << "Displaying..." << endl;
-				bstC.Print(cout);
-				cout << endl << endl;
-			}
+			cout << endl << "Displaying..." << endl;
+			bst.Print(cout);
+			cout << endl << endl;
 
 			command = 'M';
 		}
 		else if (command == 'C' || command == 'c')
 		{
-			if (choice == 'N' || choice == 'n')
-			{
-				cout << endl << "Chopping...Timber!" << endl;
-				bstI.MakeEmpty();
-				cout << endl << endl;
-				cout << "Tree is empty!" << endl << endl;
-			}
-			else
-			{
-				cout << endl << "Chopping...Timber!" << endl;
-				bstC.MakeEmpty();
-				cout << endl << endl;
-				cout << "Tree is empty!" << endl << endl;
-			}
+			cout << endl << "Chopping...Timber!" << endl;
+			bst.MakeEmpty();
+			cout << endl << endl;
+			cout << "Tree is empty!" << endl << endl;
 
 			command = 'M';
 		}

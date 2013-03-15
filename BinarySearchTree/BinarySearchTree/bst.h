@@ -38,7 +38,7 @@ public:
 	// Post:	 Tree exists and is empty.	 
 
 	bool IsEmpty() const;
-	// Function: Returns true if the tree is empty and flase otherwise.
+	// Function: Returns true if the tree is empty and false otherwise.
 	// Post:	 Function value = (tree is empty).
 
 	bool IsFull() const;
@@ -89,7 +89,7 @@ private:
 	QueueType<ItemType> inQue;
 	QueueType<ItemType> postQue;
 	unsigned int height;
-	QueueType<ItemType>* rows;
+	QueueType<TreeNode<ItemType>*>* rows;
 
 	void Destroy(TreeNode<ItemType>*& tree);
 	// Post:	tree is empty; nodes have been deallocated.
@@ -126,7 +126,7 @@ private:
 	// Pre:
 	// Post:
 
-	void PrintTree(TreeNode<ItemType>* tree, std::ostream& outFile) const;
+	void PrintTree(std::ostream& outFile) const;
 	// Function: Prints info member of items in tree in sorted order on outFile.
 	// Pre:
 	// Post:
