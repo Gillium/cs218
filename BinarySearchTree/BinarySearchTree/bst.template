@@ -3,36 +3,42 @@
 #ifndef TEMPLATE_BST
 #define TEMPLATE_BST
 
-// Constructor
 template <class ItemType>
 BST<ItemType>::BST()
+// Constructor
+// Pre:
+// Post:
 {
 	root = NULL;
 	height = 0;
 }
 
-// Destructor
 template <class ItemType>
 BST<ItemType>::~BST()
 // Function: Calls recursive function Destroy to destroy the tree
+// Destructor
+// Pre:
+// Post:
 {
 	Destroy(root);
 	root = NULL;
 	height = 0;
 }
 
-// Copy constructor
 template <class ItemType>
 BST<ItemType>::BST(const BST& originalTree)
+// Copy constructor
 // Function: Calls the recursive function CopyTree to copy originalTree into root.
+// Pre:
+// Post:
 {
 	CopyTree(root, originalTree.root);
 }
 
-// Assignment operator
 template <class ItemType>
 void BST<ItemType>::operator=(BST& originalTree)
-// Calls the recursive function CopyTree to copy originalTree into root.
+// Assignment operator
+// Function: Calls the recursive function CopyTree to copy originalTree into root.
 {
 	if (&originalTree == this)
 		// Ignore assigning self to self.
@@ -91,7 +97,7 @@ int BST<ItemType>::GetLength() const
 }
 
 template <class ItemType>
-ItemType BST<ItemType>::GetItem(ItemType item, bool& found) const
+ItemType BST<ItemType>::GetItem(ItemType item, bool& found)
 // Function: Calls recursive function Retrieve to search the tree for item.
 // Pre:		 Key member of item is initalized.
 // Post:	 If there is an element someItem whose key matches item's key, then
@@ -106,9 +112,16 @@ template <class ItemType>
 void BST<ItemType>::PutItem(ItemType item)
 // Function: Calls the recursive function Insert to insert item into tree.
 // Pre:		 Tree is not full. Item is not in tree.
-// Post:	 Item is in tree. Binary search property is maintained.
+// Post:	 Item is in tree. Binary search property is maintained. Throws DuplicateItem exception
 {
-	Insert(root, item);
+	try
+	{
+		Insert(root, item);
+	}
+	catch(DuplicateItem)
+	{
+		throw DuplicateItem();
+	}
 }
 
 template <class ItemType>
@@ -197,6 +210,30 @@ void BST<ItemType>::Print(std::ostream& outFile)
 }
 
 template <class ItemType>
+
+ItemType BST<ItemType>::RetrieveRoot()
+// Function: Returns root info
+// Pre:		 Tree is initialized
+// Post:	 Data in root node is returned, throws TreeEmpty exception
+{
+	if (root == NULL)
+		throw EmptyTree();
+	else
+		return root->info;
+}
+
+template <class ItemType>
+bool BST<ItemType>::IsFullTree()
+// Function: Calls recursive function IsFullTreeHelper to check tree to see if full
+// Pre:		 Tree is intialized
+// Post:	 returns bool value if all nodes of tree have either zero or two children
+{
+	bool temp;
+	IsFullTreeHelper(root, temp);
+	return temp;
+}
+
+template <class ItemType>
 void BST<ItemType>::Destroy(TreeNode<ItemType>*& tree)
 // Function:
 // Pre:
@@ -267,8 +304,8 @@ void BST<ItemType>::Retrieve(TreeNode<ItemType>* tree, ItemType& item, bool& fou
 template <class ItemType>
 void BST<ItemType>::Insert(TreeNode<ItemType>*& tree, ItemType item)
 // Function: Inserts item into tree.
-// Pre:
-// Post:	 item is in tree; search property is maintained
+// Pre:		 tree is initialized
+// Post:	 item is in tree; search property is maintained; throws DuplicateItem exception
 {
 	if (tree == NULL)
 	{
@@ -281,9 +318,11 @@ void BST<ItemType>::Insert(TreeNode<ItemType>*& tree, ItemType item)
 	else if (item < tree->info)
 		// Insert in left subtree
 		Insert(tree->left, item);
-	else
+	else if (item > tree->info)
 		// Insert in right subtree
 		Insert(tree->right, item);
+	else
+		throw DuplicateItem();
 }
 
 template <class ItemType>
@@ -458,6 +497,24 @@ void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, unsigned int level)
 		rows[level].EnQueue(tree);
 		EnqueueRows(tree->left, level + 1);
 		EnqueueRows(tree->right, level + 1);
+	}
+}
+
+template <class ItemType>
+void BST<ItemType>::IsFullTreeHelper(TreeNode<ItemType>*& tree, bool& full)
+// Function: Recursively checks to see if tree node has either zero or two children
+// Pre:		 tree is initialized
+// Post:	 the value of full is set to false if the tree node has only one child
+{
+	if (tree != NULL)
+	{
+		if ((tree->left != NULL && tree->right == NULL) || (tree->left == NULL && tree->right != NULL))
+			full = false;
+		else
+		{
+			IsFullTreeHelper(tree->left, full);
+			IsFullTreeHelper(tree->right, full);
+		}
 	}
 }
 
