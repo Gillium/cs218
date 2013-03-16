@@ -10,7 +10,6 @@ BST<ItemType>::BST()
 // Post:
 {
 	root = NULL;
-	height = 0;
 }
 
 template <class ItemType>
@@ -21,8 +20,6 @@ BST<ItemType>::~BST()
 // Post:
 {
 	Destroy(root);
-	root = NULL;
-	height = 0;
 }
 
 template <class ItemType>
@@ -56,7 +53,6 @@ void BST<ItemType>::MakeEmpty()
 {
 	Destroy(root);
 	root = NULL;
-	height = 0;
 }
 
 template <class ItemType>
@@ -142,12 +138,12 @@ void BST<ItemType>::ResetTree(OrderType order)
 {
 	switch(order)
 	{
-		case PRE_ORDER: PreOrder(root, preQue);
-						break;
-		case IN_ORDER:	InOrder(root, inQue);
-						break;
-		case POST_ORDER: PostOrder(root, postQue);
-						break;
+		case PRE_ORDER:  PreOrder(root);
+						 break;
+		case IN_ORDER:	 InOrder(root);
+						 break;
+		case POST_ORDER: PostOrder(root);
+						 break;
 	}
 }
 
@@ -163,15 +159,15 @@ ItemType BST<ItemType>::GetNextItem(OrderType order, bool& finished)
 
 	switch (order)
 	{
-		case PRE_ORDER : preQue.Dequeue(item);
+		case PRE_ORDER : preQue.DeQueue(item);
 						 if (preQue.IsEmpty())
 							 finished = true;
 						 break;
-		case IN_ORDER  : inQue.Dequeue(item);
+		case IN_ORDER  : inQue.DeQueue(item);
 						 if (inQue.IsEmpty())
 							 finished = true;
 						 break;
-		case POST_ORDER: postQue.Dequeue(item);
+		case POST_ORDER: postQue.DeQueue(item);
 						 if (postQue.IsEmpty())
 							 finished = true;
 						 break;
@@ -190,19 +186,20 @@ void BST<ItemType>::Print(std::ostream& outFile)
 		cout << "The tree is empty!" << endl;
 	else
 	{
-		SetHeight(root, 0);
+		int height = 0;
+		GetHeight(root, 0, height);
 
 		rows = new QueueType<TreeNode<ItemType>*>[height];
 	
-		for (unsigned int i = 0; i < height; i++)
+		for (int i = 0; i < height; i++)
 		{
 			rows[i] = QueueType<TreeNode<ItemType>*>();
 		}
 
-		EnqueueRows(root, 0);
-		PrintTree(outFile);
+		EnqueueRows(root, 0, height);
+		PrintTree(outFile, height);
 
-		for (unsigned int i = 0; i < height; i++)
+		for (int i = 0; i < height; i++)
 		{
 			rows[i].~QueueType<TreeNode<ItemType>*>();
 		}
@@ -273,7 +270,7 @@ int BST<ItemType>::CountNodes(TreeNode<ItemType>* tree)
 	if (tree == NULL)
 		return 0;
 	else
-		return countNodes(tree->left) + CountNodes(tree->right) + 1;
+		return CountNodes(tree->left) + CountNodes(tree->right) + 1;
 }
 
 template <class ItemType>
@@ -363,7 +360,9 @@ void BST<ItemType>::Delete(TreeNode<ItemType>*& tree, ItemType item)
 // Pre:
 // Post:	 Item is not in tree
 {
-	if (item < tree->info)
+	if (tree == NULL)
+		throw NotFound();
+	else if (item < tree->info)
 		// Look in left subtree.
 		Delete(tree->left, item);
 	else if (item > tree->info)
@@ -387,54 +386,54 @@ void BST<ItemType>::GetPredecessor(TreeNode<ItemType>* tree, ItemType& data)
 }
 
 template <class ItemType>
-void BST<ItemType>::PreOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
+void BST<ItemType>::PreOrder(TreeNode<ItemType>* tree)
 // Function: Enqueues tree items in preorder
 // Pre:
 // Post:
 {
 	if (tree != NULL)
 	{
-		preQue.Enqueue(tree->info);
-		PreOrder(tree->left, preQue);
-		PreOrder(tree->right, preQue);
+		preQue.EnQueue(tree->info);
+		PreOrder(tree->left);
+		PreOrder(tree->right);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::InOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
+void BST<ItemType>::InOrder(TreeNode<ItemType>* tree)
 // Function: Enqueues tree items in inorder
 // Pre:
 // Post:
 {
 	if (tree != NULL)
 	{
-		InOrder(tree->left, inQue);
-		inQue.Enqueue(tree->info);
-		InOrder(tree->right, inQue);
+		InOrder(tree->left);
+		inQue.EnQueue(tree->info);
+		InOrder(tree->right);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::PostOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
+void BST<ItemType>::PostOrder(TreeNode<ItemType>* tree)
 // Function: Enqueues tree items in postorder
 // Pre:
 // Post:
 {
 	if (tree!= NULL)
 	{
-		PostOrder(tree->left, postQue);
-		PostOrder(tree->right, postQue);
-		postQue.Enqueue(tree->info);
+		PostOrder(tree->left);
+		PostOrder(tree->right);
+		postQue.EnQueue(tree->info);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::PrintTree(std::ostream& outFile) const
+void BST<ItemType>::PrintTree(std::ostream& outStream, int& height) const
 // Function: Prints visual representation of tree
 // Pre:		 tree needs to be initialized
 // Post:	 tree is displayed
 {
-	for (unsigned int i = 0; i < height; i++)
+	for (int i = 0; i < height; i++)
 	{
 		while (!rows[i].IsEmpty())
 		{
@@ -443,20 +442,20 @@ void BST<ItemType>::PrintTree(std::ostream& outFile) const
 
 			for (int j = 0; j < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)i) + 1)); j++)
 			{
-				cout << "  ";
+				outStream << "  ";
 			}
 
 			if (tempPtr == NULL)
-				cout << "x";
+				outStream << "x";
 			else
-				cout << tempPtr->info;
+				outStream << tempPtr->info;
 		}
-		cout << endl;
+		outStream << endl;
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::SetHeight(TreeNode<ItemType>* tree, unsigned int level)
+void BST<ItemType>::GetHeight(TreeNode<ItemType>* tree, int level, int& height)
 // Function: Recusively sets height of tree
 // Pre:		 tree needs to be initialized
 // Post:	 Height of tree is set
@@ -468,13 +467,13 @@ void BST<ItemType>::SetHeight(TreeNode<ItemType>* tree, unsigned int level)
 	}
 	else
 	{
-		SetHeight(tree->left, level + 1);
-		SetHeight(tree->right, level + 1);
+		GetHeight(tree->left, level + 1, height);
+		GetHeight(tree->right, level + 1, height);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, unsigned int level)
+void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, int level, int height)
 // Function: Recursively enqueues rows of tree
 // Pre:		 tree needs to be initialized
 // Post:	 rows contains queues of tree nodes
@@ -483,7 +482,7 @@ void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, unsigned int level)
 	{
 		if (level < height)
 		{
-			for (unsigned int i = 0; i < (height - level); i++)
+			for (int i = 0; i < (height - level); i++)
 			{
 				for (unsigned int j = 0; j < pow(2.0, (double)i); j++)
 				{
@@ -495,8 +494,8 @@ void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, unsigned int level)
 	else
 	{
 		rows[level].EnQueue(tree);
-		EnqueueRows(tree->left, level + 1);
-		EnqueueRows(tree->right, level + 1);
+		EnqueueRows(tree->left, level + 1, height);
+		EnqueueRows(tree->right, level + 1, height);
 	}
 }
 

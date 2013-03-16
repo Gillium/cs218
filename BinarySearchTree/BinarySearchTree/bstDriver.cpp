@@ -127,26 +127,60 @@ int main()
 			{
 				if (choice == 'N' || choice == 'n')
 				{
-					cout << "What number would you like to input?" << endl;
 					cin.ignore();
-					getline(cin, temp);
-					input = atoi(temp.c_str());
-					cout << endl;
-					try
+					bool isNumber;
+					do
 					{
-						bst.PutItem(input);
-						cout << input << " is inputed!" << endl << endl;
-					}
-					catch(DuplicateItem)
-					{
-						cout << input << " already exists!" << endl << endl;
-					}
+						cout << "What number would you like to input?" << endl;
+						getline(cin, temp);
+
+						isNumber = true;
+						if (temp.length() == 0)
+							isNumber = false;
+
+						for (unsigned int i = 0; i < temp.length(); i++)
+						{
+							if(!isdigit(temp[i]))
+								isNumber = false;
+						}
+
+						if (isNumber)
+						{
+							input = atoi(temp.c_str());
+							cout << endl;
+							try
+							{
+								bst.PutItem(input);
+								cout << input << " is inputed!" << endl << endl;
+							}
+							catch(DuplicateItem)
+							{
+								cout << input << " already exists!" << endl << endl;
+							}
+						}
+						else
+							cout << temp << " is not a valid number!" << endl << endl;
+
+					}while(!isNumber);
 				}
 				else
 				{
-					cout << "What is the string you would like to input?" << endl;
 					cin.ignore();
-					getline(cin, temp);
+					bool isEmptyString;
+					do
+					{
+						isEmptyString = false;
+						cout << "What is the string you would like to input?" << endl;
+						getline(cin, temp);
+
+						if (temp == "")
+						{
+							isEmptyString = true;
+							cout << temp << " is not a valid string!" << endl << endl;
+						}
+
+					}while(isEmptyString);
+
 					input = (char*)temp.c_str();
 					cout << endl;
 					try
@@ -170,8 +204,15 @@ int main()
 					cin.ignore();
 					getline(cin, temp);
 					input = atoi(temp.c_str());
-					bst.DeleteItem(input);
-					cout << endl << input << " is removed!" << endl << endl;
+					try
+					{
+						bst.DeleteItem(input);
+						cout << endl << input << " is removed!" << endl << endl;
+					}
+					catch(NotFound)
+					{
+						cout << endl << "Number was not found!" << endl << endl;
+					}
 				}
 				else
 				{
@@ -179,17 +220,49 @@ int main()
 					cin.ignore();
 					getline(cin, temp);
 					input = (char*)temp.c_str();
-					bst.DeleteItem(input);
-					cout << endl << input << " is removed!" << endl << endl;
+					try
+					{
+						bst.DeleteItem(input);
+						cout << endl << input << " is removed!" << endl << endl;
+					}
+					catch(NotFound)
+					{
+						cout << endl << "String was not found!" << endl << endl;
+					}
 				}
 
 				command = 'M';
 			}
 			else if (command == 'D' || command == 'd')
 			{
-				cout << endl << "Displaying..." << endl;
-				bst.Print(cout);
-				cout << endl << endl;
+				if (!bst.IsEmpty())
+				{
+					cout << endl << "Displaying..." << endl;
+					bst.Print(cout);
+					cout << endl << endl;
+				
+					bool finished = false;
+					bst.ResetTree(IN_ORDER);
+					cout << "InOrder: ";
+					while(!finished)
+						cout << bst.GetNextItem(IN_ORDER, finished) << " ";
+				
+					finished = false;
+					bst.ResetTree(PRE_ORDER);
+					cout << endl << "PreOrder: ";
+					while(!finished)
+						cout << bst.GetNextItem(PRE_ORDER, finished) << " ";
+				
+					finished = false;
+					bst.ResetTree(POST_ORDER);
+					cout << endl << "PostOrder: ";
+					while(!finished)
+						cout << bst.GetNextItem(POST_ORDER, finished) << " ";
+
+					cout << endl << endl;
+				}
+				else
+					cout << "The tree is empty!" << endl << endl;
 
 				command = 'M';
 			}
@@ -203,7 +276,7 @@ int main()
 			}
 			else if (command == 'Q' || command == 'q')
 			{
-				return 1;
+				continue;
 			}
 			else if (command == 'N' || command == 'n')
 			{
@@ -275,7 +348,8 @@ int main()
 				cout << endl;
 			}
 		}
-	}while(command != 'Q' || command != 'q');
+
+	}while(command != 'Q' && command != 'q');
 
 	system("Pause");
 	return 0;
