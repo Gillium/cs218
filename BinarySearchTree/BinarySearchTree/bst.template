@@ -457,7 +457,7 @@ void BST<ItemType>::PrintTree(std::ostream& outStream, int& height) const
 			}
 
 			if (tempPtr == NULL)
-				outStream << "x";
+				outStream << " ";
 			else
 				outStream << tempPtr->info;
 		}

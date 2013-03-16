@@ -91,6 +91,10 @@ int main()
 	my_variant_t input;
 	char choice;
 	string temp;
+	
+	QueueType<my_variant_t> queueType;
+	BST<my_variant_t> bst = BST<my_variant_t>();
+
 	do
 	{
 		cout << "What type of tree would you like to build, (S)trings, (N)umbers, or (Q)uit?" << endl;
@@ -99,9 +103,6 @@ int main()
 
 		if (choice == 'Q' || choice == 'q')
 			return 1;
-
-		QueueType<my_variant_t> queueType;
-		BST<my_variant_t> bst = BST<my_variant_t>();
 
 		command = 'M';
 
@@ -115,9 +116,9 @@ int main()
 				cout << "(S)earch for node" << endl;
 				cout << "(G)et root" << endl;
 				cout << "(D)isplay tree" << endl;
-				cout << "(C)hop tree down" << endl;
-				cout << "(N)ew data type" << endl;
 				cout << "(F)ull tree test" << endl;
+				cout << "(C)hop tree down" << endl;
+				cout << "(N)ew tree" << endl;
 				cout << "(Q)uit program" << endl;
 				cout << "? ";
 				cin  >> command;
@@ -280,30 +281,64 @@ int main()
 			}
 			else if (command == 'N' || command == 'n')
 			{
+				bst.MakeEmpty();
 				break;
 			}
 			else if (command == 'S' || command == 's')
 			{
 				if (choice == 'N' || choice == 'n')
 				{
-					cout << "What number would you like to find?" << endl;
 					cin.ignore();
-					getline(cin, temp);
-					input = atoi(temp.c_str());
-					cout << endl;
-					bool found;
-					bst.GetItem(input, found);
+					bool isNumber;
+					do
+					{
+						cout << "What number would you like to find?" << endl;
+						getline(cin, temp);
 
-					if (found)
-						cout << input << " was found!" << endl << endl;
-					else
-						cout << input << " was not found!" << endl << endl;
+						isNumber = true;
+						if (temp.length() == 0)
+							isNumber = false;
+
+						for (unsigned int i = 0; i < temp.length(); i ++)
+						{
+							if(!isdigit(temp[i]))
+								isNumber = false;
+						}
+
+						if (isNumber)
+						{
+							input = atoi(temp.c_str());
+							cout << endl;
+							
+							bool found;
+							bst.GetItem(input, found);
+
+							if (found)
+								cout << input << " was found!" << endl << endl;
+							else
+								cout << input << " was not found!" << endl << endl;
+						}
+						else
+							cout << temp << "is not a valid number!" << endl << endl;
+					}while(!isNumber);
 				}
 				else
 				{
-					cout << "What is the string you would like to find?" << endl;
 					cin.ignore();
-					getline(cin, temp);
+					bool isEmptyString;
+					do
+					{
+						isEmptyString = false;
+						cout << "What is the string you would like to find?" << endl;
+						getline(cin, temp);
+
+						if (temp == "")
+						{
+							isEmptyString = true;
+							cout << temp << " is not a valid string!" << endl << endl;
+						}
+					}while(isEmptyString);
+
 					input = (char*)temp.c_str();
 					cout << endl;
 					bool found;
@@ -325,7 +360,7 @@ int main()
 				}
 				catch(EmptyTree)
 				{
-					cout << "The root was not found!" << endl << endl;
+					cout << "The root does not exist!" << endl << endl;
 				}
 
 				command = 'M';
