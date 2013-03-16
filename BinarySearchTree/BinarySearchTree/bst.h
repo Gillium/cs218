@@ -15,6 +15,7 @@ class EmptyTree
 class DuplicateItem
 {
 };
+
 class NotFound
 {
 };
@@ -52,7 +53,8 @@ public:
 
 	void operator=(BST& originalTree);
 	// Assignment operator
-	// Function: Calls the recursive function CopyTree to copy originalTree into root
+	// Function: Calls recursive function Destroy to destroy the tree, then calls then
+	//			 recursive function CopyTree to copy originalTree into root
 	// Pre:		 BST has been initialized, originalTree is a valid BST
 	// Post:	 BST has values from originalTree
 
@@ -67,7 +69,8 @@ public:
 	// Post:	 Function value = (tree is empty)
 
 	bool IsFull() const;
-	// Function: Returns true if the free store has no room for another node and false otherwise
+	// Function: Returns true if the free store has no room for another node and false
+	//			 otherwise
 	// Pre:		 BST has been initialized
 	// Post:	 Function Value = (memory unavailable to create new nodes)
 	
@@ -80,8 +83,8 @@ public:
 	// Function: Calls recursive function Retrieve to search the tree for item
 	// Pre:		 BST has been initialized, key member of item is initalized
 	// Post:	 If there is an element someItem whose key matches item's key, then
-	//			 found = true and a copy of someItem is returned; otherwise, found = false
-	//			 and item is returned
+	//			 found = true and a copy of someItem is returned; otherwise, found =
+	//			 false and item is returned
 
 	void PutItem(ItemType item);
 	// Function: Calls the recursive function Insert to insert item into tree
@@ -95,13 +98,15 @@ public:
 	// Post:	 No element in tree has a key matching item's key
 
 	void ResetTree(OrderType order);
-	// Function: Calls a function to create a queue of the tree elements in the desired order
+	// Function: Calls a function to create a queue of the tree elements in the desired
+	//			 order
 	// Pre:		 BST has been initialized
 	// Post:	 Current position is prior to root of tree
 
 	ItemType GetNextItem(OrderType order, bool& finished);
 	// Function: Gets the next element in tree
-	// Pre:		 BST has been initialized, current position is defined, element at current position is not last in tree
+	// Pre:		 BST has been initialized, current position is defined, element at
+	//			 current position is not last in tree
 	// Post:	 Current position is one position beyond current position at entry to
 	//			 GetNextItem, finished = (current position is last in tree), a copy of
 	//			 element at current position is returned
@@ -109,12 +114,14 @@ public:
 	void Print(std::ostream& outFile);
 	// Function: Calls recursive function PrintTree to print item in the tree
 	// Pre:		 BST has been initialized, outFile has been opened for writing
-	// Post:	 Items in the tree have been printed in ascending key order, outFile is still open
+	// Post:	 Items in the tree have been printed in ascending key order, outFile is
+	//			 still open
 
 	ItemType RetrieveRoot();
 	// Function: Returns root info
 	// Pre:		 BST has been initialized
-	// Post:	 Data in root node is returned, throws TreeEmpty exception if root is null
+	// Post:	 Data in root node is returned, throws TreeEmpty exception if root is
+	//			 null
 
 	bool IsFullTree();
 	// Function: Calls recursive function IsFullTreeHelper to check tree to see if full
@@ -137,7 +144,7 @@ private:
 	void CopyTree(TreeNode<ItemType>*& copy, const TreeNode<ItemType>* originalTree);
 	// Function: Recursively copies the nodes of originalTree into copy
 	// Pre:		 none
-	// Post:	 copy is the root of a tree that is a duplicate of originalTree.
+	// Post:	 copy is the root of a tree that is a duplicate of originalTree
 
 	int CountNodes(TreeNode<ItemType>* tree);
 	// Function: Recursively counts the nodes in tree
@@ -152,17 +159,18 @@ private:
 	//			 item is unchanged
 
 	void Insert(TreeNode<ItemType>*& tree, ItemType item);
-	// Function: Inserts item into tree
-	// Pre:		 tree is initialized, item is initalized
-	// Post:	 item is in tree; search property of BST is maintained
+	// Function: Inserts item into tree.
+	// Pre:		 tree is initialized, item is initialized
+	// Post:	 item is in tree; search property is maintained; throws DuplicateItem
+	//			 exception
 
 	void DeleteNode(TreeNode<ItemType>*& tree);
 	// Function: Deletes the node pointed to by tree
 	// Pre:		 tree is initialized
-	// Post:	 The user's data in the node pointed to by tree is no longer in the tree. If
-	//			 tree is a leaf node or has only one non-NULL child pointer, the node pointed
-	//			 to by tree is deleted; otherwise, the user's data is replaced by its logical
-	//			 predecessor and the predecessor's node is deleted
+	// Post:	 The user's data in the node pointed to by tree is no longer in the tree,
+	//			 if tree is a leaf node or has only one non-NULL child pointer, the node
+	//			 pointed to by tree is deleted; otherwise, the user's data is replaced by
+	//			 its logical predecessor and the predecessor's node is deleted
 
 	void Delete(TreeNode<ItemType>*& tree, ItemType item);
 	// Function: Deletes item from tree
@@ -173,11 +181,6 @@ private:
 	// Function: Sets data to the info member of the rightmost node in tree
 	// Pre:		 tree is initialized
 	// Post:	 data contains rightmost node in tree
-
-	void PrintTree(std::ostream& outStream, int& height) const;
-	// Function: Prints tree diagram on outStream
-	// Pre:		 BST has been initialized
-	// Post:	 tree diagram is streamed to outStream
 
 	void PreOrder(TreeNode<ItemType>* tree);
 	// Function: Enqueues tree items in preorder
@@ -193,6 +196,11 @@ private:
 	// Function: Enqueues tree items in postorder
 	// Pre:		 tree is initialized
 	// Post:	 postQue contains tree items in postorder
+
+	void PrintTree(std::ostream& outStream, int& height) const;
+	// Function: Prints tree diagram on outStream
+	// Pre:		 BST has been initialized
+	// Post:	 tree diagram is streamed to outStream
 
 	void GetHeight(TreeNode<ItemType>* tree, int level, int& height);
 	// Function: Gets height of tree
