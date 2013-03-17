@@ -41,16 +41,3 @@ int main()
 	system("Pause");
 	return 0;
 }
-/*
-"2 + 3"
-"12/(3-3)" -> division by 0
-['12','+','3','/','5']
-    '+'
-   /   \
-  '12'  '/'
-        / \
-	   '3' '5'
-InOrder: 12 + 3 / 5   infix
-PreOrder: + 12 / 3 5  prefix
-PostOrder: 12 3 5 / + postfix
-*/

@@ -1,47 +1,58 @@
+#include <math.h>
+#include "bst.h"
 #ifndef TEMPLATE_BST
 #define TEMPLATE_BST
 
-#include "bst.h"
-
-// Constructor
 template <class ItemType>
 BST<ItemType>::BST()
+// Constructor
+// Pre:  None
+// Post: BST is initialized
 {
 	root = NULL;
 }
 
-// Destructor
 template <class ItemType>
 BST<ItemType>::~BST()
+// Destructor
 // Function: Calls recursive function Destroy to destroy the tree
+// Pre:		 BST has been initialized
+// Post:	 Nodes of tree are recursively deleted and root is set to null
 {
 	Destroy(root);
 }
 
-// Copy constructor
 template <class ItemType>
 BST<ItemType>::BST(const BST& originalTree)
-// Function: Calls the recursive function CopyTree to copy originalTree into root.
+// Copy constructor
+// Function: Calls the recursive function CopyTree to copy originalTree into root
+// Pre:		 orginalTree is a valid BST
+// Post:	 BST is initialized with values from originalTree
 {
 	CopyTree(root, originalTree.root);
 }
 
 template <class ItemType>
 void BST<ItemType>::operator=(BST& originalTree)
-// Calls the recursive function CopyTree to copy originalTree into root.
+// Assignment operator
+// Function: Calls recursive function Destroy to destroy the tree, then calls then
+//			 recursive function CopyTree to copy originalTree into root
+// Pre:		 BST has been initialized, originalTree is a valid BST
+// Post:	 BST has values from originalTree
 {
 	if (&originalTree == this)
 		// Ignore assigning self to self.
 		return;
 	//Deallocate existing tree nodes.
 	Destroy(root);
-	copyTree(root, originalTree.root);
+	CopyTree(root, originalTree.root);
 }
 
 template <class ItemType>
 void BST<ItemType>::MakeEmpty()
-// Function: Initializes tree to empty state.
-// Post:	 Tree exists and is empty.
+// Function: Initializes tree to empty state
+// Pre:		 BST has been initialized
+// Post:	 tree is empty, root is null
 {
 	Destroy(root);
 	root = NULL;
@@ -49,16 +60,19 @@ void BST<ItemType>::MakeEmpty()
 
 template <class ItemType>
 bool BST<ItemType>::IsEmpty() const
-// Function: Returns true if the tree is empty and false otherwise.
-// Post:	 Function value = (tree is empty).
+// Function: Returns true if the tree is empty and false otherwise
+// Pre:		 BST has been initialized
+// Post:	 Function value = (tree is empty)
 {
 	return root == NULL;
 }
 
 template <class ItemType>
 bool BST<ItemType>::IsFull() const
-// Function: Returns true if the free store has no room for another node and false otherwise.
-// Post:	 Function Value = (tree is full).
+// Function: Returns true if the free store has no room for another node and false
+//			 otherwise
+// Pre:		 BST has been initialized
+// Post:	 Function Value = (memory unavailable to create new nodes)
 {
 	TreeNode<ItemType>* location;
 	try
@@ -75,19 +89,20 @@ bool BST<ItemType>::IsFull() const
 
 template <class ItemType>
 int BST<ItemType>::GetLength() const
-// Function: Calls the recursive function CountNodes to count the nodes in the tree.
-// Post:	 Function value = number of elements in tree.
+// Function: Calls the recursive function CountNodes to count the nodes in root
+// Pre:		 BST has been initialized
+// Post:	 Function value = number of nodes in root
 {
 	return CountNodes(root);
 }
 
 template <class ItemType>
-ItemType BST<ItemType>::GetItem(ItemType item, bool& found) const
-// Function: Calls recursive function Retrieve to search the tree for item.
-// Pre:		 Key member of item is initalized.
+ItemType BST<ItemType>::GetItem(ItemType item, bool& found)
+// Function: Calls recursive function Retrieve to search the tree for item
+// Pre:		 BST has been initialized, key member of item is initalized
 // Post:	 If there is an element someItem whose key matches item's key, then
-//			 found = true and a copy of someItem is returned; otherwise, found = false
-//			 and item is returned. Tree is unchanged.
+//			 found = true and a copy of someItem is returned; otherwise, found =
+//			 false and item is returned
 {
 	Retrieve(root, item, found);
 	return item;
@@ -95,59 +110,71 @@ ItemType BST<ItemType>::GetItem(ItemType item, bool& found) const
 
 template <class ItemType>
 void BST<ItemType>::PutItem(ItemType item)
-// Function: Calls the recursive function Insert to insert item into tree.
-// Pre:		 Tree is not full. Item is not in tree.
-// Post:	 Item is in tree. Binary search property is maintained.
+// Function: Calls the recursive function Insert to insert item into tree
+// Pre:		 BST has been initialized, tree is not full, item is not in tree
+// Post:	 item is in tree, binary search property is maintained
 {
-	Insert(root, item);
+	try
+	{
+		Insert(root, item);
+	}
+	catch(DuplicateItem)
+	{
+		throw DuplicateItem();
+	}
 }
 
 template <class ItemType>
 void BST<ItemType>::DeleteItem(ItemType item)
-// Function: Calls the recursive function Delete to delete item from tree.
-// Pre:		 Key member of item is initialized. One and only one element in tree has
-//			 a key matching item's key.
-// Post:	 No element in tree has a key matching item's key.
+// Function: Calls the recursive function Delete to delete item from tree
+// Pre:		 BST has been intialized, key member of item is initialized, one and only
+//			 one element in tree has a key matching item's key
+// Post:	 No element in tree has a key matching item's key
 {
 	Delete(root, item);
 }
 
 template <class ItemType>
 void BST<ItemType>::ResetTree(OrderType order)
-// Function: Calls a function to create a queue of the tree elements in the desider order
-// Post:	 Current position is prior to root of tree.
+// Function: Calls a function to create a queue of the tree elements in the desired
+//			 order
+// Pre:		 BST has been initialized
+// Post:	 Current position is prior to root of tree
 {
 	switch(order)
 	{
-		case PRE_ORDER: PreOrder(root, preQue);
-						break;
-		case IN_ORDER:	InOrder(root, inQue);
-						break;
-		case POST_ORDER: PostOrder(root, postQue);
-						break;
+		case PRE_ORDER:  PreOrder(root);
+						 break;
+		case IN_ORDER:	 InOrder(root);
+						 break;
+		case POST_ORDER: PostOrder(root);
+						 break;
 	}
 }
 
 template <class ItemType>
 ItemType BST<ItemType>::GetNextItem(OrderType order, bool& finished)
-// Function: Returns the next item in the desired order.
-// Post:	 For the desired order, item is the next item in the queue. If item is the
-//			 last one in the queue, finished is true; otherwise, finished is false.
+// Function: Gets the next element in tree
+// Pre:		 BST has been initialized, current position is defined, element at
+//			 current position is not last in tree
+// Post:	 Current position is one position beyond current position at entry to
+//			 GetNextItem, finished = (current position is last in tree), a copy of
+//			 element at current position is returned
 {
 	ItemType item;
 	finished = false;
 
 	switch (order)
 	{
-		case PRE_ORDER : preQue.Dequeue(item);
+		case PRE_ORDER : preQue.DeQueue(item);
 						 if (preQue.IsEmpty())
 							 finished = true;
 						 break;
-		case IN_ORDER  : inQue.Dequeue(item);
+		case IN_ORDER  : inQue.DeQueue(item);
 						 if (inQue.IsEmpty())
 							 finished = true;
 						 break;
-		case POST_ORDER: postQue.Dequeue(item);
+		case POST_ORDER: postQue.DeQueue(item);
 						 if (postQue.IsEmpty())
 							 finished = true;
 						 break;
@@ -157,17 +184,67 @@ ItemType BST<ItemType>::GetNextItem(OrderType order, bool& finished)
 }
 
 template <class ItemType>
-void BST<ItemType>::Print(std::ostream& outFile) const
-// Function: Calls Recursive function Print to print items in the tree.
-// Pre:		 outFile has been opened for writing.
-// Post:	 Items in the tree have been printed in ascending key order. outFile is still open.
+void BST<ItemType>::Print(std::ostream& outFile)
+// Function: Calls recursive function PrintTree to print item in the tree
+// Pre:		 BST has been initialized, outFile has been opened for writing
+// Post:	 Items in the tree have been printed in ascending key order, outFile is
+//			 still open
 {
-	PrintTree(root, outFile);
+	if (root == NULL)
+		cout << "The tree is empty!" << endl;
+	else
+	{
+		int height = 0;
+		GetHeight(root, 0, height);
+
+		rows = new QueueType<TreeNode<ItemType>*>[height];
+	
+		for (int i = 0; i < height; i++)
+		{
+			rows[i] = QueueType<TreeNode<ItemType>*>();
+		}
+
+		EnqueueRows(root, 0, height);
+		PrintTree(outFile, height);
+
+		for (int i = 0; i < height; i++)
+		{
+			rows[i].~QueueType<TreeNode<ItemType>*>();
+		}
+	}
+}
+
+template <class ItemType>
+
+ItemType BST<ItemType>::RetrieveRoot()
+// Function: Returns root info
+// Pre:		 BST has been initialized
+// Post:	 Data in root node is returned, throws TreeEmpty exception if root is
+//			 null
+{
+	if (root == NULL)
+		throw EmptyTree();
+	else
+		return root->info;
+}
+
+template <class ItemType>
+bool BST<ItemType>::IsFullTree()
+// Function: Calls recursive function IsFullTreeHelper to check tree to see if full
+//			 (all nodes have zero or two children)
+// Pre:		 BST has been intialized
+// Post:	 Returns bool value if all nodes of tree have either zero or two children
+{
+	bool temp;
+	IsFullTreeHelper(root, temp);
+	return temp;
 }
 
 template <class ItemType>
 void BST<ItemType>::Destroy(TreeNode<ItemType>*& tree)
-// Post: tree is empty; nodes have been deallocated.
+// Function: Recursively frees the nodes in tree
+// Pre:		 tree is null or valid BST
+// Post:	 tree is empty, nodes have been deallocated
 {
 	if (tree != NULL)
 	{
@@ -179,7 +256,9 @@ void BST<ItemType>::Destroy(TreeNode<ItemType>*& tree)
 
 template <class ItemType>
 void BST<ItemType>::CopyTree(TreeNode<ItemType>*& copy, const TreeNode<ItemType>* originalTree)
-// Post: copy is the root of a tree that is a duplicate of orginalTree.
+// Function: Recursively copies the nodes of originalTree into copy
+// Pre:		 none
+// Post:	 copy is the root of a tree that is a duplicate of originalTree
 {
 	if(originalTree == NULL)
 		copy = NULL;
@@ -194,19 +273,22 @@ void BST<ItemType>::CopyTree(TreeNode<ItemType>*& copy, const TreeNode<ItemType>
 
 template <class ItemType>
 int BST<ItemType>::CountNodes(TreeNode<ItemType>* tree)
-// Post:	Returns the number of nodes in the tree
+// Function: Recursively counts the nodes in tree
+// Pre:		 tree is initialized
+// Post:	 Returns the number of nodes in tree
 {
 	if (tree == NULL)
 		return 0;
 	else
-		return countNodes(tree->left) + CountNodes(tree->right) + 1;
+		return CountNodes(tree->left) + CountNodes(tree->right) + 1;
 }
 
 template <class ItemType>
 void BST<ItemType>::Retrieve(TreeNode<ItemType>* tree, ItemType& item, bool& found)
 // Function: Recursively searches tree for item
+// Pre:		 tree is initialized
 // Post:	 If there is an element someItem whose key matches item's, found is true
-//			 and item is set to a copyu of someItem; otherwise, found is false and
+//			 and item is set to a copy of someItem; otherwise, found is false and
 //			 item is unchanged
 {
 	if (tree == NULL)
@@ -229,7 +311,9 @@ void BST<ItemType>::Retrieve(TreeNode<ItemType>* tree, ItemType& item, bool& fou
 template <class ItemType>
 void BST<ItemType>::Insert(TreeNode<ItemType>*& tree, ItemType item)
 // Function: Inserts item into tree.
-// Post:	 item is in tree; search property is maintained
+// Pre:		 tree is initialized, item is initialized
+// Post:	 item is in tree; search property is maintained; throws DuplicateItem
+//			 exception
 {
 	if (tree == NULL)
 	{
@@ -242,23 +326,26 @@ void BST<ItemType>::Insert(TreeNode<ItemType>*& tree, ItemType item)
 	else if (item < tree->info)
 		// Insert in left subtree
 		Insert(tree->left, item);
-	else
+	else if (item > tree->info)
 		// Insert in right subtree
 		Insert(tree->right, item);
+	else
+		throw DuplicateItem();
 }
 
 template <class ItemType>
 void BST<ItemType>::DeleteNode(TreeNode<ItemType>*& tree)
-// Function: Deletes the node pointed to by tree.
-// Post:	 The user's data in the node pointed to by tree is no longer in the tree. If
-//			 tree is a leaf node or has only one non-NULL child pointer, the node pointed
-//			 to by tree is deleted; otherwise, the user's data is replaced by its logical
-//			 predecessor and the predecessor's node is deleted.
+// Function: Deletes the node pointed to by tree
+// Pre:		 tree is initialized
+// Post:	 The user's data in the node pointed to by tree is no longer in the tree,
+//			 if tree is a leaf node or has only one non-NULL child pointer, the node
+//			 pointed to by tree is deleted; otherwise, the user's data is replaced by
+//			 its logical predecessor and the predecessor's node is deleted
 {
 	ItemType data;
 	TreeNode<ItemType>* tempPtr;
-
 	tempPtr = tree;
+
 	if (tree->left == NULL)
 	{
 		tree = tree->right;
@@ -281,9 +368,12 @@ void BST<ItemType>::DeleteNode(TreeNode<ItemType>*& tree)
 template <class ItemType>
 void BST<ItemType>::Delete(TreeNode<ItemType>*& tree, ItemType item)
 // Function: Deletes item from tree
+// Pre:		 tree is initialized, key member of item is initalized
 // Post:	 Item is not in tree
 {
-	if (item < tree->info)
+	if (tree == NULL)
+		throw NotFound();
+	else if (item < tree->info)
 		// Look in left subtree.
 		Delete(tree->left, item);
 	else if (item > tree->info)
@@ -297,6 +387,8 @@ void BST<ItemType>::Delete(TreeNode<ItemType>*& tree, ItemType item)
 template <class ItemType>
 void BST<ItemType>::GetPredecessor(TreeNode<ItemType>* tree, ItemType& data)
 // Function: Sets data to the info member of the rightmost node in tree
+// Pre:		 tree is initialized
+// Post:	 data contains rightmost node in tree
 {
 	while (tree->right != NULL)
 		tree = tree->right;
@@ -305,52 +397,134 @@ void BST<ItemType>::GetPredecessor(TreeNode<ItemType>* tree, ItemType& data)
 }
 
 template <class ItemType>
-void BST<ItemType>::PreOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
+void BST<ItemType>::PreOrder(TreeNode<ItemType>* tree)
 // Function: Enqueues tree items in preorder
+// Pre:		 tree is initialized
+// Post:	 preQue contains tree items in preorder
 {
 	if (tree != NULL)
 	{
-		preQue.Enqueue(tree->info);
-		PreOrder(tree->left, preQue);
-		PreOrder(tree->right, preQue);
+		preQue.EnQueue(tree->info);
+		PreOrder(tree->left);
+		PreOrder(tree->right);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::InOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
+void BST<ItemType>::InOrder(TreeNode<ItemType>* tree)
 // Function: Enqueues tree items in inorder
+// Pre:		 tree is initialized
+// Post:	 inQue contains tree items in inorder
 {
 	if (tree != NULL)
 	{
-		InOrder(tree->left, inQue);
-		inQue.Enqueue(tree->info);
-		InOrder(tree->right, inQue);
+		InOrder(tree->left);
+		inQue.EnQueue(tree->info);
+		InOrder(tree->right);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::PostOrder(TreeNode<ItemType>*, QueueType<ItemType>&)
+void BST<ItemType>::PostOrder(TreeNode<ItemType>* tree)
 // Function: Enqueues tree items in postorder
+// Pre:		 tree is initialized
+// Post:	 postQue contains tree items in postorder
 {
 	if (tree!= NULL)
 	{
-		PostOrder(tree->left, postQue);
-		PostOrder(tree->right, postQue);
-		postQue.Enqueue(tree->info);
+		PostOrder(tree->left);
+		PostOrder(tree->right);
+		postQue.EnQueue(tree->info);
 	}
 }
 
 template <class ItemType>
-void BST<ItemType>::PrintTree(TreeNode<ItemType>* tree, std::ostream& outFile) const
-// Prints info member of items in tree in sorted order on outFile.
+void BST<ItemType>::PrintTree(std::ostream& outStream, int& height) const
+// Function: Prints tree diagram on outStream
+// Pre:		 BST has been initialized
+// Post:	 tree diagram is streamed to outStream
+{
+	for (int i = 0; i < height; i++)
+	{
+		while (!rows[i].IsEmpty())
+		{
+			TreeNode<ItemType>* tempPtr;
+			rows[i].DeQueue(tempPtr);
+
+			for (int j = 0; j < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)i) + 1)); j++)
+			{
+				outStream << "  ";
+			}
+
+			if (tempPtr == NULL)
+				outStream << " ";
+			else
+				outStream << tempPtr->info;
+		}
+		outStream << endl;
+	}
+}
+
+template <class ItemType>
+void BST<ItemType>::GetHeight(TreeNode<ItemType>* tree, int level, int& height)
+// Function: Gets height of tree
+// Pre:		 tree is initialized
+// Post:	 height contains height of tree
+{
+	if (tree == NULL)
+	{
+		if (level > height)
+			height = level;
+	}
+	else
+	{
+		GetHeight(tree->left, level + 1, height);
+		GetHeight(tree->right, level + 1, height);
+	}
+}
+
+template <class ItemType>
+void BST<ItemType>::EnqueueRows(TreeNode<ItemType>* tree, int level, int height)
+// Function: EnQueues tree nodes by row
+// Pre:		 tree is initialized, height contains height of tree
+// Post:	 rows contains queues of tree nodes
+{
+	if (tree == NULL)
+	{
+		if (level < height)
+		{
+			for (int i = 0; i < (height - level); i++)
+			{
+				for (unsigned int j = 0; j < pow(2.0, (double)i); j++)
+				{
+					rows[level + i].EnQueue(NULL);
+				}
+			}
+		}
+	}
+	else
+	{
+		rows[level].EnQueue(tree);
+		EnqueueRows(tree->left, level + 1, height);
+		EnqueueRows(tree->right, level + 1, height);
+	}
+}
+
+template <class ItemType>
+void BST<ItemType>::IsFullTreeHelper(TreeNode<ItemType>*& tree, bool& full)
+// Function: Recursively checks to see if tree node has either zero or two children
+// Pre:		 tree is initialized
+// Post:	 the value of full is set to false if the tree node has only one child
 {
 	if (tree != NULL)
 	{
-		// Print left subtree.
-		PrintTree(tree->left, outFile);
-		outFile << tree->info;
-		// Print right subtree.
-		PrintTree(tree->right, outFile);
+		if ((tree->left != NULL && tree->right == NULL) || (tree->left == NULL && tree->right != NULL))
+			full = false;
+		else
+		{
+			IsFullTreeHelper(tree->left, full);
+			IsFullTreeHelper(tree->right, full);
+		}
 	}
 }
 

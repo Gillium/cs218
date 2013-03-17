@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bst.template" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="queue.template" />
     <None Include="stack.template" />
   </ItemGroup>

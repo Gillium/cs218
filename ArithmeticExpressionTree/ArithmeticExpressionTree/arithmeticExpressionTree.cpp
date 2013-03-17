@@ -44,21 +44,54 @@ double ArithmeticExpressionTree::Evaluate()
 void ArithmeticExpressionTree::Print(std::ostream& outStream)
 // Function: Calls recursive function PrintTree
 {
-	PrintTree(root, outStream);
+	if (root == NULL)
+		cout << "The tree is empty!" << endl;
+	else
+	{
+		int height = 0;
+		GetHeight(root, 0, height);
+
+		rows = new QueueType<TreeNode<string>*>[height];
+	
+		for (int i = 0; i < height; i++)
+		{
+			rows[i] = QueueType<TreeNode<string>*>();
+		}
+
+		EnqueueRows(root, 0, height);
+		PrintTree(outStream, height);
+
+		for (int i = 0; i < height; i++)
+		{
+			rows[i].~QueueType<TreeNode<string>*>();
+		}
+	}
 }
 
-void ArithmeticExpressionTree::PrintTree(TreeNode<string>* tree, std::ostream& outStream)
-// Function: Prints a diagram of the binary tree.
+void ArithmeticExpressionTree::PrintTree(std::ostream& outStream, int&height)
+// Function: Prints tree diagram on outStream
+// Pre:		 AET has been initialized
+// Post:	 tree diagram is streamed to outStream
 {
-	if (tree != NULL)
+	for (int i = 0; i < height; i++)
 	{
-		// Print left subtree.
-		PrintTree(tree->left, outStream);
-		outStream << tree->info;
-		// Print right subtree.
-		PrintTree(tree->right, outStream);
-	}
+		while (!rows[i].IsEmpty())
+		{
+			TreeNode<string>* tempPtr;
+			rows[i].DeQueue(tempPtr);
 
+			for (int j = 0; j < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)i) + 1)); j++)
+			{
+				outStream << "  ";
+			}
+
+			if (tempPtr == NULL)
+				outStream << " ";
+			else
+				outStream << tempPtr->info;
+		}
+		outStream << endl;
+	}
 }
 
 void ArithmeticExpressionTree::Parse()
@@ -221,6 +254,7 @@ double ArithmeticExpressionTree::EvaluateTree(TreeNode<string>* tree)
 {
 	if (tree != NULL)
 	{
+		// AET is always full, so only check for null left node
 		if (tree->left == NULL)
 			return atof(tree->info.c_str());
 
@@ -291,5 +325,48 @@ void ArithmeticExpressionTree::PostOrder(TreeNode<string>* tree)
 		// Append to postfixExpr;
 		postfixExpr.append(tree->info);
 		postfixExpr.append(" ");
+	}
+}
+
+void ArithmeticExpressionTree::GetHeight(TreeNode<string>* tree, int level, int& height)
+// Function: Gets height of tree
+// Pre:		 tree is initialized
+// Post:	 height contains height of tree
+{
+	if (tree == NULL)
+	{
+		if (level > height)
+			height = level;
+	}
+	else
+	{
+		GetHeight(tree->left, level + 1, height);
+		GetHeight(tree->right, level + 1, height);
+	}
+}
+
+void ArithmeticExpressionTree::EnqueueRows(TreeNode<string>* tree, int level, int height)
+// Function: EnQueues tree nodes by row
+// Pre:		 tree is initialized, height contains height of tree
+// Post:	 rows contains queues of tree nodes
+{
+	if (tree == NULL)
+	{
+		if (level < height)
+		{
+			for (int i = 0; i < (height - level); i++)
+			{
+				for (unsigned int j = 0; j < pow(2.0, (double)i); j++)
+				{
+					rows[level + i].EnQueue(NULL);
+				}
+			}
+		}
+	}
+	else
+	{
+		rows[level].EnQueue(tree);
+		EnqueueRows(tree->left, level + 1, height);
+		EnqueueRows(tree->right, level + 1, height);
 	}
 }

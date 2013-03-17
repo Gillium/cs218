@@ -16,15 +16,13 @@ class EmptyStack
 {
 };
 
-#ifndef NODE_TYPE
-#define NODE_TYPE
 template<class T>
-struct NodeType
+struct NodeTypeS
 {
 	T data;
-	NodeType* next;
+	NodeTypeS<T>* next;
 };
-#endif
+
 
 template<class T>
 class Stack
@@ -67,7 +65,7 @@ public:
 	// Post: None
 
 private:
-	NodeType<T>* topPtr;
+	NodeTypeS<T>* topPtr;
 };
 
 #include "stack.template"

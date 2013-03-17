@@ -16,7 +16,7 @@ Stack<T>::~Stack()
 // Pre: stack is initialized
 // Post: stack is empty
 {
-	NodeType<T>* tempPtr;
+	NodeTypeS<T>* tempPtr;
 
 	while (topPtr != NULL)
 	{
@@ -37,8 +37,8 @@ void Stack<T>::Push(T newItem)
 		throw FullStack();
 	else
 	{
-		NodeType<T>* location;
-		location = new NodeType<T>;
+		NodeTypeS<T>* location;
+		location = new NodeTypeS<T>;
 		location->data = newItem;
 		location->next = topPtr;
 		topPtr = location;
@@ -56,7 +56,7 @@ void Stack<T>::Pop()
 		throw EmptyStack();
 	else
 	{
-		NodeType<T>* tempPtr;
+		NodeTypeS<T>* tempPtr;
 		tempPtr = topPtr;
 		topPtr = topPtr->next;
 		delete tempPtr;
@@ -91,10 +91,10 @@ bool Stack<T>::IsFull () const
 // Pre: Stack has been initialized
 // Post: returns if stack is full
 {
-	NodeType<char>* location;
+	NodeTypeS<char>* location;
 	try
 	{
-		location = new NodeType<char>;
+		location = new NodeTypeS<char>;
 		delete location;
 		return false;
 	}

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <sys/stat.h>
+#include "queue.h"
 
 using namespace std;
 
@@ -53,8 +54,9 @@ private:
 	string prefixExpr;
 	string postfixExpr;
     TreeNode<string>* root;
+	QueueType<TreeNode<string>*>* rows;
 	
-	void PrintTree(TreeNode<string>* tree, std::ostream& outStream);
+	void PrintTree(std::ostream& outStream, int& height);
 	// Function: Prints a diagram of the binary tree.
 
 	void Parse();
@@ -76,4 +78,9 @@ private:
 
 	void PostOrder(TreeNode<string>* tree);
 	// Function: Generates a postfix expression
+
+	void GetHeight(TreeNode<string>* tree, int level, int& height);
+	//
+
+	void EnqueueRows(TreeNode<string>* tree, int level, int height);
 };
