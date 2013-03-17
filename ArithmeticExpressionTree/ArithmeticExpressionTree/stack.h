@@ -1,8 +1,8 @@
-#include <string>
 #include <cstdlib>
+#include <string>
+#include <sys/stat.h>
 #ifndef MYSTACK
 #define MYSTACK
-#include <sys/stat.h>
 
 using namespace std;
 
@@ -30,7 +30,7 @@ class Stack
 public:
 	Stack();
 	// Constructor
-	// Pre: None
+	// Pre:  None
 	// Post: Stack is initialized
 
 	~Stack();

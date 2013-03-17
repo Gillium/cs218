@@ -1,8 +1,9 @@
-#include "queue.h"
-#include "stack.h"
-#include "arithmeticExpressionTree.h"
 #include <iostream>
 #include <string.h>
+#include "arithmeticExpressionTree.h"
+#include "queue.h"
+#include "stack.h"
+
 using namespace std;
 
 int main()
@@ -45,7 +46,7 @@ int main()
 
 				if (expression.length() == 0)
 				{
-					cout << "Expression is invalid!" << endl;
+					cout << "Expression is invalid!" << endl << endl;
 					isValid = false;
 				}
 
@@ -67,22 +68,22 @@ int main()
 					}
 					catch(Unbalanced)
 					{
-						cout << "Expression is unbalanced!" << endl;
+						cout << "Expression is unbalanced!" << endl << endl;
 						isValid = false;
 					}
 					catch(InvalidCharacter)
 					{
-						cout << "Expression has an invalid character!" << endl;
+						cout << "Expression has an invalid character!" << endl << endl;
 						isValid = false;
 					}
 					catch(DivisionByZero)
 					{
-						cout << "Cannot evaluate division by zero!" << endl;
+						cout << "Cannot evaluate, division by zero!" << endl << endl;
 						isValid = false;
 					}
 					catch(...)
 					{
-						cout << "Expression is invalid!" << endl;
+						cout << "Expression is invalid!" << endl << endl;
 						isValid = false;
 					}
 				}

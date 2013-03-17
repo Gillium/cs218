@@ -1,6 +1,6 @@
+#include <stdlib.h>
 #include "arithmeticExpressionTree.h"
 #include "stack.h"
-#include <stdlib.h>
 
 ArithmeticExpressionTree::ArithmeticExpressionTree(string expression)
 // Overloaded Constructor

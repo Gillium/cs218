@@ -1,6 +1,6 @@
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <cstdlib>
 #include <sys/stat.h>
 #include "queue.h"
 
