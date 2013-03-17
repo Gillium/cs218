@@ -1,11 +1,11 @@
+#include "stack.h"
 #ifndef TEMPLATE_STACK
 #define TEMPLATE_STACK
 
-#include "stack.h"
-
 template<class T>
 Stack<T>::Stack()
-// Pre: None
+// Constructor
+// Pre:  None
 // Post: Stack has been initialized
 {
 	topPtr = NULL;
@@ -13,8 +13,10 @@ Stack<T>::Stack()
 
 template<class T>
 Stack<T>::~Stack()
-// Pre: stack is initialized
-// Post: stack is empty
+// Deconstructor
+// Function: Deletes all pointers in the stack
+// Pre:		 Stack is initialized
+// Post:	 Stack is empty
 {
 	NodeTypeS<T>* tempPtr;
 
@@ -29,9 +31,9 @@ Stack<T>::~Stack()
 template<class T>
 void Stack<T>::Push(T newItem)
 // Function: Adds newItem to the top of the stack
-// Pre: Stack has been initialized
-// Post: If (stack is full), exception FullStack is thrown, else item is at the top
-//		 of the stack
+// Pre:		 Stack has been initialized
+// Post:	 If (stack is full), exception FullStack is thrown, else item is at the top
+//			 of the stack
 {
 	if (IsFull())
 		throw FullStack();
@@ -48,9 +50,9 @@ void Stack<T>::Push(T newItem)
 template<class T>	
 void Stack<T>::Pop()
 // Function: Removes top item from the stack
-// Pre: Stack has been initialized
-// Post: If (stack is empty), exception EmptyStack is thrown, else top item has been
-//		 removed from the stack
+// Pre:		 Stack has been initialized
+// Post:	 If (stack is empty), exception EmptyStack is thrown, else top item has been
+//			 removed from the stack
 {
 	if (IsEmpty())
 		throw EmptyStack();
@@ -66,9 +68,9 @@ void Stack<T>::Pop()
 template<class T>
 T Stack<T>::Top() const
 // Function: Returns a copy of the top item on the stack
-// Pre: Stack has been initialized
-// Post: If (stack is empty), exception EmptyStack is thrown, else a copy of the top
-//		 element is returned.
+// Pre:		 Stack has been initialized
+// Post:	 If (stack is empty), exception EmptyStack is thrown, else a copy of the top
+//			 element is returned.
 {
 	if (IsEmpty())
 		throw EmptyStack();
@@ -79,8 +81,8 @@ T Stack<T>::Top() const
 template<class T>
 bool Stack<T>::IsEmpty () const
 // Function: Determines whether the stack is empty
-// Pre: Stack has been initialized
-// Post: returns if stack is empty
+// Pre:		 Stack has been initialized
+// Post:	 Returns if stack is empty
 {
 	return (topPtr == NULL);
 }
@@ -88,8 +90,8 @@ bool Stack<T>::IsEmpty () const
 template<class T>
 bool Stack<T>::IsFull () const
 // Function: Determines whether the stack is empty
-// Pre: Stack has been initialized
-// Post: returns if stack is full
+// Pre:		 Stack has been initialized
+// Post:	 Returns if stack is full
 {
 	NodeTypeS<char>* location;
 	try

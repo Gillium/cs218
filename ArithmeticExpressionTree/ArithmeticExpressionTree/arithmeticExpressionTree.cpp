@@ -2,18 +2,23 @@
 #include "stack.h"
 #include <stdlib.h>
 
-// OverloadedConstructor
 ArithmeticExpressionTree::ArithmeticExpressionTree(string expression)
-// Function: Greates an instance by parsing the infixExpression
+// Overloaded Constructor
+// Function:  Creates an instance by parsing the infixExpression
+// Pre:		  None
+// Post:	  AET is initialized
 {
 	infixExpr = expression;
 	Parse();
 }
 
 string ArithmeticExpressionTree::GetExpression(ExprType type)
-// Function: Prints the corresponding prefix, postfix, and infix
+// Function: Returns the corresponding prefix, postfix, and infix
 //			 expression by using pre-order, post-order, and in-order
-//			 traversals of the binary tree representation of the expression.
+//			 traversals of the binary tree representation of the expression
+// Pre:		 AET is initialized
+// Post:	 prefixExpr, postfixExpr, or infixExpr contain the corresponding
+//			 expression, function value = (prefixExpr, postfixExpr, or infixExpr)
 {
 	if (type == PREFIX)
 	{
@@ -34,7 +39,9 @@ string ArithmeticExpressionTree::GetExpression(ExprType type)
 }
 
 double ArithmeticExpressionTree::Evaluate()
-// Function: Calls recursive function EvaluateTree
+// Function: Calls recursive Function EvaluateTree
+// Pre:		 AET is initialized
+// Post:	 function value = (calculated value of recursive calls)
 {
 	double answer;
 	answer = EvaluateTree(root);
@@ -42,7 +49,9 @@ double ArithmeticExpressionTree::Evaluate()
 }
 
 void ArithmeticExpressionTree::Print(std::ostream& outStream)
-// Function: Calls recursive function PrintTree
+// Function: Calls recursive functions GetHeight, EnqueueRows, and PrintTree
+// Pre:		 AET is initialized
+// Post:	 Tree diagram is printed to outStream, rows is empty
 {
 	if (root == NULL)
 		cout << "The tree is empty!" << endl;
@@ -70,7 +79,7 @@ void ArithmeticExpressionTree::Print(std::ostream& outStream)
 
 void ArithmeticExpressionTree::PrintTree(std::ostream& outStream, int&height)
 // Function: Prints tree diagram on outStream
-// Pre:		 AET has been initialized
+// Pre:		 AET is initialized
 // Post:	 tree diagram is streamed to outStream
 {
 	for (int i = 0; i < height; i++)
@@ -95,7 +104,9 @@ void ArithmeticExpressionTree::PrintTree(std::ostream& outStream, int&height)
 }
 
 void ArithmeticExpressionTree::Parse()
-// Function: Parses infixExpression and builds tree.
+// Function: Parses infixExpression and builds tree
+// Pre:		 infixExpr is initialized 
+// Post:	 root contains tree
 {
 	int parens = 0;
 	bool invalidChar = false;
@@ -209,6 +220,11 @@ void ArithmeticExpressionTree::Parse()
 
 	}
 
+	if (parens != 0)
+		throw Unbalanced();
+    if (invalidChar)
+		throw InvalidCharacter();
+
 	// when you reach the end of the infixExpr, pop the remaining operators off the
 	// opStack while building the rest of the tree
 	while (!opStack.IsEmpty())
@@ -223,20 +239,17 @@ void ArithmeticExpressionTree::Parse()
 		opStack.Pop();
 	}
 
-	if (!tnStack.IsEmpty() )
-	  root = tnStack.Top(); 
-	tnStack.Pop(); // memory leak?
-	
-	if (parens != 0)
-		throw Unbalanced();
-    if (invalidChar)
-		throw InvalidCharacter();
+	if (!tnStack.IsEmpty())
+	{
+		root = tnStack.Top(); 
+		tnStack.Pop(); // memory leak?
+	}
 }
 
 bool ArithmeticExpressionTree::IsLowerOpPrec(char a, char b)
 // Function: Returns true when a has a lower operator precedence then b
-// Pre: None
-// Post: None
+// Pre:		 None
+// Post:	 None
 {
 	switch(a)
 	{
@@ -250,7 +263,9 @@ bool ArithmeticExpressionTree::IsLowerOpPrec(char a, char b)
 }
 
 double ArithmeticExpressionTree::EvaluateTree(TreeNode<string>* tree)
-// Function: Evaluates the expression in the tree
+// Function: Recursively evaluates the expression in tree
+// Pre:		 tree is initialized
+// Post:	 function value = (value of expression tree)
 {
 	if (tree != NULL)
 	{
@@ -291,6 +306,8 @@ double ArithmeticExpressionTree::EvaluateTree(TreeNode<string>* tree)
 
 void ArithmeticExpressionTree::InOrder(TreeNode<string>* tree)
 // Function: Generates a infix expression
+// Pre:		 tree is initialized, infixExpr is initialized
+// Post:	 infixExpr is appended by the tree info and space
 {
 	if (tree != NULL)
 	{
@@ -304,6 +321,8 @@ void ArithmeticExpressionTree::InOrder(TreeNode<string>* tree)
 
 void ArithmeticExpressionTree::PreOrder(TreeNode<string>* tree)
 // Function: Generates a prefix expression
+// Pre:		 tree is initialized, infixExpr is initialized
+// Post:	 infixExpr is appended by the tree info and space
 {
 	if (tree != NULL)
 	{
@@ -317,6 +336,8 @@ void ArithmeticExpressionTree::PreOrder(TreeNode<string>* tree)
 
 void ArithmeticExpressionTree::PostOrder(TreeNode<string>* tree)
 // Function: Generates a postfix expression
+// Pre:		 tree is initialized, infixExpr is initialized
+// Post:	 infixExpr is appended by the tree info and space
 {
 	if (tree != NULL)
 	{
@@ -329,9 +350,9 @@ void ArithmeticExpressionTree::PostOrder(TreeNode<string>* tree)
 }
 
 void ArithmeticExpressionTree::GetHeight(TreeNode<string>* tree, int level, int& height)
-// Function: Gets height of tree
-// Pre:		 tree is initialized
-// Post:	 height contains height of tree
+// Function: Recursively gets the height of the tree
+// Pre:		 tree is initialized, height is initialized 
+// Post:	 height contains level if level is greater than height
 {
 	if (tree == NULL)
 	{

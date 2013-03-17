@@ -34,20 +34,29 @@ struct TreeNode
 class ArithmeticExpressionTree
 {
 public:
-	// Overloaded Constructor
     ArithmeticExpressionTree(string infixExpression);
-	// Function: Creates an instance by parsing the infixExpression
+	// Overloaded Constructor
+	// Function:  Creates an instance by parsing the infixExpression
+	// Pre:		  None
+	// Post:	  AET is initialized
 
 	string GetExpression(ExprType type);
-	// Function: Prints the corresponding prefix, postfix, and infix
+	// Function: Returns the corresponding prefix, postfix, and infix
 	//			 expression by using pre-order, post-order, and in-order
-	//			 traversals of the binary tree representation of the expression.
+	//			 traversals of the binary tree representation of the expression
+	// Pre:		 AET is initialized
+	// Post:	 prefixExpr, postfixExpr, or infixExpr contain the corresponding
+	//			 expression, function value = (prefixExpr, postfixExpr, or infixExpr)
 
 	double Evaluate();
-	// Function: Calls recrusive Function EvaluateTree
+	// Function: Calls recursive Function EvaluateTree
+	// Pre:		 AET is initialized
+	// Post:	 function value = (calculated value of recursive calls)
 
 	void Print(std::ostream& outStream);
-	// Function: Calls recusive function PrintTree
+	// Function: Calls recursive functions GetHeight, EnqueueRows, and PrintTree
+	// Pre:		 AET is initialized
+	// Post:	 Tree diagram is printed to outStream, rows is empty
 
 private:
 	string infixExpr;
@@ -57,30 +66,47 @@ private:
 	QueueType<TreeNode<string>*>* rows;
 	
 	void PrintTree(std::ostream& outStream, int& height);
-	// Function: Prints a diagram of the binary tree.
+	// Function: Prints tree diagram on outStream
+	// Pre:		 AET is initialized
+	// Post:	 tree diagram is streamed to outStream
 
 	void Parse();
 	// Function: Parses infixExpression and builds tree
+	// Pre:		 infixExpr is initialized 
+	// Post:	 root contains tree
 
 	bool IsLowerOpPrec(char a, char b);
 	// Function: Returns true when a has a lower operator precedence then b
-	// Pre: None
-	// Post: None
+	// Pre:		 None
+	// Post:	 None
 
 	double EvaluateTree(TreeNode<string>* tree);
-	// Function: Evaluates the expression in the trees
+	// Function: Recursively evaluates the expression in tree
+	// Pre:		 tree is initialized
+	// Post:	 function value = (value of expression tree)
 
 	void InOrder(TreeNode<string>* tree);
 	// Function: Generates a infix expression
+	// Pre:		 tree is initialized, infixExpr is initialized
+	// Post:	 infixExpr is appended by the tree info and space
 
 	void PreOrder(TreeNode<string>* tree);
 	// Function: Generates a prefix expression
+	// Pre:		 tree is initialized, infixExpr is initialized
+	// Post:	 infixExpr is appended by the tree info and space
 
 	void PostOrder(TreeNode<string>* tree);
 	// Function: Generates a postfix expression
+	// Pre:		 tree is initialized, infixExpr is initialized
+	// Post:	 infixExpr is appended by the tree info and space
 
 	void GetHeight(TreeNode<string>* tree, int level, int& height);
-	//
+	// Function: Recursively gets the height of the tree
+	// Pre:		 tree is initialized, height is initialized 
+	// Post:	 height contains level if level is greater than height
 
 	void EnqueueRows(TreeNode<string>* tree, int level, int height);
+	// Function: EnQueues tree nodes by row
+	// Pre:		 tree is initialized, height contains height of tree
+	// Post:	 rows contains queues of tree nodes
 };
