@@ -40,6 +40,12 @@ public:
 	// Pre:		  None
 	// Post:	  AET is initialized
 
+	~ArithmeticExpressionTree();
+	// Destructor
+	// Function: Calls recursive function Destroy to destroy the tree
+	// Pre:		 AET has been initialized
+	// Post:	 Nodes of tree are recursively deleted
+
 	string GetExpression(ExprType type);
 	// Function: Returns the corresponding prefix, postfix, and infix
 	//			 expression by using pre-order, post-order, and in-order
@@ -109,4 +115,9 @@ private:
 	// Function: EnQueues tree nodes by row
 	// Pre:		 tree is initialized, height contains height of tree
 	// Post:	 rows contains queues of tree nodes
+
+	void Destroy(TreeNode<string>*& tree);
+	// Function: Recursively frees the nodes in tree
+	// Pre:		 tree is null or valid BST
+	// Post:	 tree is empty, nodes have been deallocated
 };

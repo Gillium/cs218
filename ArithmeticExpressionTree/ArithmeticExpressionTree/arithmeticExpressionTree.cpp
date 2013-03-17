@@ -12,6 +12,15 @@ ArithmeticExpressionTree::ArithmeticExpressionTree(string expression)
 	Parse();
 }
 
+ArithmeticExpressionTree::~ArithmeticExpressionTree()
+// Destructor
+// Function: Calls recursive function Destroy to destroy the tree
+// Pre:		 AET has been initialized
+// Post:	 Nodes of tree are recursively deleted
+{
+	//Destroy(root);
+}
+
 string ArithmeticExpressionTree::GetExpression(ExprType type)
 // Function: Returns the corresponding prefix, postfix, and infix
 //			 expression by using pre-order, post-order, and in-order
@@ -240,10 +249,7 @@ void ArithmeticExpressionTree::Parse()
 	}
 
 	if (!tnStack.IsEmpty())
-	{
-		root = tnStack.Top(); 
-		tnStack.Pop(); // memory leak?
-	}
+		root = tnStack.Top();
 }
 
 bool ArithmeticExpressionTree::IsLowerOpPrec(char a, char b)
@@ -389,5 +395,18 @@ void ArithmeticExpressionTree::EnqueueRows(TreeNode<string>* tree, int level, in
 		rows[level].EnQueue(tree);
 		EnqueueRows(tree->left, level + 1, height);
 		EnqueueRows(tree->right, level + 1, height);
+	}
+}
+
+void ArithmeticExpressionTree::Destroy(TreeNode<string>*& tree)
+// Function: Recursively frees the nodes in tree
+// Pre:		 tree is null or valid AET
+// Post:	 tree is empty, nodes have been deallocated
+{
+	if (tree != NULL)
+	{
+		Destroy(tree->left);
+		Destroy(tree->right);
+		delete tree;
 	}
 }

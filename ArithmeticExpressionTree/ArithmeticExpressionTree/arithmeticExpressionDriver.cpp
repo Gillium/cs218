@@ -12,7 +12,8 @@ int main()
 	char command = 'M';
 
 	cout << "This program will take an infix expression and put it into an arithmetic" << endl;
-	cout << "expression tree. It will display a diagram of the tree, evaluate the expression,and gives the infix, prefix, and postfix notations of the expression.";
+	cout << "expression tree. It will display a diagram of the tree, evaluate the" << endl;
+	cout << "expression,and gives the infix, prefix, and postfix notations of the expression.";
 	cout << endl << endl;
 
 	while(command != 'Q' || command != 'q')
@@ -32,40 +33,60 @@ int main()
 		}
 		else if (command == 'E' || command == 'e')
 		{
-			cout << "You can use operators such as + , - , * , / , % , ( , and ) ." << endl;
-			cout << "Example: (3 + 1) / 2" << endl;
-			cout << "Please enter expression." << endl;
 			cin.ignore();
-			getline(cin, expression);
+			bool isValid;
+			do
+			{
+				isValid = true;
+				cout << "You can use operators such as + , - , * , / , % , ( , and ) ." << endl;
+				cout << "Example: (3 + 1) / 2" << endl;
+				cout << "Please enter expression." << endl;
+				getline(cin, expression);
 
-			try
-			{
-				ArithmeticExpressionTree aet = ArithmeticExpressionTree(expression);
-				double value = aet.Evaluate();
-				cout << endl;
-				aet.Print(cout);
-				cout << endl << "The value of the expression is: " << value << endl;
-				cout << "Infix: " << aet.GetExpression(INFIX) << endl;
-				cout << "Prefix: " << aet.GetExpression(PREFIX) << endl;
-				cout << "Postfix: " << aet.GetExpression(POSTFIX) << endl;
-				cout << endl;
-			}
-			catch(Unbalanced)
-			{
-				cout << "Expression is unbalanced!" << endl;
-			}
-			catch(InvalidCharacter)
-			{
-				cout << "Expression has an invalid character!" << endl;
-			}
-			catch(DivisionByZero)
-			{
-				cout << "Cannot evaluate division by zero!" << endl;
-			}
-			catch(...)
-			{
-				cout << "Expression is invalid!" << endl;
-			}
+				if (expression.length() == 0)
+				{
+					cout << "Expression is invalid!" << endl;
+					isValid = false;
+				}
+
+				if (isValid)
+				{
+					try
+					{
+						ArithmeticExpressionTree aet = ArithmeticExpressionTree(expression);
+						double value = aet.Evaluate();
+						cout << endl;
+						aet.Print(cout);
+						cout << endl << "The value of the expression is: " << value << endl;
+						cout << "Infix: " << aet.GetExpression(INFIX) << endl;
+						cout << "Prefix: " << aet.GetExpression(PREFIX) << endl;
+						cout << "Postfix: " << aet.GetExpression(POSTFIX) << endl;
+						cout << endl;
+
+						//aet.~ArithmeticExpressionTree();
+					}
+					catch(Unbalanced)
+					{
+						cout << "Expression is unbalanced!" << endl;
+						isValid = false;
+					}
+					catch(InvalidCharacter)
+					{
+						cout << "Expression has an invalid character!" << endl;
+						isValid = false;
+					}
+					catch(DivisionByZero)
+					{
+						cout << "Cannot evaluate division by zero!" << endl;
+						isValid = false;
+					}
+					catch(...)
+					{
+						cout << "Expression is invalid!" << endl;
+						isValid = false;
+					}
+				}
+			}while(!isValid);
 
 			command = 'M';
 		}
