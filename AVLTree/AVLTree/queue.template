@@ -1,10 +1,11 @@
 #include "queue.h"
-#ifndef TEMPLATE_QUEUE
-#define TEMPLATE_QUEUE
+#ifndef QUEUETEMPLATE
+#define QUEUETEMPLATE
 
 template <class T>
 QueueType<T>::QueueType()
-// Pre: None
+// Constructor
+// Pre:  None
 // Post: Queue is initialized
 {
 	rearPTR = NULL;
@@ -13,7 +14,8 @@ QueueType<T>::QueueType()
 
 template <class T>
 QueueType<T>::~QueueType()
-// Pre: Queue has been initialized
+// Deconstrutor
+// Pre:	 Queue has been initialized
 // Post: Queue is empty, nodes are freed
 {
 	MakeEmpty();
@@ -21,9 +23,47 @@ QueueType<T>::~QueueType()
 
 template <class T>
 QueueType<T>::QueueType(const QueueType<T>& acopy)
-// Pre: acopy is a valid QueueType 
+// Copy constructor
+// Pre:  acopy is a valid QueueType 
 // Post: Queue is initialized with values from acopy
 {
+	if (acopy.IsEmpty())
+		return;
+
+	NodeType<T>* currentPTR;
+	currentPTR = acopy.rearPTR->next;
+
+	for(int i = acopy.length; i > 0; i--)
+	{
+		NodeType<T>* temp = new NodeType<T>;
+		temp->data = currentPTR->data;
+
+		if (rearPTR == NULL)
+		{
+			rearPTR = temp;
+			temp->next = rearPTR;
+		}
+		else
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+		}
+
+		currentPTR = currentPTR->next;//
+	}
+
+	length = acopy.length;
+}
+
+template <class T>
+void QueueType<T>::operator=(const QueueType<T>& acopy)
+// Assignment operator
+// Function: Overwrites queue with values from acopy
+// Pre:		 Queue has been initialized
+// Post:	 Queue has values from acopy
+{
+	MakeEmpty();
+
 	if (acopy.IsEmpty())
 		return;
 
@@ -55,8 +95,8 @@ QueueType<T>::QueueType(const QueueType<T>& acopy)
 template <class T>
 bool QueueType<T>::IsFull()const
 // Function: To check to see if the queue is full
-// Pre: Queue has been initialized
-// Post: Function value = (queue is full)
+// Pre:		 Queue has been initialized
+// Post:	 Function value = (queue is full)
 {
 	NodeType<T>* location;
 	try
@@ -74,8 +114,8 @@ bool QueueType<T>::IsFull()const
 template <class T>
 bool QueueType<T>::IsEmpty()const
 // Function: To check to see if the queue is empty
-// Pre: Queue has been initialized
-// Post: Function value = (queue is empty)
+// Pre:		 Queue has been initialized
+// Post:	 Function value = (queue is empty)
 {
 	return (length == 0);
 }
@@ -83,8 +123,8 @@ bool QueueType<T>::IsEmpty()const
 template <class T>
 void QueueType<T>::MakeEmpty()
 // Function: Initializes the queue to an empty state
-// Pre: None
-// Post: Queue is empty
+// Pre:		 None
+// Post:	 Queue is empty
 {
 	if(IsEmpty())
 		return;
@@ -107,9 +147,9 @@ void QueueType<T>::MakeEmpty()
 template <class T>
 void QueueType<T>::EnQueue(T item)
 // Function: Adds item to the rear of the queue
-// Pre: Queue has been initilized
-// Post: if (queue is full), FullQueue exception is thrown, else item is a rear of
-//		 queue
+// Pre:		 Queue has been initilized
+// Post:	 if (queue is full), FullQueue exception is thrown, else item is a rear of
+//			 queue
 {
 	NodeType<T>* temp = new NodeType<T>;
 	temp->data = item;
@@ -132,10 +172,10 @@ void QueueType<T>::EnQueue(T item)
 template <class T>
 void QueueType<T>::DeQueue(T &item)
 // Function: Removes front item from the queue and returns it in item
-// Pre: Queue has been initialized
-// Post: if (queue is empty), EmptyQueue exception is thrown and item is undefined,
-//		 else front element has been removed from queue and item is a copy of removed
-//		 element
+// Pre:		 Queue has been initialized
+// Post:	 if (queue is empty), EmptyQueue exception is thrown and item is undefined,
+//			 else front element has been removed from queue and item is a copy of removed
+//			 element
 {
 	if(IsEmpty())
 	{
@@ -155,45 +195,10 @@ void QueueType<T>::DeQueue(T &item)
 template <class T>
 unsigned int QueueType<T>::Length()const
 // Function: Returns length of queue
-// Pre: Queue has been initialized
-// Post: function value = (length)
+// Pre:		 Queue has been initialized
+// Post:	 function value = (length)
 {
 	return length;
 }
 
-template <class T>
-void QueueType<T>::operator=(const QueueType<T>& acopy)
-// Function: overwrites queue with values from acopy
-// Pre: Queue has been initialized
-// Post: Queue has values from acopy
-{
-	MakeEmpty();
-
-	if (acopy.IsEmpty())
-		return;
-
-	NodeType<T>* currentPTR;
-	currentPTR = acopy.rearPTR->next;
-
-	for(int i = acopy.length; i > 0; i--)
-	{
-		NodeType<T>* temp = new NodeType<T>;//
-		temp->data = currentPTR->data;
-
-		if (rearPTR == NULL)
-		{
-			rearPTR = temp;
-			temp->next = rearPTR;
-		}
-		else
-		{
-			temp->next = rearPTR->next;
-			rearPTR->next = temp;
-		}
-
-		currentPTR = currentPTR->next;//
-	}
-
-	length = acopy.length;
-}
 #endif

@@ -2,32 +2,42 @@
 #ifndef TEMPLATE_AVLT
 #define TEMPLATE_AVLT
 
-// Constructor
 template <class ItemType>
 AVLT<ItemType>::AVLT()
+// Constructor
+// Pre:  None
+// Post: AVLT is initialized
 {
 	root = NULL;
 }
 
-// Destructor
 template <class ItemType>
 AVLT<ItemType>::~AVLT()
+// Destructor
 // Function: Calls recursive function Destroy to destroy the tree
+// Pre:		 AVLT has been initialized
+// Post:	 Nodes of tree are recursively deleted and root is set to null
 {
 	Destroy(root);
 }
 
-// Copy constructor
 template <class ItemType>
 AVLT<ItemType>::AVLT(const AVLT& originalTree)
-// Function: Calls the recursive function CopyTree to copy originalTree into root.
+// Copy constructor
+// Function: Calls the recursive function CopyTree to copy originalTree into root
+// Pre:		 orginalTree is a valid AVLT
+// Post:	 AVLT is initialized with values from originalTree
 {
 	CopyTree(root, originalTree.root);
 }
 
 template <class ItemType>
 void AVLT<ItemType>::operator=(AVLT& originalTree)
-// Calls the recursive function CopyTree to copy originalTree into root.
+// Assignment operator
+// Function: Calls recursive function Destroy to destroy the tree, then calls then
+//			 recursive function CopyTree to copy originalTree into root
+// Pre:		 AVLT has been initialized, originalTree is a valid AVLT
+// Post:	 AVLT has values from originalTree
 {
 	if (&originalTree == this)
 		// Ignore assigning self to self.
@@ -39,8 +49,9 @@ void AVLT<ItemType>::operator=(AVLT& originalTree)
 
 template <class ItemType>
 void AVLT<ItemType>::MakeEmpty()
-// Function: Initializes tree to empty state.
-// Post:	 Tree exists and is empty.
+// Function: Initializes tree to empty state
+// Pre:		 AVLT has been initialized
+// Post:	 tree is empty, root is null
 {
 	Destroy(root);
 	root = NULL;
@@ -48,16 +59,19 @@ void AVLT<ItemType>::MakeEmpty()
 
 template <class ItemType>
 bool AVLT<ItemType>::IsEmpty() const
-// Function: Returns true if the tree is empty and false otherwise.
-// Post:	 Function value = (tree is empty).
+// Function: Returns true if the tree is empty and false otherwise
+// Pre:		 AVLT has been initialized
+// Post:	 Function value = (tree is empty)
 {
 	return root == NULL;
 }
 
 template <class ItemType>
 bool AVLT<ItemType>::IsFull() const
-// Function: Returns true if the free store has no room for another node and false otherwise.
-// Post:	 Function Value = (tree is full).
+// Function: Returns true if the free store has no room for another node and false
+//			 otherwise
+// Pre:		 AVLT has been initialized
+// Post:	 Function Value = (memory unavailable to create new nodes)
 {
 	AVLTNode<ItemType>* location;
 	try
@@ -74,19 +88,20 @@ bool AVLT<ItemType>::IsFull() const
 
 template <class ItemType>
 int AVLT<ItemType>::GetLength() const
-// Function: Calls the recursive function CountNodes to count the nodes in the tree.
-// Post:	 Function value = number of elements in tree.
+// Function: Calls the recursive function CountNodes to count the nodes in root
+// Pre:		 AVLT has been initialized
+// Post:	 Function value = number of nodes in root
 {
 	return CountNodes(root);
 }
 
 template <class ItemType>
-ItemType AVLT<ItemType>::GetItem(ItemType item, bool& found) const
-// Function: Calls recursive function Retrieve to search the tree for item.
-// Pre:		 Key member of item is initalized.
+ItemType AVLT<ItemType>::GetItem(ItemType item, bool& found)
+// Function: Calls recursive function Retrieve to search the tree for item
+// Pre:		 AVLT has been initialized, key member of item is initalized
 // Post:	 If there is an element someItem whose key matches item's key, then
-//			 found = true and a copy of someItem is returned; otherwise, found = false
-//			 and item is returned. Tree is unchanged.
+//			 found = true and a copy of someItem is returned; otherwise, found =
+//			 false and item is returned
 {
 	Retrieve(root, item, found);
 	return item;
@@ -94,27 +109,36 @@ ItemType AVLT<ItemType>::GetItem(ItemType item, bool& found) const
 
 template <class ItemType>
 void AVLT<ItemType>::PutItem(ItemType item)
-// Function: Calls the recursive function Insert to insert item into tree.
-// Pre:		 Tree is not full. Item is not in tree.
-// Post:	 Item is in tree. Binary search property is maintained.
+// Function: Calls the recursive function Insert to insert item into tree
+// Pre:		 AVLT has been initialized, tree is not full, item is not in tree
+// Post:	 item is in tree, binary search property is maintained
 {
-	Insert(item);
+	try
+	{
+		Insert(item);
+	}
+	catch(DuplicateItem)
+	{
+		throw DuplicateItem();
+	}
 }
 
 template <class ItemType>
 void AVLT<ItemType>::DeleteItem(ItemType item)
-// Function: Calls the recursive function Delete to delete item from tree.
-// Pre:		 Key member of item is initialized. One and only one element in tree has
-//			 a key matching item's key.
-// Post:	 No element in tree has a key matching item's key.
+// Function: Calls the recursive function Delete to delete item from tree
+// Pre:		 AVLT has been intialized, key member of item is initialized, one and only
+//			 one element in tree has a key matching item's key
+// Post:	 No element in tree has a key matching item's key
 {
 	Delete(root, item);
 }
 
 template <class ItemType>
 void AVLT<ItemType>::ResetTree(OrderType order)
-// Function: Calls a function to create a queue of the tree elements in the desider order
-// Post:	 Current position is prior to root of tree.
+// Function: Calls a function to create a queue of the tree elements in the desired
+//			 order
+// Pre:		 AVLT has been initialized
+// Post:	 Current position is prior to root of tree
 {
 	switch(order)
 	{
@@ -129,9 +153,12 @@ void AVLT<ItemType>::ResetTree(OrderType order)
 
 template <class ItemType>
 ItemType AVLT<ItemType>::GetNextItem(OrderType order, bool& finished)
-// Function: Returns the next item in the desired order.
-// Post:	 For the desired order, item is the next item in the queue. If item is the
-//			 last one in the queue, finished is true; otherwise, finished is false.
+// Function: Gets the next element in tree
+// Pre:		 AVLT has been initialized, current position is defined, element at
+//			 current position is not last in tree
+// Post:	 Current position is one position beyond current position at entry to
+//			 GetNextItem, finished = (current position is last in tree), a copy of
+//			 element at current position is returned
 {
 	ItemType item;
 	finished = false;
@@ -156,23 +183,66 @@ ItemType AVLT<ItemType>::GetNextItem(OrderType order, bool& finished)
 }
 
 template <class ItemType>
-void AVLT<ItemType>::Print(std::ostream& outFile)
-// Function: Calls Recursive function Print to print items in the tree.
-// Pre:		 outFile has been opened for writing.
-// Post:	 Items in the tree have been printed in ascending key order. outFile is still open.
+void AVLT<ItemType>::Print(std::ostream& outStream)
+// Function: Calls recursive function PrintTree to print item in the tree
+// Pre:		 AVLT has been initialized, outFile has been opened for writing
+// Post:	 Items in the tree have been printed in ascending key order, outFile is
+//			 still open
 {
-	//PrintTree(root, outFile);
-	ResetTree(PRE_ORDER);
-	bool isFinished = false;
-	while (!isFinished)
+	if (root == NULL)
+		cout << "The tree is empty!" << endl;
+	else
 	{
-		outFile << GetNextItem(PRE_ORDER, isFinished);
+		int height = 0;
+		GetHeight(root, 0, height);
+
+		rows = new QueueType<AVLTNode<ItemType>*>[height];
+	
+		for (int i = 0; i < height; i++)
+		{
+			rows[i] = QueueType<AVLTNode<ItemType>*>();
+		}
+
+		EnqueueRows(root, 0, height);
+		PrintTree(outStream, height);
+
+		for (int i = 0; i < height; i++)
+		{
+			rows[i].~QueueType<AVLTNode<ItemType>*>();
+		}
 	}
 }
 
 template <class ItemType>
+ItemType AVLT<ItemType>::RetrieveRoot()
+// Function: Returns root info
+// Pre:		 AVLT has been initialized
+// Post:	 Data in root node is returned, throws TreeEmpty exception if root is
+//			 null
+{
+	if (root == NULL)
+		throw EmptyTree();
+	else
+		return root->info;
+}
+
+template <class ItemType>
+bool AVLT<ItemType>::IsFullTree()
+// Function: Calls recursive function IsFullTreeHelper to check tree to see if full
+//			 (all nodes have zero or two children)
+// Pre:		 AVLT has been intialized
+// Post:	 Returns bool value if all nodes of tree have either zero or two children
+{
+	bool temp;
+	IsFullTreeHelper(root, temp);
+	return temp;
+}
+
+template <class ItemType>
 void AVLT<ItemType>::Destroy(AVLTNode<ItemType>*& tree)
-// Post: tree is empty; nodes have been deallocated.
+// Function: Recursively frees the nodes in tree
+// Pre:		 tree is null or valid AVLT
+// Post:	 tree is empty, nodes have been deallocated
 {
 	if (tree != NULL)
 	{
@@ -184,7 +254,9 @@ void AVLT<ItemType>::Destroy(AVLTNode<ItemType>*& tree)
 
 template <class ItemType>
 void AVLT<ItemType>::CopyTree(AVLTNode<ItemType>*& copy, const AVLTNode<ItemType>* originalTree)
-// Post: copy is the root of a tree that is a duplicate of orginalTree.
+// Function: Recursively copies the nodes of originalTree into copy
+// Pre:		 none
+// Post:	 copy is the root of a tree that is a duplicate of originalTree
 {
 	if(originalTree == NULL)
 		copy = NULL;
@@ -199,7 +271,9 @@ void AVLT<ItemType>::CopyTree(AVLTNode<ItemType>*& copy, const AVLTNode<ItemType
 
 template <class ItemType>
 int AVLT<ItemType>::CountNodes(AVLTNode<ItemType>* tree)
-// Post:	Returns the number of nodes in the tree
+// Function: Recursively counts the nodes in tree
+// Pre:		 tree is initialized
+// Post:	 Returns the number of nodes in tree
 {
 	if (tree == NULL)
 		return 0;
@@ -210,8 +284,9 @@ int AVLT<ItemType>::CountNodes(AVLTNode<ItemType>* tree)
 template <class ItemType>
 void AVLT<ItemType>::Retrieve(AVLTNode<ItemType>* tree, ItemType& item, bool& found)
 // Function: Recursively searches tree for item
+// Pre:		 tree is initialized
 // Post:	 If there is an element someItem whose key matches item's, found is true
-//			 and item is set to a copyu of someItem; otherwise, found is false and
+//			 and item is set to a copy of someItem; otherwise, found is false and
 //			 item is unchanged
 {
 	if (tree == NULL)
@@ -232,9 +307,11 @@ void AVLT<ItemType>::Retrieve(AVLTNode<ItemType>* tree, ItemType& item, bool& fo
 }
 
 template <class ItemType>
-void AVLT<ItemType>::Insert(const ItemType &item)
+void AVLT<ItemType>::Insert(const ItemType item)
 // Function: Inserts item into tree.
-// Post:	 item is in tree; search property is maintained
+// Pre:		 tree is initialized, item is initialized
+// Post:	 item is in tree; search property is maintained; throws DuplicateItem
+//			 exception
 {
 	bool isTaller = false;
 
@@ -245,16 +322,24 @@ void AVLT<ItemType>::Insert(const ItemType &item)
     newNode->left = NULL;
     newNode->right = NULL;
 
-    InsertIntoAVL(root, newNode, isTaller);
+	try
+	{
+		InsertIntoAVL(root, newNode, isTaller);
+	}
+	catch(DuplicateItem)
+	{
+		throw DuplicateItem();
+	}
 }
 
 template <class ItemType>
 void AVLT<ItemType>::DeleteNode(AVLTNode<ItemType>*& tree)
-// Function: Deletes the node pointed to by tree.
-// Post:	 The user's data in the node pointed to by tree is no longer in the tree. If
-//			 tree is a leaf node or has only one non-NULL child pointer, the node pointed
-//			 to by tree is deleted; otherwise, the user's data is replaced by its logical
-//			 predecessor and the predecessor's node is deleted.
+// Function: Deletes the node pointed to by tree
+// Pre:		 tree is initialized
+// Post:	 The user's data in the node pointed to by tree is no longer in the tree,
+//			 if tree is a leaf node or has only one non-NULL child pointer, the node
+//			 pointed to by tree is deleted; otherwise, the user's data is replaced by
+//			 its logical predecessor and the predecessor's node is deleted
 {
 	ItemType data;
 	AVLTNode<ItemType>* tempPtr;
@@ -282,6 +367,7 @@ void AVLT<ItemType>::DeleteNode(AVLTNode<ItemType>*& tree)
 template <class ItemType>
 void AVLT<ItemType>::Delete(AVLTNode<ItemType>*& tree, ItemType item)
 // Function: Deletes item from tree
+// Pre:		 tree is initialized, key member of item is initalized
 // Post:	 Item is not in tree
 {
 	if (item < tree->info)
@@ -293,11 +379,17 @@ void AVLT<ItemType>::Delete(AVLTNode<ItemType>*& tree, ItemType item)
 	else
 		// Node found; call DeleteNode.
 		DeleteNode(tree);
+
+	// this is where new feature will be called
+	if (tree != NULL)
+		ReBalanceNode(tree);
 }
 
 template <class ItemType>
 void AVLT<ItemType>::GetPredecessor(AVLTNode<ItemType>* tree, ItemType& data)
 // Function: Sets data to the info member of the rightmost node in tree
+// Pre:		 tree is initialized
+// Post:	 data contains rightmost node in tree
 {
 	while (tree->right != NULL)
 		tree = tree->right;
@@ -308,6 +400,8 @@ void AVLT<ItemType>::GetPredecessor(AVLTNode<ItemType>* tree, ItemType& data)
 template <class ItemType>
 void AVLT<ItemType>::PreOrder(AVLTNode<ItemType>* tree, QueueType<ItemType>&)
 // Function: Enqueues tree items in preorder
+// Pre:		 tree is initialized
+// Post:	 preQue contains tree items in preorder
 {
 	if (tree != NULL)
 	{
@@ -320,6 +414,8 @@ void AVLT<ItemType>::PreOrder(AVLTNode<ItemType>* tree, QueueType<ItemType>&)
 template <class ItemType>
 void AVLT<ItemType>::InOrder(AVLTNode<ItemType>* tree, QueueType<ItemType>&)
 // Function: Enqueues tree items in inorder
+// Pre:		 tree is initialized
+// Post:	 inQue contains tree items in inorder
 {
 	if (tree != NULL)
 	{
@@ -332,6 +428,8 @@ void AVLT<ItemType>::InOrder(AVLTNode<ItemType>* tree, QueueType<ItemType>&)
 template <class ItemType>
 void AVLT<ItemType>::PostOrder(AVLTNode<ItemType>* tree, QueueType<ItemType>&)
 // Function: Enqueues tree items in postorder
+// Pre:		 tree is initialized
+// Post:	 postQue contains tree items in postorder
 {
 	if (tree!= NULL)
 	{
@@ -342,22 +440,111 @@ void AVLT<ItemType>::PostOrder(AVLTNode<ItemType>* tree, QueueType<ItemType>&)
 }
 
 template <class ItemType>
-void AVLT<ItemType>::PrintTree(AVLTNode<ItemType>* tree, std::ostream& outFile) const
-// Function: Prints info member of items in tree in sorted order on outFile.
+void AVLT<ItemType>::PrintTree(std::ostream& outStream, int& height) const
+// Function: Prints tree diagram on outStream
+// Pre:		 AVLT has been initialized
+// Post:	 tree diagram is streamed to outStream
 {
-	if (tree != NULL)
+	for (int i = 0; i < height; i++)
 	{
-		// Print left subtree.
-		PrintTree(tree->left, outFile);
-		outFile << tree->info;
-		// Print right subtree.
-		PrintTree(tree->right, outFile);
+		QueueType<AVLTNode<ItemType>*> rowsCopy = QueueType<AVLTNode<ItemType>*>();
+
+		while (!rows[i].IsEmpty())
+		{
+			AVLTNode<ItemType>* tempPtr;
+			rows[i].DeQueue(tempPtr);
+			rowsCopy.EnQueue(tempPtr);
+
+			for (int j = 0; j < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)i) + 2)); j++)
+			{
+				outStream << "  ";
+			}
+
+			if (tempPtr == NULL)
+				outStream << "";
+			else
+				outStream << tempPtr->info << "(" << tempPtr->bfactor << ")";
+		}
+		outStream << endl;
+
+		while (!rowsCopy.IsEmpty())
+		{
+			AVLTNode<ItemType>* tempPtr;
+			rowsCopy.DeQueue(tempPtr);
+
+			for (int j = 0; j < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)i) + 2)); j++)
+			{
+				outStream << "  ";
+			}
+
+			if (tempPtr == NULL)
+				outStream << "";
+			else
+			{
+				if (tempPtr->left != NULL)
+					outStream << "/";
+
+				outStream << " ";
+
+				if (tempPtr->right != NULL)
+					outStream << "\\";
+			}
+		}
+		outStream << endl;
+	}
+}
+
+template <class ItemType>
+void AVLT<ItemType>::GetHeight(AVLTNode<ItemType>* tree, int level, int& height)
+// Function: Gets height of tree
+// Pre:		 tree is initialized
+// Post:	 height contains height of tree
+{
+	if (tree == NULL)
+	{
+		if (level > height)
+			height = level;
+	}
+	else
+	{
+		GetHeight(tree->left, level + 1, height);
+		GetHeight(tree->right, level + 1, height);
+	}
+}
+
+template <class ItemType>
+void AVLT<ItemType>::EnqueueRows(AVLTNode<ItemType>* tree, int level, int height)
+// Function: EnQueues tree nodes by row
+// Pre:		 tree is initialized, height contains height of tree
+// Post:	 rows contains queues of tree nodes
+{
+	if (tree == NULL)
+	{
+		if (level < height)
+		{
+			for (int i = 0; i < (height - level); i++)
+			{
+				for (unsigned int j = 0; j < pow(2.0, (double)i); j++)
+				{
+					rows[level + i].EnQueue(NULL);
+				}
+			}
+		}
+	}
+	else
+	{
+		rows[level].EnQueue(tree);
+		EnqueueRows(tree->left, level + 1, height);
+		EnqueueRows(tree->right, level + 1, height);
 	}
 }
 
 template <class ItemType>
 void AVLT<ItemType>::RotateToLeft(AVLTNode<ItemType>* &tree)
 // Function: Rotates nodes left
+// Pre:		 tree is initialized
+// Post:	 tree nodes are rotated to left
+
 {
 	// pointer to the root of the right subtree of root
 	AVLTNode<ItemType> *p;
@@ -381,6 +568,8 @@ void AVLT<ItemType>::RotateToLeft(AVLTNode<ItemType>* &tree)
 template <class ItemType>
 void AVLT<ItemType>::RotateToRight(AVLTNode<ItemType>* &tree)
 // Function: Rotates nodes right
+// Pre:		 tree is initialized
+// Post:	 tree nodes are rotated to right
 {
 	// Pointer to the root of the left subtree of root
 	AVLTNode<ItemType> *p;
@@ -405,11 +594,14 @@ void AVLT<ItemType>::RotateToRight(AVLTNode<ItemType>* &tree)
 
 template<class ItemType>
 void AVLT<ItemType>::BalanceFromLeft(AVLTNode<ItemType>*& tree)
+// Function: Rotates nodes from left child of tree
+// Pre:		 tree is initialized
+// Post:	 tree is balanced
 {
      AVLTNode<ItemType> *p;
      AVLTNode<ItemType> *w;
 
-	 //p points to the left subtree of root
+	 //p points to the left subtree of tree
      p = tree->left;
 
      switch(p->bfactor)
@@ -443,6 +635,9 @@ void AVLT<ItemType>::BalanceFromLeft(AVLTNode<ItemType>*& tree)
 
 template<class ItemType>
 void AVLT<ItemType>::BalanceFromRight(AVLTNode<ItemType>* &tree)
+// Function: Rotates nodes from right child of tree
+// Pre:		 tree is initialized
+// Post:	 tree is balanced
 {
      AVLTNode<ItemType> *p;
      AVLTNode<ItemType> *w;
@@ -481,37 +676,41 @@ void AVLT<ItemType>::BalanceFromRight(AVLTNode<ItemType>* &tree)
 
 template<class ItemType>
 void AVLT<ItemType>::InsertIntoAVL(AVLTNode<ItemType>* &tree, AVLTNode<ItemType>* newNode, bool& isTaller)
+// Function: Recursively inserts newNode into tree
+// Pre:		 tree is initialized, newNode is a valid tree node, isTaller is initialized
+// Post:	 tree contains newNode, tree is balanced
 {
-    if(tree == NULL)
-    {
-       tree = newNode; // ?? why doesn't this insert the node unless root
-       isTaller = true;
-    }
-    else
+	if(tree == NULL)
 	{
-       if (tree->info == newNode->info)
-          cout << "No duplicates are allowed." << endl;
-       else
-	   {
-		  // newItem goes in the left subtree
-          if (tree->info > newNode->info) 
-          {
-             InsertIntoAVL(tree->left, newNode, isTaller);
+		tree = newNode;
+		isTaller = true;
+	}
+	else
+	{
+		if (tree->info == newNode->info)
+			throw DuplicateItem();
+		else
+		{
+			// newItem goes in the left subtree
+			if (tree->info > newNode->info) 
+			{
+				InsertIntoAVL(tree->left, newNode, isTaller);
 
-			 // After insertion, the subtree grew in height
-             if(isTaller)
-			 {
-                switch(tree->bfactor)
-                {
-						case -1: BalanceFromLeft(tree);
-								 isTaller = false;
-								 break;
-						case 0:  tree->bfactor = -1;
-								 isTaller = true;
-								 break;
-						case 1:  tree->bfactor = 0;
-								 isTaller = false;
-                }
+				// After insertion, the subtree grew in height
+				if(isTaller)
+				{
+					switch(tree->bfactor)
+					{
+					case -1: BalanceFromLeft(tree);
+						isTaller = false;
+						break;
+					case 0:  tree->bfactor = -1;
+						isTaller = true;
+						break;
+					case 1:  tree->bfactor = 0;
+						isTaller = false;
+					}
+				}
 			}
 			else
 			{
@@ -522,19 +721,54 @@ void AVLT<ItemType>::InsertIntoAVL(AVLTNode<ItemType>* &tree, AVLTNode<ItemType>
 				{              
 					switch(tree->bfactor)
 					{
-						case -1: tree->bfactor = 0;
-								 isTaller = false;
-								 break;
-						case 0:  tree->bfactor = 1;
-								 isTaller = true;
-								 break;
-						case 1:  BalanceFromRight(tree);
-								 isTaller = false;
+					case -1: tree->bfactor = 0;
+						isTaller = false;
+						break;
+					case 0:  tree->bfactor = 1;
+						isTaller = true;
+						break;
+					case 1:  BalanceFromRight(tree);
+						isTaller = false;
 					}
 				}
 			}
 		}
-	  }
 	}
 }
+
+template <class ItemType>
+void AVLT<ItemType>::IsFullTreeHelper(AVLTNode<ItemType>*& tree, bool& full)
+// Function: Recursively checks to see if tree node has either zero or two children
+// Pre:		 tree is initialized
+// Post:	 the value of full is set to false if the tree node has only one child
+{
+	if (tree != NULL)
+	{
+		if ((tree->left != NULL && tree->right == NULL) || (tree->left == NULL && tree->right != NULL))
+			full = false;
+		else
+		{
+			IsFullTreeHelper(tree->left, full);
+			IsFullTreeHelper(tree->right, full);
+		}
+	}
+}
+
+template <class ItemType>
+void AVLT<ItemType>::ReBalanceNode(AVLTNode<ItemType>*& tree)
+// Function: Recalculates the bfactor of the root node of tree and balances if necessary
+// Pre:		 tree is initialized
+// Post:	 tree is balanced, tree node has correct bfactor
+{
+	int lHeight, rHeight;
+	GetHeight(tree->left, 0, lHeight);
+	GetHeight(tree->right, 0 , rHeight);
+	tree->bfactor = rHeight - lHeight;
+
+	if (tree->bfactor == 2)
+		BalanceFromRight(tree);
+	if (tree->bfactor == -2)
+		BalanceFromLeft(tree);
+}
+
 #endif
