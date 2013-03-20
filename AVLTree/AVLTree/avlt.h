@@ -247,8 +247,6 @@ private:
 	// Function: Recalculates the bfactor of the root node of tree and balances if necessary
 	// Pre:		 tree is initialized
 	// Post:	 tree is balanced, tree node has correct bfactor
-
-
 };
 
 #include "avlt.template"
