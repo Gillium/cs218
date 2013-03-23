@@ -5,16 +5,6 @@
 
 using namespace std;
 
-class EmptyPQ
-// Exception class used by Dequeue when PriorityQueue is empty
-{
-};
-
-class FullPQ
-// Exception class used by Enqueue when PriorityQueue is full
-{
-};
-
 template <class ItemType>
 struct NodeType
 {

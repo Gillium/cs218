@@ -150,6 +150,11 @@ void PriorityQueueType<ItemType>::Enqueue(ItemType newItem)
 // Pre:		 PriorityQueue is initialized
 // Post:	 If (the priority queue is full), exception FullPQ is thrown; else newItem is in the queue
 {
+	/*
+	Increment length
+	Put newItem in next available position
+	items.ReheapUp(0, length - 1)
+	*/
 
 }
 
@@ -159,7 +164,12 @@ void PriorityQueueType<ItemType>::Dequeue(ItemType& item)
 // Pre:		 PriorityQueue is initialized
 // Post:	 If (PriorityQueue is empty), exception EmptyPQ is thrown; else highest priority element has been removed from PriorityQueue, item is a copy of removed element
 {
-
+	/*
+	Set item to root element from queue
+	Move last leaf element into root position
+	Decrement length
+	items.ReheapDown(0, length - 1)
+	*/
 }
 
 template <class ItemType>
