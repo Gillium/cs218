@@ -19,7 +19,7 @@ public:
 	PriorityQueueType();
 	// Constructor
 	// Pre:  None
-	// Post: PriorityQueue has been initialized
+	// Post: PriorityQueue is initialized
 
 	~PriorityQueueType();
 	// Deconstructor
@@ -60,7 +60,7 @@ public:
 	void Dequeue(ItemType& item);
 	// Function: Removes element with highest priority and returns it in item
 	// Pre:		 PriorityQueue is initialized
-	// Post:	 If (PriorityQueue is empty), exception EmptyPQ is thrown; else highest priority element has been removed from PriorityQueue, item is a copy of removed element
+	// Post:	 If (PriorityQueue is empty), exception EmptyPQ is thrown; else highest priority element is removed from PriorityQueue, item is a copy of removed element
 
 	unsigned int Length()const;
 	// Function: Returns length of PriorityQueue

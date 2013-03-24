@@ -28,7 +28,7 @@ public:
 
 	~QueueType();
 	// Deconstructor
-	// Pre:  Queue has been initialized
+	// Pre:  Queue is initialized
 	// Post: Queue is empty, nodes are freed
 
 	QueueType(const QueueType<T>& acopy);
@@ -39,17 +39,17 @@ public:
 	void operator=(const QueueType<T>&acopy);
 	// Assignment operator
 	// Function: Overwrites queue with values from acopy
-	// Pre:		 Queue has been initialized
+	// Pre:		 Queue is initialized
 	// Post:	 Queue has values from acopy
 
 	bool IsFull()const;
 	// Function: To check to see if the queue is full
-	// Pre:		 Queue has been initialized
+	// Pre:		 Queue is initialized
 	// Post:	 Function value = (queue is full)
 
 	bool IsEmpty()const;
 	// Function: To check to see if the queue is empty
-	// Pre:		 Queue has been initialized
+	// Pre:		 Queue is initialized
 	// Post:	 Function value = (queue is empty)
 
 	void MakeEmpty();
@@ -59,20 +59,20 @@ public:
 
 	void EnQueue(T item);
 	// Function: Adds item to the rear of the queue
-	// Pre:		 Queue has been initilized
+	// Pre:		 Queue is initilized
 	// Post:	 if (queue is full), FullQueue exception is thrown, else item is a rear of
 	//			 queue
 
 	void DeQueue(T &item);
 	// Function: Removes front item from the queue and returns it in item
-	// Pre:		 Queue has been initialized
+	// Pre:		 Queue is initialized
 	// Post:	 If (queue is empty), EmptyQueue exception is thrown and item is undefined,
-	//			 else front element has been removed from queue and item is a copy of removed
+	//			 else front element is removed from queue and item is a copy of removed
 	//			 element
 
 	unsigned int Length()const;
 	// Function: Returns length of queue
-	// Pre:		 Queue has been initialized
+	// Pre:		 Queue is initialized
 	// Post:	 Function value = (length)
 
 private:

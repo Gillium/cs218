@@ -15,7 +15,7 @@ QueueType<T>::QueueType()
 template <class T>
 QueueType<T>::~QueueType()
 // Deconstrutor
-// Pre:	 Queue has been initialized
+// Pre:	 Queue is initialized
 // Post: Queue is empty, nodes are freed
 {
 	MakeEmpty();
@@ -59,7 +59,7 @@ template <class T>
 void QueueType<T>::operator=(const QueueType<T>& acopy)
 // Assignment operator
 // Function: Overwrites queue with values from acopy
-// Pre:		 Queue has been initialized
+// Pre:		 Queue is initialized
 // Post:	 Queue has values from acopy
 {
 	MakeEmpty();
@@ -95,7 +95,7 @@ void QueueType<T>::operator=(const QueueType<T>& acopy)
 template <class T>
 bool QueueType<T>::IsFull()const
 // Function: To check to see if the queue is full
-// Pre:		 Queue has been initialized
+// Pre:		 Queue is initialized
 // Post:	 Function value = (queue is full)
 {
 	NodeType<T>* location;
@@ -114,7 +114,7 @@ bool QueueType<T>::IsFull()const
 template <class T>
 bool QueueType<T>::IsEmpty()const
 // Function: To check to see if the queue is empty
-// Pre:		 Queue has been initialized
+// Pre:		 Queue is initialized
 // Post:	 Function value = (queue is empty)
 {
 	return (length == 0);
@@ -147,7 +147,7 @@ void QueueType<T>::MakeEmpty()
 template <class T>
 void QueueType<T>::EnQueue(T item)
 // Function: Adds item to the rear of the queue
-// Pre:		 Queue has been initilized
+// Pre:		 Queue is initilized
 // Post:	 if (queue is full), FullQueue exception is thrown, else item is a rear of
 //			 queue
 {
@@ -172,9 +172,9 @@ void QueueType<T>::EnQueue(T item)
 template <class T>
 void QueueType<T>::DeQueue(T &item)
 // Function: Removes front item from the queue and returns it in item
-// Pre:		 Queue has been initialized
+// Pre:		 Queue is initialized
 // Post:	 if (queue is empty), EmptyQueue exception is thrown and item is undefined,
-//			 else front element has been removed from queue and item is a copy of removed
+//			 else front element is removed from queue and item is a copy of removed
 //			 element
 {
 	if(IsEmpty())
@@ -195,7 +195,7 @@ void QueueType<T>::DeQueue(T &item)
 template <class T>
 unsigned int QueueType<T>::Length()const
 // Function: Returns length of queue
-// Pre:		 Queue has been initialized
+// Pre:		 Queue is initialized
 // Post:	 function value = (length)
 {
 	return length;

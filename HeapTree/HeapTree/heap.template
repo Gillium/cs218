@@ -1,0 +1,216 @@
+#include "heap.h"
+#ifndef TEMPLATE_HEAP
+#define TEMPLATE_HEAP
+
+template <ItemType>
+Heap<ItemType>::Heap()
+// Constructor
+// Pre:  None
+// Post: Heap is initialized
+{
+	elements = new ItemType[DEFAULT_SIZE];
+	array_size = DEFAULT_SIZE;
+	length = 0;
+
+	// Initializing heap array is unnecessary due to it representing a complete tree
+}
+
+template <ItemType>
+Heap<ItemType>::~Heap()
+// Destructor
+// Function: Destroys the heap
+// Pre:		 Heap is initialized
+// Post:	 elements array is deleted, and length and array_size are set to zero
+{
+	
+	delete[] elements;
+	length = 0;
+	array_size = 0;
+}
+
+template <ItemType>
+Heap<ItemType>::Heap(const Heap<ItemType>& orginalHeap)
+// Copy constructor
+// Function: Creates a new heap that is a copy of orginalHeap
+// Pre:		 orginalHeap is a valid Heap
+// Post:	 elements is initialized with values from originalHeap, length and array_size
+//			 are set to orginalHeap values
+{
+	
+	array_size = orginalHeap.array_size;
+	length = orginalHeap.length;
+	elements = new ItemType[array_size];
+
+	for (unsigned int i = 0; i < length; i++)
+		elements[i] = originalHeap[i];
+}
+
+template <ItemType>
+void Heap<ItemType>::operator=(const Heap<ItemType>& orginalHeap)
+// Assignment operator
+// Function: Replaces the elements of Heap with the contents of originalHeap
+// Pre:		 Heap is initialized, originalHeap is a valid Heap
+// Post:	 Post:	 elements is initialized with values from originalHeap, length and array_size
+//			 are set to orginalHeap values
+{
+	// self-assignment
+	if (this == &orignalHeap)
+		return;
+
+	delete[] elements;
+	array_size = orginalHeap.array_size;
+	length = orginalHeap.length;
+	elements = new ItemType[array_size];
+
+	for (unsigned int i = 0; i < length; i++)
+		elements[i] = originalHeap[i];
+}
+
+template <ItemType>
+void Heap<ItemType>::MakeEmpty()
+// Function: Initializes heap to empty state
+// Pre:		 Heap is initialized
+// Post:	 elements is empty
+{
+	length = 0;
+}
+
+template <ItemType>
+bool Heap<ItemType>::IsEmpty() const
+// Function: Returns true if the heap is empty and false otherwise
+// Pre:		 Heap is initialized
+// Post:	 Function value = (elements is empty)
+{
+	return (length == 0);
+}
+
+template <ItemType>
+bool Heap<ItemType>::IsFull() const
+// Function: Returns true if the free store has no room for another element and false
+//			 otherwise
+// Pre:		 Heap is initialized
+// Post:	 Function Value = (memory unavailable to create new element)
+{	
+	ItemType* location;
+	try
+	{
+		location = new ItemType;
+		delete location;
+		return false;
+	}
+	catch(std::bad_alloc exception)
+	{
+		return true;
+	}
+}
+
+template <ItemType>
+unsigned int Heap<ItemType>::GetLength() const
+// Function: Gets the number of elements in the heap
+// Pre:		 Heap is initialized
+// Post:	 Function value = length of elements array
+{
+	return length;
+}
+
+template <ItemType>
+ItemType Heap<ItemType>::GetItem(ItemType item)
+// Function: Gets item from heap or raises not found exception 
+// Pre:		 Heap is initialized
+// Post:	 Function value = (item) or throws exception if not found
+{
+	if (length == 0)
+		throw NotFound();
+	else
+	{
+		
+	}
+}
+
+template <ItemType>
+void Heap<ItemType>::HeapInsert(ItemType item)
+// Function: Inserts item into heap
+// Pre:		 Heap is initialized, heap is not full, item is not in heap
+// Post:	 item is inserted in heap, elements array is reheaped
+{
+
+}
+
+template <ItemType>
+ItemType Heap<ItemType>::HeapDelete(ItemType item)
+// Function: Deletes item from heap
+// Pre:		 Heap is intialized, heap is not empty
+// Post:	 item is removed from heap, elements array is reheaped
+{
+
+}
+
+template <ItemType>
+void Heap<ItemType>::Print(std::ostream& outStream)
+// Function: Heap is printed
+// Pre:		 Heap is initialized, outFile is opened for writing
+// Post:	 elements are streamed to outStream
+{
+
+}
+
+template <ItemType>
+void Resize()
+// Function: Resized dynamic heap array
+// Pre:		 Heap array is intialized
+// Post:	 Heap array is resized
+{
+
+}
+
+template <ItemType>
+void Heap<ItemType>::ReheapUp()
+// Function: Restores the order property to the heap between root and bottom
+// Pre:		 The order property is satisfied from the root of the heap through the
+//			 next-to-last element; the (bottom) element may violate the order property
+// Post:	 The order property applies to all elements of the heap from root through
+//			 bottom
+{
+
+}
+
+template <ItemType>
+void Heap<ItemType>::ReheapDown()
+// Function: Restores the order property of heaps to the tree between root and bottom
+// Pre:		 The order property of heaps may be violated only by the root element of the
+//			 tree
+// Post:	 The order property applies to all elements of the heap
+{
+
+}
+
+template <ItemType>
+size_t GetLeftChildIndex(size_t index)
+// Function: Gets index of left child
+// Pre:		 None
+// Post:	 Returns left child index, might not reference a valid element
+{
+	return (index * 2 + 1);
+}
+
+template <ItemType>
+size_t GetRightChildIndex(size_t index)
+// Function: Gets index of right child
+// Pre:		 None
+// Post:	 Returns right child index, might not reference a valid element
+{
+	return (index * 2 + 2);
+}
+
+template <ItemType>
+void SearchHeap(int elementIndex, ItemType& item, bool& isFound)
+// Function: Recursive function that searches the heap for an item, if found it returns
+//			 the item otherwise sets isFound to false;
+// Pre:		 Heap is initialized, elementIndex is a valid index
+// Post:	 If found the item contains the element and isFound is set to true, otherwise
+//			 isFound is set to false
+{
+
+}
+
+#endif
