@@ -1,3 +1,5 @@
+#include <math.h>
+#include <ostream>
 #include "heap.h"
 #ifndef TEMPLATE_HEAP
 #define TEMPLATE_HEAP
@@ -114,35 +116,43 @@ unsigned int Heap<ItemType>::GetLength() const
 }
 
 template <ItemType>
-ItemType Heap<ItemType>::GetItem(ItemType item)
-// Function: Gets item from heap or raises not found exception 
-// Pre:		 Heap is initialized
-// Post:	 Function value = (item) or throws exception if not found
-{
-	if (length == 0)
-		throw NotFound();
-	else
-	{
-		
-	}
-}
-
-template <ItemType>
 void Heap<ItemType>::HeapInsert(ItemType item)
-// Function: Inserts item into heap
-// Pre:		 Heap is initialized, heap is not full, item is not in heap
-// Post:	 item is inserted in heap, elements array is reheaped
+// Function: Inserts item into heap, if necessary resize array
+// Pre:		 Heap is initialized
+// Post:	 If full throws exception, otherwise item is inserted in heap, elements array
+//			 is reheaped upward, length is increased by 1, array_size is increased if
+//			 necessary
 {
-
+	if (IsFull())
+		throw HeapFull();
+	else if (IsEmpty())
+	{
+		elements[0] = item;
+		return;
+	}
+		
+	if (length + 1 > array_size)
+		Resize();
+		
+	elements[length + 1] = item;
+	length++;
+	ReheapUp();
 }
 
 template <ItemType>
-ItemType Heap<ItemType>::HeapDelete(ItemType item)
-// Function: Deletes item from heap
-// Pre:		 Heap is intialized, heap is not empty
-// Post:	 item is removed from heap, elements array is reheaped
+ItemType Heap<ItemType>::HeapDelete()
+// Function: Deletes and returns root element from heap
+// Pre:		 Heap is intialized
+// Post:	 If empty throws HeapEmpty exception, otherwise item is removed from heap,
+//			 elements array is reheaped downward, length is decreased by 1
 {
+	if (IsEmpty)
+		throw HeapEmpty();
 
+	ItemType temp = elements[0];
+	elements[0] = elements[length - 1];
+	length--;
+	ReheapDown();
 }
 
 template <ItemType>
@@ -151,41 +161,105 @@ void Heap<ItemType>::Print(std::ostream& outStream)
 // Pre:		 Heap is initialized, outFile is opened for writing
 // Post:	 elements are streamed to outStream
 {
+	int height = (int)(log(length)/log(2.0));
+	
+	int index = 0;
+	for (int i = 1; i < length; i * 2)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (index < length)
+			{
+				int row = (int)(log(index + 1)/log(2.0));
 
+				for (int k = 0; k < (int)(pow(2.0, (double)(height + 1)) / (pow(2.0, (double)(row - 1) + 2)); k++)
+				{
+					outStream << "  ";
+				}
+
+				outStream << elements[j] << " ";
+				index++;
+			}
+			else
+				break;
+		}
+			
+		outStream << endl;
+	}
 }
 
 template <ItemType>
 void Resize()
 // Function: Resized dynamic heap array
 // Pre:		 Heap array is intialized
-// Post:	 Heap array is resized
+// Post:	 Heap array is resized, array_size is set to new array size
 {
+	array_size =+ ADD_SIZE;
+	ItemType temp* = new ItemType[array_size];
 
+    for (unsigned int i = 0; i < length; i++)
+		temp[i] = elements[i];
+	
+	delete[] elements;
+	elements = temp;
 }
 
 template <ItemType>
-void Heap<ItemType>::ReheapUp()
-// Function: Restores the order property to the heap between root and bottom
+void Heap<ItemType>::ReheapUp(int rootIndex, int bottomIndex)
+// Function: Recusively stores the order property to the heap between root and bottom
 // Pre:		 The order property is satisfied from the root of the heap through the
 //			 next-to-last element; the (bottom) element may violate the order property
 // Post:	 The order property applies to all elements of the heap from root through
 //			 bottom
 {
-
+	int parentIndex;
+	
+	if (bottomIndex > rootIndex)
+	{
+		parentIndex = GetParentIndex(bottomIndex);
+		if (elements[parentIndex] > elements[bottomIndex])
+		{
+			ItemType temp = elements[parentIndex];
+			elements[parentIndex] = elements[bottomIndex];
+			elements[bottomIndex] = temp;
+			ReheapUp(rootIndex, parentIndex);
+		}
+	}
 }
 
 template <ItemType>
-void Heap<ItemType>::ReheapDown()
+void Heap<ItemType>::ReheapDown(int rootIndex, int bottomIndex)
 // Function: Restores the order property of heaps to the tree between root and bottom
 // Pre:		 The order property of heaps may be violated only by the root element of the
 //			 tree
 // Post:	 The order property applies to all elements of the heap
 {
+	int minChildIndex;
+	int rightChildIndex;
+	int leftChildIndex;
 
+	leftChildIndex = GetLeftChildIndex(root);
+	rightChildIndex = GetRightChildIndex(root);
+	if (leftChildIndex == bottomIndex)
+		minChildIndex = leftChildIndex;
+	else
+	{
+		if (elements[leftChildIndex] >= elements[rightChildIndex])
+			minChildIndex = rightChildIndex;
+		else
+			minChildIndex = leftChildIndex;
+	}
+	if (elements[rootIndex] > elements[minChildIndex])
+	{
+		ItemType temp = elements[rootIndex];
+		elements[rootIndex] = elements[minChildIndex];
+		elements[minChildIndex] = temp;
+		ReheapDown(minChildIndex, bottomIndex);
+	}
 }
 
 template <ItemType>
-size_t GetLeftChildIndex(size_t index)
+size_t Heap<ItemType>::GetLeftChildIndex(size_t index)
 // Function: Gets index of left child
 // Pre:		 None
 // Post:	 Returns left child index, might not reference a valid element
@@ -194,7 +268,7 @@ size_t GetLeftChildIndex(size_t index)
 }
 
 template <ItemType>
-size_t GetRightChildIndex(size_t index)
+size_t Heap<ItemType>::GetRightChildIndex(size_t index)
 // Function: Gets index of right child
 // Pre:		 None
 // Post:	 Returns right child index, might not reference a valid element
@@ -203,14 +277,34 @@ size_t GetRightChildIndex(size_t index)
 }
 
 template <ItemType>
-void SearchHeap(int elementIndex, ItemType& item, bool& isFound)
+size_t Heap<ItemType>::GetParentIndex(size_t index)
+// Function: Gets parent of index
+// Pre:		 Heap is initialized, index must be greater then zero
+// Post:	 Returns index of parent element
+{
+	// Works for both children due to interger division
+	return (((index - 1) / 2));
+}
+
+template <ItemType>
+void SearchHeap(size_t elementIndex, ItemType& item, bool& isFound)
 // Function: Recursive function that searches the heap for an item, if found it returns
 //			 the item otherwise sets isFound to false;
 // Pre:		 Heap is initialized, elementIndex is a valid index
 // Post:	 If found the item contains the element and isFound is set to true, otherwise
 //			 isFound is set to false
 {
-
+	if (length == 0)
+		// item is not found
+		isFound = false;
+	else if (item == elements[elementIndex])
+		// item is found
+		found = true;)
+	else if (item <= elements[elementIndex])
+	{
+		SearchHeap(GetLeftChildIndex(elementIndex), item, isFound);
+		SearchHeap(GetRightChildIndex(elementIndex), item, isFound);
+	}
 }
 
 #endif

@@ -3,11 +3,11 @@
 #ifndef MYHEAP
 #define MYHEAP
 
-class EmptyTree
+class HeapEmpty
 {
 };
 
-class DuplicateItem
+class HeapFull
 {
 };
 
@@ -65,20 +65,18 @@ public:
 	// Pre:		 Heap is initialized
 	// Post:	 Function value = length of elements array
 
-	ItemType GetItem(ItemType item);
-	// Function: Gets item from heap or raises not found exception 
-	// Pre:		 Heap is initialized
-	// Post:	 Function value = (item) or throws exception if not found
-
 	void HeapInsert(ItemType item);
-	// Function: Inserts item into heap
-	// Pre:		 Heap is initialized, heap is not full, item is not in heap
-	// Post:	 item is inserted in heap, elements array is reheaped
+	// Function: Inserts item into heap, if necessary resize array
+	// Pre:		 Heap is initialized
+	// Post:	 If full throws exception, otherwise item is inserted in heap, elements
+	//			 array is reheaped upward, length is increased by 1, array_size is
+	//			 increased if necessary
 
-	ItemType HeapDelete(ItemType item);
-	// Function: Deletes item from heap
-	// Pre:		 Heap is intialized, heap is not empty
-	// Post:	 item is removed from heap, elements array is reheaped
+	ItemType HeapDelete();
+	// Function: Deletes and returns root element from heap
+	// Pre:		 Heap is intialized
+	// Post:	 If empty throws HeapEmpty exception, otherwise item is removed from
+	//			 heap, elements array is reheaped downward, length is decreased by 1
 
 	void Print(std::ostream& outStream);
 	// Function: Heap is printed
@@ -90,20 +88,21 @@ private:
 	size_t array_size;
 	size_t length;
 	static const size_t DEFAULT_SIZE = 5;
+	static const size_T ADD_SIZE = 5;
 
 	void Resize();
 	// Function: Resized dynamic heap array
 	// Pre:		 Heap array is intialized
-	// Post:	 Heap array is resized
+	// Post:	 Heap array is resized, array_size is set to new array size
 
-	void ReheapUp();
-	// Function: Restores the order property to the heap between root and bottom
+	void ReheapUp(int rootIndex, int bottomIndex);
+	// Function: Recursively restores the order property to the heap between root and bottom
 	// Pre:		 The order property is satisfied from the root of the heap through the
 	//			 next-to-last element; the (bottom) element may violate the order property
 	// Post:	 The order property applies to all elements of the heap from root through
 	//			 bottom
 
-	void ReheapDown();
+	void ReheapDown(int rootIndex, int bottomIndex);
 	// Function: Restores the order property of heaps to the tree between root and bottom
 	// Pre:		 The order property of heaps may be violated only by the root element of
 	//			 the tree
@@ -119,12 +118,10 @@ private:
 	// Pre:		 Heap is initialized
 	// Post:	 Returns right child index, might not reference valid element
 
-	void SearchHeap(int elementIndex, ItemType& item, bool& isFound);
-	// Function: Recursive function that searches the heap for an item, if found it
-	//			 returns the item otherwise sets isFound to false;
-	// Pre:		 Heap is initialized, elementIndex is a valid index
-	// Post:	 If found the item contains the element and isFound is set to true,
-	//			 otherwise isFound is set to false
+	size_t GetParentIndex(size_t index);
+	// Function: Gets parent of index
+	// Pre:		 Heap is initialized, index must be greater then zero
+	// Post:	 Returns index of parent element
 };
 
 #include "heap.template"
