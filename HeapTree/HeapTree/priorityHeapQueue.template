@@ -117,7 +117,10 @@ void PriorityHeapQueueType<ItemType>::Print(std::ostream& outStream)
 // Pre:		 PriorityHeapQueue is initialized, outFile is open for writing
 // Post:	 elements are streamed to outStream
 {
-	elements.Print(outStream);
+	Heap<ItemType> temp = Heap<ItemType>(elements);
+	
+	while (!temp.IsEmpty())
+		cout << temp.HeapDelete() << endl;
 }
 
 #endif

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "heap.h"
+#include "priorityQueue.h"
 #include "priorityHeapQueue.h"
 
 using namespace std;
@@ -128,6 +129,7 @@ int main()
 	string temp;
 	
 	Heap<my_variant_t> heap = Heap<my_variant_t>();
+	PriorityQueueType<my_variant_t> pq = PriorityQueueType<my_variant_t>();
 	PriorityHeapQueueType<my_variant_t> phq = PriorityHeapQueueType<my_variant_t>();
 
 	do
@@ -183,9 +185,11 @@ int main()
 							cout << endl;
 
 							heap.HeapInsert(input);
-							cout << input << " is inserted!" << endl;
+							cout << input << " is inserted in Heap!" << endl;
+							pq.Enqueue(input);
+							cout << input << " is enqueued in PriorityQueue!" << endl;
 							phq.Enqueue(input);
-							cout << input << " is enqueued!" << endl << endl;
+							cout << input << " is enqueued in PriorityHeapQueue!" << endl << endl;
 						}
 						else
 							cout << temp << " is not a valid number!" << endl << endl;
@@ -214,9 +218,11 @@ int main()
 					cout << endl;
 					
 					heap.HeapInsert(input);
-					cout << input << " is inserted!" << endl;
+					cout << input << " is inserted in Heap!" << endl;
+					pq.Enqueue(input);
+					cout << input << " is enqueued in PriorityQueue!" << endl;
 					phq.Enqueue(input);
-					cout << input << " is enqueued!" << endl << endl;
+					cout << input << " is enqueued in PriorityHeapQueue!" << endl << endl;
 				}
 
 				command = 'M';
@@ -228,14 +234,17 @@ int main()
 					cout << "Removing root..." << endl;
 					try
 					{
-						cout << endl << heap.HeapDelete() << " is deleted!" << endl;
+						cout << endl << heap.HeapDelete() << " is deleted from Heap!" << endl;
 						my_variant_t temp;
+						pq.DeQueue(temp);
+						cout << endl << temp << " is dequeued from PriorityQueue!" << endl << endl;
 						phq.Dequeue(temp);
-						cout << endl << temp << " is dequeued!" << endl << endl;
+						cout << temp << " is dequeued from PriorityHeapQueue!" << endl << endl;
 					}
 					catch(HeapEmpty)
 					{
 						cout << endl << "Heap is empty!" << endl;
+						cout << endl << "PriorityQueue is empty!" << endl;
 						cout << endl << "PriorityHeapQueue is empty!" << endl << endl;
 					}
 				}
@@ -244,14 +253,18 @@ int main()
 					cout << "Removing root..." << endl;
 					try
 					{
-						cout << endl << heap.HeapDelete() << " is removed!" << endl;
+						cout << endl << heap.HeapDelete() << " is deleted from Heap!" << endl;
 						my_variant_t temp;
+						pq.DeQueue(temp);
+						cout << endl << temp << " is dequeued from PriorityQueue!" << endl << endl;
 						phq.Dequeue(temp);
-						cout << endl << temp << " is dequeued!" << endl << endl;
+						cout << temp << " is dequeued from PriorityHeapQueue!" << endl << endl;
+						
 					}
 					catch(HeapEmpty)
 					{
 						cout << endl << "Heap is empty!" << endl;
+						cout << endl << "PriorityQueue is empty!" << endl;
 						cout << endl << "PriorityHeapQueue is empty!" << endl << endl;
 					}
 				}
@@ -264,6 +277,15 @@ int main()
 				{
 					cout << endl << "Displaying...Heap!" << endl;
 					heap.Print(cout);
+					cout << endl << endl;
+				}
+				else
+					cout << "Heap is empty!" << endl << endl;
+
+				if (!pq.IsEmpty())
+				{
+					cout << endl << "Displaying...PriorityQueue!" << endl;
+					pq.Print(cout);
 					cout << endl << endl;
 				}
 				else

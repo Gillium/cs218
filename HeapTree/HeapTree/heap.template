@@ -43,7 +43,7 @@ Heap<ItemType>::Heap(const Heap<ItemType>& originalHeap)
 	elements = new ItemType[array_size];
 
 	for (unsigned int i = 0; i < length; i++)
-		elements[i] = originalHeap[i];
+		elements[i] = originalHeap.elements[i];
 }
 
 template <class ItemType>
@@ -243,9 +243,9 @@ void Heap<ItemType>::ReheapDown(int rootIndex, int bottomIndex)
 //			 tree
 // Post:	 The order property applies to all elements of the heap
 {
-	int minChildIndex;
-	int rightChildIndex;
-	int leftChildIndex;
+	unsigned int minChildIndex;
+	unsigned int rightChildIndex;
+	unsigned int leftChildIndex;
 
 	leftChildIndex = GetLeftChildIndex(rootIndex);
 	rightChildIndex = GetRightChildIndex(rootIndex);
