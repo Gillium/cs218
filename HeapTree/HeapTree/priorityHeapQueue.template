@@ -1,0 +1,123 @@
+#include "PriorityHeapQueue.h"
+#ifndef PRIORITYHEAPQUEUETEMPLATE
+#define PRIORITYHEAPQUEUETEMPLATE
+
+template <class ItemType>
+PriorityHeapQueueType<ItemType>::PriorityHeapQueueType()
+// Constructor
+// Pre:  None
+// Post: PriorityHeapQueue is initialized
+{
+	elements = Heap<ItemType>();
+}
+
+template <class ItemType>
+PriorityHeapQueueType<ItemType>::~PriorityHeapQueueType()
+// Deconstructor
+// Pre:  PriorityHeapQueue is initialized
+// Post: PriorityHeapQueue is empty, nodes are freed
+{
+	elements.~Heap<ItemType>();
+}
+
+template <class ItemType>
+PriorityHeapQueueType<ItemType>::PriorityHeapQueueType(const PriorityHeapQueueType<ItemType>& acopy)
+// Copy constructor
+// Pre:  acopy is a valid PriorityHeapQueue
+// Post: PriorityHeapQueue is initialized with values from acopy
+{
+	if (acopy.IsEmpty())
+		return;
+
+	elements = Heap<ItemType>(acopy.elements);
+}
+
+template <class ItemType>
+void PriorityHeapQueueType<ItemType>::operator=(const PriorityHeapQueueType<ItemType>& acopy)
+// Assignment operator
+// Function: Overwrites PriorityHeapQueue with values from acopy
+// Pre:		 PriorityHeapQueue is initialized
+// Post:	 PriorityHeapQueue has values from a copy
+{
+	MakeEmpty();
+
+	if (acopy.IsEmpty())
+		return;
+
+	Heap<ItemType> tempHeap = Heap<ItemType>(acopy.elements);
+
+	while (!tempHeap.IsEmpty())
+	{
+		ItemType tempItem;
+		tempHeap.HeapDelete(tempItem);
+		acopy.elements.HeapInsert(tempItem);
+	}
+}
+
+template <class ItemType>
+void PriorityHeapQueueType<ItemType>::MakeEmpty()
+// Function: Initializes the PriorityHeapQueue to an empty state
+// Pre:		 None
+// Post:	 PriorityHeapQueue is empty
+{
+	if(IsEmpty())
+		return;
+
+	elements.MakeEmpty();
+}
+
+template <class ItemType>
+bool PriorityHeapQueueType<ItemType>::IsEmpty()const
+// Function: Tests whether the queue is empty
+// Pre:		 PriorityHeapQueue is initialized
+// Post:	 Function value = (queue is empty)
+{
+	return (elements.IsEmpty());
+}
+
+template <class ItemType>
+bool PriorityHeapQueueType<ItemType>::IsFull()const
+// Function: Tests whether the queue is full
+// Pre:		 PriorityHeapQueue is initialized
+// Post:	 Function value = (queue is full)
+{
+	return (elements.IsFull());
+}
+
+template <class ItemType>
+void PriorityHeapQueueType<ItemType>::Enqueue(ItemType newItem)
+// Function: Adds newItem to the queue
+// Pre:		 PriorityHeapQueue is initialized
+// Post:	 If (the priority queue is full), exception FullPQ is thrown; else newItem is in the queue
+{
+	elements.HeapInsert(newItem);
+}
+
+template <class ItemType>
+void PriorityHeapQueueType<ItemType>::Dequeue(ItemType& item)
+// Function: Removes element with highest priority and returns it in item
+// Pre:		 PriorityHeapQueue is initialized
+// Post:	 If (PriorityHeapQueue is empty), exception EmptyPQ is thrown; else highest priority element is removed from PriorityHeapQueue, item is a copy of removed element
+{
+	item = elements.HeapDelete();
+}
+
+template <class ItemType>
+unsigned int PriorityHeapQueueType<ItemType>::Length()const
+// Function: Returns length of PriorityHeapQueue
+// Pre:		 PriorityHeapQueue is initialized
+// Post:	 Function value = (length)
+{
+	return (elements.GetLength());
+}
+
+template <class ItemType>
+void PriorityHeapQueueType<ItemType>::Print(std::ostream& outStream)
+// Function: PriorityHeapQueue is printed
+// Pre:		 PriorityHeapQueue is initialized, outFile is open for writing
+// Post:	 elements are streamed to outStream
+{
+	elements.Print(outStream);
+}
+
+#endif

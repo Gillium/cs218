@@ -30,16 +30,16 @@ Heap<ItemType>::~Heap()
 }
 
 template <class ItemType>
-Heap<ItemType>::Heap(const Heap<ItemType>& orginalHeap)
+Heap<ItemType>::Heap(const Heap<ItemType>& originalHeap)
 // Copy constructor
-// Function: Creates a new heap that is a copy of orginalHeap
-// Pre:		 orginalHeap is a valid Heap
+// Function: Creates a new heap that is a copy of originalHeap
+// Pre:		 originalHeap is a valid Heap
 // Post:	 elements is initialized with values from originalHeap, length and array_size
-//			 are set to orginalHeap values
+//			 are set to originalHeap values
 {
 	
-	array_size = orginalHeap.array_size;
-	length = orginalHeap.length;
+	array_size = originalHeap.array_size;
+	length = originalHeap.length;
 	elements = new ItemType[array_size];
 
 	for (unsigned int i = 0; i < length; i++)
@@ -47,24 +47,24 @@ Heap<ItemType>::Heap(const Heap<ItemType>& orginalHeap)
 }
 
 template <class ItemType>
-void Heap<ItemType>::operator=(const Heap<ItemType>& orginalHeap)
+void Heap<ItemType>::operator=(const Heap<ItemType>& originalHeap)
 // Assignment operator
 // Function: Replaces the elements of Heap with the contents of originalHeap
 // Pre:		 Heap is initialized, originalHeap is a valid Heap
 // Post:	 Post:	 elements is initialized with values from originalHeap, length and array_size
-//			 are set to orginalHeap values
+//			 are set to originalHeap values
 {
 	// self-assignment
-	if (this == &orignalHeap)
+	if (this == &originalHeap)
 		return;
 
 	delete[] elements;
-	array_size = orginalHeap.array_size;
-	length = orginalHeap.length;
+	array_size = originalHeap.array_size;
+	length = originalHeap.length;
 	elements = new ItemType[array_size];
 
 	for (unsigned int i = 0; i < length; i++)
-		elements[i] = originalHeap[i];
+		elements[i] = originalHeap.elements[i];
 }
 
 template <class ItemType>
@@ -225,6 +225,7 @@ void Heap<ItemType>::ReheapUp(int rootIndex, int bottomIndex)
 	if (bottomIndex > rootIndex)
 	{
 		parentIndex = GetParentIndex(bottomIndex);
+
 		if (elements[parentIndex] > elements[bottomIndex])
 		{
 			ItemType temp = elements[parentIndex];

@@ -31,19 +31,19 @@ public:
 	// Pre:		 Heap is initialized
 	// Post:	 elements array is deleted, and length and array_size are set to zero
 
-	Heap(const Heap<ItemType>& orginalHeap);
+	Heap(const Heap<ItemType>& originalHeap);
 	// Copy constructor
-	// Function: Creates a new heap that is a copy of orginalHeap
-	// Pre:		 orginalHeap is a valid Heap
+	// Function: Creates a new heap that is a copy of originalHeap
+	// Pre:		 originalHeap is a valid Heap
 	// Post:	 elements is initialized with values from originalHeap, length and
-	//			 array_size are set to orginalHeap values
+	//			 array_size are set to originalHeap values
 
-	void operator=(const Heap<ItemType>& orginalHeap);
+	void operator=(const Heap<ItemType>& originalHeap);
 	// Assignment operator
 	// Function: Replaces the elements of Heap with the contents of originalHeap
 	// Pre:		 Heap is initialized, originalHeap is a valid Heap
 	// Post:	 elements is initialized with values from originalHeap, length and
-	//			 array_size are set to orginalHeap values
+	//			 array_size are set to originalHeap values
 
 	void MakeEmpty();
 	// Function: Initializes heap to empty state

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "heap.h"
+#include "priorityHeapQueue.h"
 
 using namespace std;
 
@@ -24,6 +25,13 @@ struct my_variant_t {
 	{
 		type = VAR_STR;
 		str_val = _strdup(obj);
+	}
+
+	void operator= (my_variant_t obj)
+	{
+		type = obj.type;
+		int_val = obj.int_val;
+		str_val = obj.str_val;
 	}
 };
 
@@ -120,10 +128,11 @@ int main()
 	string temp;
 	
 	Heap<my_variant_t> heap = Heap<my_variant_t>();
+	PriorityHeapQueueType<my_variant_t> phq = PriorityHeapQueueType<my_variant_t>();
 
 	do
 	{
-		cout << "What type of tree would you like to build, (S)trings, (N)umbers, or (Q)uit?" << endl;
+		cout << "What type of heap would you like to build, (S)trings, (N)umbers, or (Q)uit?" << endl;
 		cin  >> choice;
 		cout << endl;
 
@@ -137,11 +146,11 @@ int main()
 			if (command == 'M')
 			{
 				cout << "What would you like to do:" <<endl;
-				cout << "(I)sert node" << endl;
-				cout << "(R)emove node" << endl;
-				cout << "(D)isplay tree" << endl;
-				cout << "(C)hop tree down" << endl;
-				cout << "(N)ew tree" << endl;
+				cout << "(I)nsert/Enqueue node" << endl;
+				cout << "(R)emove/Dequeue node" << endl;
+				cout << "(D)isplay Heap/Queue" << endl;
+				cout << "(C)hop Heaps down" << endl;
+				cout << "(N)ew Heaps" << endl;
 				cout << "(Q)uit program" << endl;
 				cout << "? ";
 				cin  >> command;
@@ -155,7 +164,7 @@ int main()
 					bool isNumber;
 					do
 					{
-						cout << "What number would you like to input?" << endl;
+						cout << "What number would you like to insert?" << endl;
 						getline(cin, temp);
 
 						isNumber = true;
@@ -174,8 +183,9 @@ int main()
 							cout << endl;
 
 							heap.HeapInsert(input);
-							cout << input << " is inputed!" << endl << endl;
-							
+							cout << input << " is inserted!" << endl;
+							phq.Enqueue(input);
+							cout << input << " is enqueued!" << endl << endl;
 						}
 						else
 							cout << temp << " is not a valid number!" << endl << endl;
@@ -189,7 +199,7 @@ int main()
 					do
 					{
 						isEmptyString = false;
-						cout << "What is the string you would like to input?" << endl;
+						cout << "What is the string you would like to insert?" << endl;
 						getline(cin, temp);
 
 						if (temp == "")
@@ -204,7 +214,9 @@ int main()
 					cout << endl;
 					
 					heap.HeapInsert(input);
-					cout << input << " is inputed!" << endl << endl;
+					cout << input << " is inserted!" << endl;
+					phq.Enqueue(input);
+					cout << input << " is enqueued!" << endl << endl;
 				}
 
 				command = 'M';
@@ -216,11 +228,15 @@ int main()
 					cout << "Removing root..." << endl;
 					try
 					{
-						cout << endl << heap.HeapDelete() << " is removed!" << endl << endl;
+						cout << endl << heap.HeapDelete() << " is deleted!" << endl;
+						my_variant_t temp;
+						phq.Dequeue(temp);
+						cout << endl << temp << " is dequeued!" << endl << endl;
 					}
 					catch(HeapEmpty)
 					{
-						cout << endl << "Heap is empty!" << endl << endl;
+						cout << endl << "Heap is empty!" << endl;
+						cout << endl << "PriorityHeapQueue is empty!" << endl << endl;
 					}
 				}
 				else
@@ -228,11 +244,15 @@ int main()
 					cout << "Removing root..." << endl;
 					try
 					{
-						cout << endl << heap.HeapDelete() << " is removed!" << endl << endl;
+						cout << endl << heap.HeapDelete() << " is removed!" << endl;
+						my_variant_t temp;
+						phq.Dequeue(temp);
+						cout << endl << temp << " is dequeued!" << endl << endl;
 					}
 					catch(HeapEmpty)
 					{
-						cout << endl << "Heap is empty!" << endl << endl;
+						cout << endl << "Heap is empty!" << endl;
+						cout << endl << "PriorityHeapQueue is empty!" << endl << endl;
 					}
 				}
 
@@ -242,20 +262,35 @@ int main()
 			{
 				if (!heap.IsEmpty())
 				{
-					cout << endl << "Displaying..." << endl;
+					cout << endl << "Displaying...Heap!" << endl;
 					heap.Print(cout);
 					cout << endl << endl;
 				}
 				else
 					cout << "Heap is empty!" << endl << endl;
 
+				if (!phq.IsEmpty())
+				{
+					cout << endl << "Displaying...PriorityHeapQueue!" << endl;
+					phq.Print(cout);
+					cout << endl << endl;
+				}
+				else
+					cout << "Heap is empty!" << endl << endl;
+
+
+
 				command = 'M';
 			}
 			else if (command == 'C' || command == 'c')
 			{
-				cout << endl << "Chopping...Timber!" << endl;
+				cout << endl << "Chopping...Heap!" << endl;
 				heap.MakeEmpty();
-				cout << "Tree is empty!" << endl << endl;
+				cout << "Heap is empty!" << endl << endl;
+
+				cout << endl << "Chopping...PriorityHeapQueue!" << endl;
+				phq.MakeEmpty();
+				cout << "PriorityHeapQueue is empty!" << endl << endl;
 
 				command = 'M';
 			}
@@ -266,6 +301,7 @@ int main()
 			else if (command == 'N' || command == 'n')
 			{
 				heap.MakeEmpty();
+				phq.MakeEmpty();
 				break;
 			}
 			else 
