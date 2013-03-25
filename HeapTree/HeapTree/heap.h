@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <ostream>
 #include <sys/stat.h>
 #ifndef MYHEAP
 #define MYHEAP
@@ -88,7 +89,7 @@ private:
 	size_t array_size;
 	size_t length;
 	static const size_t DEFAULT_SIZE = 5;
-	static const size_T ADD_SIZE = 5;
+	static const size_t ADD_SIZE = 5;
 
 	void Resize();
 	// Function: Resized dynamic heap array
