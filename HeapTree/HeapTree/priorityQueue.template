@@ -1,14 +1,158 @@
 #include "priorityQueue.h"
+#include "queue.h"
 #ifndef PRIORITYQUEUETEMPLATE
 #define PRIORITYQUEUETEMPLATE
 
 template <class T>
-void PriorityQueueType<T>::Enqueue(T newItem)
+PriorityQueueType<T>::PriorityQueueType()
+// Constructor
+// Pre:  None
+// Post: PriorityQueue is initialized
+{
+	rearPTR = NULL;
+	length = 0;
+}
+
+template <class T>
+PriorityQueueType<T>::~PriorityQueueType()
+// Deconstrutor
+// Pre:	 PriorityQueue is initialized
+// Post: PriorityQueue is empty, nodes are freed
+{
+	MakeEmpty();
+}
+
+template <class T>
+PriorityQueueType<T>::PriorityQueueType(const PriorityQueueType<T>& acopy)
+// Copy constructor
+// Pre:  acopy is a valid PriorityQueueType 
+// Post: PriorityQueue is initialized with values from acopy
+{
+	if (acopy.IsEmpty())
+		return;
+
+	NodeTypeP<T>* currentPTR;
+	currentPTR = acopy.rearPTR->next;
+
+	for(int i = acopy.length; i > 0; i--)
+	{
+		NodeTypeP<T>* temp = new NodeTypeP<T>;
+		temp->data = currentPTR->data;
+
+		if (rearPTR == NULL)
+		{
+			rearPTR = temp;
+			temp->next = rearPTR;
+		}
+		else
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+		}
+
+		currentPTR = currentPTR->next;
+	}
+
+	length = acopy.length;
+}
+
+template <class T>
+void PriorityQueueType<T>::operator=(const PriorityQueueType<T>& acopy)
+// Assignment operator
+// Function: Overwrites queue with values from acopy
+// Pre:		 PriorityQueue is initialized
+// Post:	 PriorityQueue has values from acopy
+{
+	MakeEmpty();
+
+	if (acopy.IsEmpty())
+		return;
+
+	NodeTypeP<T>* currentPTR;
+	currentPTR = acopy.rearPTR->next;
+
+	for(int i = acopy.length; i > 0; i--)
+	{
+		NodeTypeP<T>* temp = new NodeTypeP<T>;//
+		temp->data = currentPTR->data;
+
+		if (rearPTR == NULL)
+		{
+			rearPTR = temp;
+			temp->next = rearPTR;
+		}
+		else
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+		}
+
+		currentPTR = currentPTR->next;//
+	}
+
+	length = acopy.length;
+}
+
+template <class T>
+bool PriorityQueueType<T>::IsFull()const
+// Function: To check to see if the queue is full
+// Pre:		 PriorityQueue is initialized
+// Post:	 Function value = (queue is full)
+{
+	NodeTypeP<T>* location;
+	try
+	{
+		location = new NodeTypeP<T>;
+		delete location;
+		return false;
+	}
+	catch(std::bad_alloc exception)
+	{
+		return true;
+	}
+}
+
+template <class T>
+bool PriorityQueueType<T>::IsEmpty()
+// Function: To check to see if the queue is empty
+// Pre:		 PriorityQueue is initialized
+// Post:	 Function value = (queue is empty)
+{
+	return (length == 0);
+}
+
+template <class T>
+void PriorityQueueType<T>::MakeEmpty()
+// Function: Initializes the queue to an empty state
+// Pre:		 None
+// Post:	 PriorityQueue is empty
+{
+	if(IsEmpty())
+		return;
+
+	NodeTypeP<T>* tmp = rearPTR->next;
+
+	while(length > 0)
+	{
+		rearPTR->next = tmp->next;
+		delete tmp;
+
+		if(rearPTR == NULL)
+			break;
+
+		tmp = rearPTR->next;
+		length--;
+	}
+}
+
+template <class T>
+void PriorityQueueType<T>::EnQueue(T newItem)
 // Function: Adds newItem to the queue
 // Pre:		 PriorityQueue is initialized
-// Post:	 If (the priority queue is full), exception FullPQ is thrown; else newItem is in the queue
+// Post:	 If (the priority queue is full), exception FullPQ is thrown; else newItem is
+//			 in the queue
 {
-	NodeType<T>* temp = new NodeType<T>;
+	NodeTypeP<T>* temp = new NodeTypeP<T>;
 	temp->data = newItem;
 
 	if(IsEmpty())
@@ -18,17 +162,19 @@ void PriorityQueueType<T>::Enqueue(T newItem)
 	}
 	else
 	{
-		NodeType<T>* prevPTR;
+		NodeTypeP<T>* prevPTR;
 		prevPTR = rearPTR;
-		NodeType<T>* tempPTR;
+		NodeTypeP<T>* tempPTR;
 		tempPTR = rearPTR->next;
 
+		bool isInserted = false;
 		do
 		{
 			if (tempPTR->data > newItem)
 			{
 				temp->next = tempPTR;
 				prevPTR->next = temp;
+				isInserted = true;
 				break;
 			}
 			
@@ -36,6 +182,13 @@ void PriorityQueueType<T>::Enqueue(T newItem)
 			tempPTR = tempPTR->next;
 
 		}while(tempPTR != rearPTR->next);
+
+		if (!isInserted)
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+			rearPTR = temp;
+		}
 	}
 
 	length++;
@@ -43,8 +196,25 @@ void PriorityQueueType<T>::Enqueue(T newItem)
 
 template <class T>
 void PriorityQueueType<T>::DeQueue(T &item)
+// Function: Removes front item from the queue and returns it in item
+// Pre:		 PriorityQueue is initialized
+// Post:	 if (queue is empty), EmptyQueue exception is thrown and item is undefined,
+//			 else front element is removed from queue and item is a copy of removed
+//			 element
 {
-	return (QueueType<T>::DeQueue(item));
+	if(IsEmpty())
+	{
+		throw EmptyQueue();
+	}
+	else
+	{
+		NodeTypeP<T>* temp;
+		temp = rearPTR->next;
+		rearPTR->next = temp->next;
+		item = temp->data;
+		delete temp;
+		length--;
+	}
 }
 
 template <class T>
@@ -53,13 +223,31 @@ void PriorityQueueType<T>::Print(std::ostream& outStream)
 // Pre:		 PriorityQueue is initialized, outFile is open for writing
 // Post:	 elements are streamed to outStream
 {
+	QueueType<T> temp = QueueType<T>();
+	NodeTypeP<T>* currentPTR;
+	currentPTR = rearPTR->next;
 
+	for (unsigned int i = length; i > 0; i--)
+	{
+		temp.EnQueue(currentPTR->data);
+		currentPTR = currentPTR->next;
+	}
+
+	T value;
+	while (!temp.IsEmpty())
+	{
+		temp.DeQueue(value);
+		cout << value << endl;
+	}
 }
 
 template <class T>
-bool PriorityQueueType<T>::IsEmpty()
+unsigned int PriorityQueueType<T>::Length()const
+// Function: Returns length of queue
+// Pre:		 PriorityQueue is initialized
+// Post:	 function value = (length)
 {
-	return (QueueType<T>::IsEmpty());
+	return length;
 }
 
 #endif

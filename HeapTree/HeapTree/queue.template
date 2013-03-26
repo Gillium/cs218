@@ -49,7 +49,7 @@ QueueType<T>::QueueType(const QueueType<T>& acopy)
 			rearPTR->next = temp;
 		}
 
-		currentPTR = currentPTR->next;//
+		currentPTR = currentPTR->next;
 	}
 
 	length = acopy.length;

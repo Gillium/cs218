@@ -1,11 +1,16 @@
+#include <ctime>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include "heap.h"
 #include "priorityQueue.h"
 #include "priorityHeapQueue.h"
 
 using namespace std;
+
+// Change for the amount of index's in array
+const int SIZE = 5000;
 
 enum types {VAR_INT, VAR_STR};
 
@@ -121,19 +126,30 @@ bool operator<= (my_variant_t& obj1, my_variant_t& obj2)
 	}
 }
 
+double diffclock(clock_t clock1, clock_t clock2)
+{
+	double diffticks = clock1 - clock2;
+	double diffms = (diffticks * 1000) / CLOCKS_PER_SEC;
+	return diffms;
+}
+
+void heapSorterUI(char choice);
+
 int main()
 {
 	char command;
 	my_variant_t input;
 	char choice;
 	string temp;
-	
+	srand((unsigned int)time(0));
+
 	Heap<my_variant_t> heap = Heap<my_variant_t>();
 	PriorityQueueType<my_variant_t> pq = PriorityQueueType<my_variant_t>();
 	PriorityHeapQueueType<my_variant_t> phq = PriorityHeapQueueType<my_variant_t>();
 
 	do
 	{
+		
 		cout << "What type of heap would you like to build, (S)trings, (N)umbers, or (Q)uit?" << endl;
 		cin  >> choice;
 		cout << endl;
@@ -151,8 +167,9 @@ int main()
 				cout << "(I)nsert/Enqueue node" << endl;
 				cout << "(R)emove/Dequeue node" << endl;
 				cout << "(D)isplay Heap/Queue" << endl;
-				cout << "(C)hop Heaps down" << endl;
-				cout << "(N)ew Heaps" << endl;
+				cout << "(E)mpty data" << endl;
+				cout << "(S)ort performance test" << endl;
+				cout << "(N)ew Heap/Queue type" << endl;
 				cout << "(Q)uit program" << endl;
 				cout << "? ";
 				cin  >> command;
@@ -186,7 +203,7 @@ int main()
 
 							heap.HeapInsert(input);
 							cout << input << " is inserted in Heap!" << endl;
-							pq.Enqueue(input);
+							pq.EnQueue(input);
 							cout << input << " is enqueued in PriorityQueue!" << endl;
 							phq.Enqueue(input);
 							cout << input << " is enqueued in PriorityHeapQueue!" << endl << endl;
@@ -219,7 +236,7 @@ int main()
 					
 					heap.HeapInsert(input);
 					cout << input << " is inserted in Heap!" << endl;
-					pq.Enqueue(input);
+					pq.EnQueue(input);
 					cout << input << " is enqueued in PriorityQueue!" << endl;
 					phq.Enqueue(input);
 					cout << input << " is enqueued in PriorityHeapQueue!" << endl << endl;
@@ -237,7 +254,7 @@ int main()
 						cout << endl << heap.HeapDelete() << " is deleted from Heap!" << endl;
 						my_variant_t temp;
 						pq.DeQueue(temp);
-						cout << endl << temp << " is dequeued from PriorityQueue!" << endl << endl;
+						cout << temp << " is dequeued from PriorityQueue!" << endl;
 						phq.Dequeue(temp);
 						cout << temp << " is dequeued from PriorityHeapQueue!" << endl << endl;
 					}
@@ -289,7 +306,7 @@ int main()
 					cout << endl << endl;
 				}
 				else
-					cout << "Heap is empty!" << endl << endl;
+					cout << "PriorityQueue is empty!" << endl << endl;
 
 				if (!phq.IsEmpty())
 				{
@@ -300,19 +317,27 @@ int main()
 				else
 					cout << "Heap is empty!" << endl << endl;
 
+				command = 'M';
+			}
+			else if (command == 'E' || command == 'e')
+			{
+				cout << endl << "Emptying Heap!" << endl;
+				heap.MakeEmpty();
+				cout << "Heap is empty!" << endl;
 
+				cout << endl << "Emptying PriorityQueue!" << endl;
+				pq.MakeEmpty();
+				cout << "PriorityQueue is empty!" << endl;
+
+				cout << endl << "Emptying PriorityHeapQueue!" << endl;
+				phq.MakeEmpty();
+				cout << "PriorityHeapQueue is empty!" << endl << endl;
 
 				command = 'M';
 			}
-			else if (command == 'C' || command == 'c')
+			else if (command == 'S' || command == 's')
 			{
-				cout << endl << "Chopping...Heap!" << endl;
-				heap.MakeEmpty();
-				cout << "Heap is empty!" << endl << endl;
-
-				cout << endl << "Chopping...PriorityHeapQueue!" << endl;
-				phq.MakeEmpty();
-				cout << "PriorityHeapQueue is empty!" << endl << endl;
+				heapSorterUI(choice);
 
 				command = 'M';
 			}
@@ -338,4 +363,199 @@ int main()
 
 	system("Pause");
 	return 0;
+}
+
+void heapSorterUI(char arrayOptionType)
+{
+	string orginalTestArray[SIZE];
+	string testArray[SIZE];
+	char arrayOption;
+	string sorted[SIZE];
+	int userIndex;
+
+	do
+	{
+		cout << "How many values do you want to use? (MAX 5000)" << endl;
+		cin  >> userIndex;
+		if (userIndex > 5000)
+			cout << "You entered an incorrect ammount. Please try again." << endl << endl;
+	}while(userIndex > 5000);
+
+	// Asks user if they want a preconstructed array or an inputed array
+	do
+	{
+		cout << endl << "Would you like to input your <O>wn or <R>andom array? Type <Q> to go back to main menu." << endl;
+		cin  >> arrayOption;
+		cout << endl;
+
+		if (arrayOption == 'Q' || arrayOption == 'q')
+			return;
+
+		if (arrayOption != 'O' && arrayOption != 'o' && arrayOption != 'R' && arrayOption != 'r')
+			cout << "You entered an incorrect option. Please try again." << endl << endl;
+	}while(arrayOption != 'O' && arrayOption != 'o' && arrayOption != 'R' && arrayOption != 'r');
+
+	// Sets values for a preconstructed array to user specification
+	if (arrayOption == 'R' || arrayOption == 'r')
+	{
+		if (arrayOptionType == 'N' || arrayOptionType == 'n')
+		{
+			for (int i = 0; i < userIndex; i++)
+			{
+				int num = rand() % 1000;
+				// Cast num to a string
+				stringstream ss;
+				ss << num;
+				testArray[i] = ss.str(); 
+			}
+		}
+
+		if (arrayOptionType == 'S' || arrayOptionType == 's')
+		{
+			char temp[10];
+			for (int i = 0; i < userIndex; i++)
+			{
+				int run = rand() % 7 + 3;
+				for (int j = 0; j < run; j++)
+				{
+					temp[j] = rand() % 26 + 'a';
+				}
+				temp[run] = '\0';
+				testArray[i] = temp;
+			}
+
+		}
+	}
+
+	// Sets values of array as user inputs
+	else
+	{
+		string choice;
+
+		for (int index = 0; index < userIndex; index++)
+		{
+			cout << "What item do you want to input in index " << index << endl;
+			cin  >> choice;
+			testArray[index] = choice;
+		}
+
+		cout << endl;
+	}
+
+	// Capture the orginal array before sorting
+	for (int i = 0; i < userIndex; i++)
+		orginalTestArray[i] = testArray[i];
+
+	Heap<string> heap = Heap<string>();
+	PriorityQueueType<string> pq = PriorityQueueType<string>();
+	PriorityHeapQueueType<string> phq = PriorityHeapQueueType<string>();
+	clock_t begin;
+	clock_t end;
+
+	cout << "Sort performance test:" << endl << endl;
+
+	cout << "Heap" << endl;
+
+	begin = clock();
+
+	for (int i = 0; i < userIndex; i++)
+	{
+		heap.HeapInsert(testArray[i]);
+	}
+
+	int index = 0;
+	while (!heap.IsEmpty())
+	{
+		sorted[index] = heap.HeapDelete();
+		++index;
+	}
+
+	end = clock();
+
+	if (userIndex <= 100)
+	{
+		cout << "unsorted array: ";
+		for (int i = 0; i < userIndex; i++)
+			cout << testArray[i] << " ";
+
+		cout << endl << "sorted array: ";
+		for (int i = 0; i < userIndex; i++)
+			cout << sorted[i] << " ";
+	}
+	else
+      cout << "output supressed" << endl;
+
+    cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl << endl;
+
+	cout << "PriorityQueue" << endl;
+
+	begin = clock();
+
+	for (int i = 0; i < userIndex; i++)
+	{
+		pq.EnQueue(testArray[i]);
+	}
+
+	index = 0;
+	while (!pq.IsEmpty())
+	{
+		string temp;
+		pq.DeQueue(temp);
+		sorted[index] = temp;
+		++index;
+	}
+
+	end = clock();
+
+	if (userIndex <= 100)
+	{
+		cout << "unsorted array: ";
+		for (int i = 0; i < userIndex; i++)
+			cout << testArray[i] << " ";
+
+		cout << endl << "sorted array: ";
+		for (int i = 0; i < userIndex; i++)
+			cout << sorted[i] << " ";
+	} 
+	else
+      cout << "output supressed" << endl;
+
+    cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl << endl;
+
+	cout << "PriorityHeapQueue" << endl;
+
+    begin = clock();
+
+	for (int i = 0; i < userIndex; i++)
+	{
+		phq.Enqueue(testArray[i]);
+	}
+
+	index = 0;
+	while (!phq.IsEmpty())
+	{
+		string temp;
+		phq.Dequeue(temp);
+		sorted[index] = temp;
+		++index;
+	}
+
+	end = clock();
+
+	if (userIndex <= 100)
+	{
+		cout << "unsorted array: ";
+		for (int i = 0; i < userIndex; i++)
+			cout << testArray[i] << " ";
+
+		cout << endl << "sorted array: ";
+		for (int i = 0; i < userIndex; i++)
+			cout << sorted[i] << " ";
+	}
+	else
+      cout << "output supressed" << endl;
+
+    cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
+
+	cout << endl << endl;
 }
