@@ -6,11 +6,11 @@
 
 using namespace std;
 
-class FullPQ
+class FullPHQ
 {
 };
 
-class EmptyPQ
+class EmptyPHQ
 {
 };
 
@@ -75,7 +75,7 @@ public:
 	// Post:	 elements are streamed to outStream
 
 private:
-	Heap<ItemType> elements;
+	Heap<ItemType>* elements;
 	unsigned int length;
 };
 

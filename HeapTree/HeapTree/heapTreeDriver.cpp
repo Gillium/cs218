@@ -133,7 +133,7 @@ double diffclock(clock_t clock1, clock_t clock2)
 	return diffms;
 }
 
-void heapSorterUI(char choice);
+void heapSorterUI(char arrayOptionType);
 
 int main()
 {
@@ -149,10 +149,18 @@ int main()
 
 	do
 	{
-		
-		cout << "What type of heap would you like to build, (S)trings, (N)umbers, or (Q)uit?" << endl;
-		cin  >> choice;
-		cout << endl;
+		do
+		{
+			cout << "What type of heap would you like to build, (S)trings, (N)umbers, or (Q)uit?" << endl;
+			cin  >> choice;
+			cout << endl;
+
+			if (choice != 'S' && choice != 's' && choice != 'N' && choice != 'n' &&
+				choice != 'Q' && choice != 'q')
+				cout << "Sorry you entered an invalid command! Please try again." << endl << endl;
+
+		}while(choice != 'S' && choice != 's' && choice != 'N' && choice != 'n' &&
+			choice != 'Q' && choice != 'q');
 
 		if (choice == 'Q' || choice == 'q')
 			return 1;
@@ -367,7 +375,6 @@ int main()
 
 void heapSorterUI(char arrayOptionType)
 {
-	string orginalTestArray[SIZE];
 	string testArray[SIZE];
 	char arrayOption;
 	string sorted[SIZE];
@@ -441,10 +448,6 @@ void heapSorterUI(char arrayOptionType)
 
 		cout << endl;
 	}
-
-	// Capture the orginal array before sorting
-	for (int i = 0; i < userIndex; i++)
-		orginalTestArray[i] = testArray[i];
 
 	Heap<string> heap = Heap<string>();
 	PriorityQueueType<string> pq = PriorityQueueType<string>();
@@ -556,6 +559,5 @@ void heapSorterUI(char arrayOptionType)
       cout << "output supressed" << endl;
 
     cout << "Time elapsed: " << double(diffclock(end,begin)) << " ms"<< endl;
-
 	cout << endl << endl;
 }

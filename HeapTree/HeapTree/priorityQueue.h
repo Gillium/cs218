@@ -5,6 +5,14 @@
 
 using namespace std;
 
+class FullPQ
+{
+};
+
+class EmptyPQ
+{
+};
+
 template <class T>
 struct NodeTypeP
 {
