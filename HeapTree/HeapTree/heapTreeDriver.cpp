@@ -126,6 +126,64 @@ bool operator<= (my_variant_t& obj1, my_variant_t& obj2)
 	}
 }
 
+struct my_priority_t {
+	int key;
+	my_variant_t data;
+
+	void operator= (int obj)
+	{
+		data = obj;
+	}
+	
+	void operator= (char* obj)
+	{
+		data = obj;
+	}
+
+	void operator= (my_variant_t obj)
+	{
+		data = obj;
+	}
+
+	void operator= (my_priority_t obj)
+	{
+		key = obj.key;
+		data = obj.data;
+	}
+};
+
+ostream& operator<< (ostream& os, my_priority_t& obj)
+{
+	os << "{" << obj.key << ":" << obj.data << "}";
+
+	return os;
+}
+
+bool operator< (my_priority_t& obj1, my_priority_t& obj2)
+{
+	return (obj1.key < obj2.key);
+}
+
+bool operator> (my_priority_t& obj1, my_priority_t& obj2)
+{
+	return (obj1.key > obj2.key);
+}
+
+bool operator== (my_priority_t& obj1, my_priority_t& obj2)
+{
+	return (obj1.key == obj2.key);
+}
+
+bool operator>= (my_priority_t& obj1, my_priority_t& obj2)
+{
+	return (obj1.key >= obj2.key);
+}
+
+bool operator<= (my_priority_t& obj1, my_priority_t& obj2)
+{
+	return (obj1.key <= obj2.key);
+}
+
 double diffclock(clock_t clock1, clock_t clock2)
 {
 	double diffticks = clock1 - clock2;
@@ -138,14 +196,14 @@ void heapSorterUI(char arrayOptionType);
 int main()
 {
 	char command;
-	my_variant_t input;
+	my_priority_t input;
 	char choice;
 	string temp;
 	srand((unsigned int)time(0));
 
-	Heap<my_variant_t> heap = Heap<my_variant_t>();
-	PriorityQueueType<my_variant_t> pq = PriorityQueueType<my_variant_t>();
-	PriorityHeapQueueType<my_variant_t> phq = PriorityHeapQueueType<my_variant_t>();
+	Heap<my_priority_t> heap = Heap<my_priority_t>();
+	PriorityQueueType<my_priority_t> pq = PriorityQueueType<my_priority_t>();
+	PriorityHeapQueueType<my_priority_t> phq = PriorityHeapQueueType<my_priority_t>();
 
 	do
 	{
@@ -209,6 +267,14 @@ int main()
 							input = atoi(temp.c_str());
 							cout << endl;
 
+							int priority;
+							do
+							{
+								cout << "What Priority would you like to assign? 1(highest) - 5(lowest)" <<endl;
+								cin  >> priority;
+							}while (priority < 1 || priority > 5);
+							
+							input.key = priority;
 							heap.HeapInsert(input);
 							cout << input << " is inserted in Heap!" << endl;
 							pq.EnQueue(input);
@@ -241,7 +307,15 @@ int main()
 
 					input = (char*)temp.c_str();
 					cout << endl;
-					
+
+					int priority;
+					do
+					{
+						cout << "What Priority would you like to assign? 1(highest) - 5(lowest)" <<endl;
+						cin  >> priority;
+					}while (priority < 1 || priority > 5);
+							
+					input.key = priority;
 					heap.HeapInsert(input);
 					cout << input << " is inserted in Heap!" << endl;
 					pq.EnQueue(input);
@@ -260,7 +334,7 @@ int main()
 					try
 					{
 						cout << endl << heap.HeapDelete() << " is deleted from Heap!" << endl;
-						my_variant_t temp;
+						my_priority_t temp;
 						pq.DeQueue(temp);
 						cout << temp << " is dequeued from PriorityQueue!" << endl;
 						phq.Dequeue(temp);
@@ -279,7 +353,7 @@ int main()
 					try
 					{
 						cout << endl << heap.HeapDelete() << " is deleted from Heap!" << endl;
-						my_variant_t temp;
+						my_priority_t temp;
 						pq.DeQueue(temp);
 						cout << endl << temp << " is dequeued from PriorityQueue!" << endl << endl;
 						phq.Dequeue(temp);
@@ -323,7 +397,7 @@ int main()
 					cout << endl << endl;
 				}
 				else
-					cout << "Heap is empty!" << endl << endl;
+					cout << "PriorityHeapQueue is empty!" << endl << endl; 
 
 				command = 'M';
 			}
@@ -356,6 +430,7 @@ int main()
 			else if (command == 'N' || command == 'n')
 			{
 				heap.MakeEmpty();
+				pq.MakeEmpty();
 				phq.MakeEmpty();
 				break;
 			}
