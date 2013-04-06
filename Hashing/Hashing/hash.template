@@ -1,0 +1,205 @@
+#include <sstream>
+#include <string>
+#include "hash.h"
+#ifndef TEMPLATE_HASH
+#define TEMPLATE HASH
+
+template <class ItemType>
+Hash<ItemType>::Hash(ItemType emptyVal, ItemType deletedVal)
+// Constructor
+// Pre:  None
+// Post: data is initialized, length is zero, emptyItem is set to emptyVal, deletedItem is set to deletedVal
+{
+	emptyItem = emptyVal;
+	deletedItem = deletedVal;
+	
+	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
+		data[i] = emptyItem;
+
+	length = 0;
+}
+
+template <class ItemType>
+Hash<ItemType>::~Hash()
+// Deconstructor
+// Pre:  data is initialized
+// Post: data is destroyed
+{
+	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
+		data[i].~ItemType();
+}
+
+template <class ItemType>
+Hash<ItemType>::Hash(const Hash<ItemType>& orginalHash)
+// Copy constructor
+// Pre:  data is initialized, orginalHash is a valid hash with same size as this
+// Post: data contains a copy of the originalHash array, length is set to orginalHash length, emptyItem is set to orginalHash.emptyItem, deletedItem is set to orginalHash.deletedItem
+{
+	emptyItem = orginalHash.emptyItem;
+	deletedItem = orginalHash.deletedItem;
+
+	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
+		data[i] = orginalHash.data[i];
+
+	length = orginalHash.length;
+}
+
+template <class ItemType>
+void Hash<ItemType>::InsertItem(ItemType item)
+// Function: Inserts item in hash
+// Pre:  data is initialized
+// Post: data contains item, length is incremented
+{
+	if (!IsFull())
+	{
+		int location;
+		location = GetHash(item);
+
+		while ((data[location] != emptyItem) && (data[location] != deletedItem))
+			location = (location + 1) % ARRAY_SIZE;
+
+		data[location] = item;
+		length++;
+	}
+	else
+		throw HashIsFull();
+}
+
+template <class ItemType>
+bool Hash<ItemType>::Search(ItemType item)
+// Function: Searches hash array for item, if found return true otherwise false
+// Pre:	 data is initialized
+// Post: function value = (item found)
+{
+	try
+	{
+		GetItemIndex(item);
+		return true;
+	}
+	catch(ItemNotFound)
+	{
+		return false;
+	}
+}
+
+template <class ItemType>
+void Hash<ItemType>::DeleteItem(ItemType item)
+// Function: If item is found in hash array delete item else throw exception
+// Pre:	 data is intialized
+// Post: If item is found, data does not contain item and length is decremented, otherwise throws ItemNotFound
+{
+	try
+	{
+		data[GetItemIndex(item)] = deletedItem;
+		length--;
+	}
+	catch(ItemNotFound)
+	{
+		throw ItemNotFound();
+	}
+}
+
+template <class ItemType>
+ItemType Hash<ItemType>::RetrieveItem()
+// Function: Retrieves item from hash
+// Pre:		 data is initialized
+// Post:	 None 
+{
+	try
+	{
+		return (data[GetItemIndex(item)]);
+	}
+	catch(ItemNotFound)
+	{
+		throw ItemNotFound();
+	}
+}
+
+template <class ItemType>
+void Hash<ItemType>::Display(ostream& outStream)
+// Function: Displays hash table
+// Pre:		 data is intialized
+// Post:	 None
+{
+
+	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
+		outStream << i << "\t" << data[i] << endl;
+}
+
+template <class ItemType>
+unsigned int Hash<ItemType>::GetLength()
+// Function: Returns length of hash
+// Pre:		 data is intialized
+// Post:	 None
+{
+	return length;
+}
+
+template <class ItemType>
+unsigned int Hash<ItemType>::GetHash(ItemType item)
+// Function: Returns hash of item
+// Pre:		 None
+// Post:	 None
+{
+	stringstream sstream;
+	sstream << item;
+	string s = sstream.str();
+
+	int temp = 0;
+	for (unsigned int i = 0; i < s.length(); i++)
+		temp += (int)(s[i]);
+
+	temp %= ARRAY_SIZE;
+
+	return temp;
+}
+
+template <class ItemType>
+bool Hash<ItemType>::IsFull()
+// Function: Checks to see if hash array is full
+// Pre:		 data is intialized
+// Post:	 Function value = (length equals ARRAY_SIZE);
+{
+	return (length == ARRAY_SIZE);
+}
+
+template <class ItemType>
+bool Hash<ItemType>::IsEmpty()
+// Function: Checks to see if hash array is empty
+// Pre:		 data is intialized
+// Post:	 Function value = (length equals zero);
+{
+	return (length == 0);
+}
+
+template <class ItemType>
+unsigned int Hash<ItemType>::FindItemIndex(ItemType item)
+// Function: Returns the index of item if found otherwise throw exception
+// Pre:		 data is intialized
+// Post:	 Function value = (index of item) if found, otherwise throws ItemNotFound exception
+{
+	int location;
+
+	if (IsEmpty())
+		throw ItemNotFound();
+	else
+	{
+		location = GetHash(item);
+
+		int startIndex = location;
+		while (data[location] != emptyItem)
+		{
+			int nextLocation = (location + 1) % ARRAY_SIZE;
+
+			if (data[location] == item)
+				break;
+			else if (nextLocation == startIndex)
+				throw ItemNotFound();
+			else
+				location = nextLocation;
+		}
+	}
+
+	return location;
+}
+#endif
