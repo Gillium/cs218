@@ -36,6 +36,9 @@ int main() {
 
 	Hash<user> hash = Hash<user>(emptyUser, deletedUser);
 
+	
+	cout << hash.GetMD5Hash("Hello") << endl;
+
 	// Creates new outfile or validates existing one for override
 	ofstream outFile;
 	string outFileName;
@@ -54,6 +57,7 @@ int main() {
 		cin  >> choice;
 
 		if (choice == 'Y' || choice == 'y') {
+			cin.ignore();
 			outFile.open(outFileName.c_str());
 			break;
 		} else {
@@ -73,7 +77,6 @@ int main() {
 	string address;
 	string password;
 
-	cin.ignore();
 	cout << "Enter user email address: ";
 	getline(cin, address);
 	outFile << address << ":";

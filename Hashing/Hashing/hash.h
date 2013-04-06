@@ -1,6 +1,10 @@
 #include <cstdlib>
 #include <ostream>
 #include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 #ifndef MYHASH
 #define MYHASH
 
@@ -78,6 +82,8 @@ public:
 	// Function: Returns hash of item
 	// Pre:		 None
 	// Post:	 None
+
+	static string GetMD5Hash(string message);
 
 private:
 	ItemType data[ARRAY_SIZE];
