@@ -29,3 +29,10 @@
 *.exe
 *.suo
 *.sdf
+*.opensdf
+
+*.sln
+
+*.rc
+
+*.vcxproj
