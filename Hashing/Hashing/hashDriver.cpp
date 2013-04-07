@@ -4,7 +4,7 @@
 #include <string>
 #include <sys/stat.h>
 #include "hash.h"
-
+#include <conio.h>
 using namespace std;
 
 enum Roles {USER, ADMIN};
@@ -57,24 +57,35 @@ int main() {
 	// if does not exist, create admin account
 	if(stat(PASSWORD_FILENAME.c_str(), &buf) == -1) {
 		CreateAdminAccount(users);
-		cout << "Admin account created" << endl;
+		cout << "Admin account created" << endl << endl;
 		UpdatePasswordFile(users);
 	} else
 		ImportPasswordFile(users);
 
 	cout << "Please Login" << endl;
 	// read in address and password
-	string address;
-	string password;
-
+	
 	do
 	{
+		string address;
+		string password;
+
 		cout << "Enter email address: ";
 		getline(cin, address);
 	
-		// currently displays in text format
 		cout << "Enter password: ";
-		getline(cin, password);
+
+		char c=' ';
+		while (c!=13)
+		{
+			c=getch();
+			if (c!=13)
+			{
+				password+=c;
+				cout<<"*";
+			}
+		}
+		cout << endl;
 
 		try {
 			loggedInUser = AuthenticateUser(users, address, password);
@@ -104,7 +115,18 @@ void CreateAdminAccount(Hash<user> &users)
 	
 	// currently displays in text format
 	cout << "Enter password: ";
-	getline(cin, password);
+
+	char c=' ';
+	while (c!=13)
+	{
+		c=getch();
+		if (c!=13)
+		{
+			password+=c;
+			cout<<"*";
+		}
+	}
+	cout << endl;
 
 	// create admin account
 	user newUser;
