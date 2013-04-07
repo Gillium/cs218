@@ -28,6 +28,7 @@ ostream& operator<< (ostream& os, user& u) {
 
 const string PASSWORD_FILENAME = "password.txt"; // Should be put in protected directory
 void UpdatePasswordFile(Hash<user> users);
+void ImportPasswordFile(Hash<user> users);
 
 int main() {
 	user emptyUser;
@@ -67,11 +68,12 @@ int main() {
 	}
 
 	// else import existing accounts 
-	else{
+	else
+		ImportPasswordFile(hash);
+
+	hash.Display(cout);
 
 
-
-	}
 
 	system("Pause");
 	return 0;
@@ -90,7 +92,9 @@ void UpdatePasswordFile(Hash<user> users)
 	while (!temp.IsEmpty()) {
 		user tempUser;
 		temp.DeQueue(tempUser);
-		outFile << tempUser.email << ":" << tempUser.password << endl;
+		outFile << tempUser.email << ":" << tempUser.password;
+		if (temp.Length() > 1)
+			outFile << endl;
 	}
 
 	outFile.close();
@@ -101,8 +105,34 @@ void ImportPasswordFile(Hash<user> users)
 // Pre:		 password file exists, user is a valid hash
 // Post:	 users in password file are stored in hash
 {
-	ofstream outFile;
-	outFile.open(PASSWORD_FILENAME.c_str());
+	ifstream inFile;
+	inFile.open(PASSWORD_FILENAME.c_str());
 
+	while(!inFile.eof())
+	{
+		user newUser;
+		string account, name, passwrd;
+		getline(inFile, account);
 
+		// parse account
+		unsigned int seperatorIndex;
+		for (unsigned int i = 0; i < account.length(); i++) {
+			if (account[i] == ':') {
+				seperatorIndex = i;
+				break;
+			}
+		}
+
+		// get name
+		name = "";
+		name.append(account, 0, seperatorIndex);
+
+		// get password
+		passwrd = "";
+		passwrd.append(account, seperatorIndex + 1, account.length() - seperatorIndex - 1);
+
+		newUser.email = name;
+		newUser.password = passwrd;
+		users.InsertItem(newUser);
+	}
 }
