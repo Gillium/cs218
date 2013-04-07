@@ -36,3 +36,5 @@
 *.rc
 
 *.vcxproj
+Debug
+ipch
