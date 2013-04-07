@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include "queue.h"
 #ifndef MYHASH
 #define MYHASH
 
@@ -26,7 +27,7 @@ class ItemNotFound
 };
 
 
-static const int ARRAY_SIZE = 100;
+static const int ARRAY_SIZE = 101;
 
 template <class ItemType>
 class Hash
@@ -63,10 +64,15 @@ public:
 	// Pre:	 data is intialized
 	// Post: If item is found, data does not contain item and length is decremented, otherwise throws ItemNotFound
 
-	ItemType RetrieveItem();
+	ItemType RetrieveItem(ItemType item);
 	// Function: Retrieves item from hash
 	// Pre:		 data is initialized
-	// Post:	 None 
+	// Post:	 None
+
+	QueueType<ItemType> RetrieveAllItems();
+	// Function: Retrievesw all items from hash
+	// Pre:		 data is initialized
+	// Post:	 None
 
 	void Display(ostream& outStream);
 	// Function: Displays hash table
@@ -78,12 +84,15 @@ public:
 	// Pre:		 data is intialized
 	// Post:	 None
 
-	static unsigned int GetHash(ItemType item);
+	static unsigned int GetASCIIHash(ItemType item);
 	// Function: Returns hash of item
 	// Pre:		 None
 	// Post:	 None
 
 	static string GetMD5Hash(string message);
+	// Function: Returns md5 hash of message (from http://en.wikipedia.org/wiki/MD5)
+	// Pre:		 None
+	// Post:	 None
 
 private:
 	ItemType data[ARRAY_SIZE];

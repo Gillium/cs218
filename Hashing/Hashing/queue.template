@@ -1,0 +1,205 @@
+#include "queue.h"
+#ifndef QUEUETEMPLATE
+#define QUEUETEMPLATE
+
+template <class T>
+QueueType<T>::QueueType()
+// Constructor
+// Pre:  None
+// Post: Queue is initialized
+{
+	rearPTR = NULL;
+	length = 0;
+}
+
+template <class T>
+QueueType<T>::~QueueType()
+// Deconstrutor
+// Pre:	 Queue is initialized
+// Post: Queue is empty, nodes are freed
+{
+	MakeEmpty();
+}
+
+template <class T>
+QueueType<T>::QueueType(const QueueType<T>& acopy)
+// Copy constructor
+// Pre:  acopy is a valid QueueType 
+// Post: Queue is initialized with values from acopy
+{
+	if (acopy.IsEmpty())
+		return;
+
+	NodeType<T>* currentPTR;
+	currentPTR = acopy.rearPTR->next;
+	rearPTR = NULL;
+
+	for(int i = acopy.length; i > 0; i--)
+	{
+		NodeType<T>* temp = new NodeType<T>;
+		temp->data = currentPTR->data;
+
+		if (rearPTR == NULL)
+		{
+			rearPTR = temp;
+			temp->next = rearPTR;
+		}
+		else
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+		}
+
+		currentPTR = currentPTR->next;
+	}
+
+	length = acopy.length;
+}
+
+template <class T>
+void QueueType<T>::operator=(const QueueType<T>& acopy)
+// Assignment operator
+// Function: Overwrites queue with values from acopy
+// Pre:		 Queue is initialized
+// Post:	 Queue has values from acopy
+{
+	MakeEmpty();
+
+	if (acopy.IsEmpty())
+		return;
+
+	NodeType<T>* currentPTR;
+	currentPTR = acopy.rearPTR->next;
+
+	for(int i = acopy.length; i > 0; i--)
+	{
+		NodeType<T>* temp = new NodeType<T>;//
+		temp->data = currentPTR->data;
+
+		if (rearPTR == NULL)
+		{
+			rearPTR = temp;
+			temp->next = rearPTR;
+		}
+		else
+		{
+			temp->next = rearPTR->next;
+			rearPTR->next = temp;
+		}
+
+		currentPTR = currentPTR->next;//
+	}
+
+	length = acopy.length;
+}
+
+template <class T>
+bool QueueType<T>::IsFull()const
+// Function: To check to see if the queue is full
+// Pre:		 Queue is initialized
+// Post:	 Function value = (queue is full)
+{
+	NodeType<T>* location;
+	try
+	{
+		location = new NodeType<T>;
+		delete location;
+		return false;
+	}
+	catch(std::bad_alloc exception)
+	{
+		return true;
+	}
+}
+
+template <class T>
+bool QueueType<T>::IsEmpty()const
+// Function: To check to see if the queue is empty
+// Pre:		 Queue is initialized
+// Post:	 Function value = (queue is empty)
+{
+	return (length == 0);
+}
+
+template <class T>
+void QueueType<T>::MakeEmpty()
+// Function: Initializes the queue to an empty state
+// Pre:		 None
+// Post:	 Queue is empty
+{
+	if(IsEmpty())
+		return;
+
+	NodeType<T>* tmp = rearPTR->next;
+
+	while(length > 0)
+	{
+		rearPTR->next = tmp->next;
+		delete tmp;
+
+		if(rearPTR == NULL)
+			break;
+
+		tmp = rearPTR->next;
+		length--;
+	}
+}
+
+template <class T>
+void QueueType<T>::EnQueue(T item)
+// Function: Adds item to the rear of the queue
+// Pre:		 Queue is initilized
+// Post:	 if (queue is full), FullQueue exception is thrown, else item is a rear of
+//			 queue
+{
+	NodeType<T>* temp = new NodeType<T>;
+	temp->data = item;
+
+	if(IsEmpty())
+	{
+		rearPTR = temp;
+		temp->next = rearPTR;
+	}
+	else
+	{
+		temp->next = rearPTR->next;
+		rearPTR->next = temp;
+		rearPTR = temp;
+	}
+
+	length++;
+}
+
+template <class T>
+void QueueType<T>::DeQueue(T &item)
+// Function: Removes front item from the queue and returns it in item
+// Pre:		 Queue is initialized
+// Post:	 if (queue is empty), EmptyQueue exception is thrown and item is undefined,
+//			 else front element is removed from queue and item is a copy of removed
+//			 element
+{
+	if(IsEmpty())
+	{
+		throw EmptyQueue();
+	}
+	else
+	{
+		NodeType<T>* temp;
+		temp = rearPTR->next;
+		rearPTR->next = temp->next;
+		item = temp->data;
+		delete temp;
+		length--;
+	}
+}
+
+template <class T>
+unsigned int QueueType<T>::Length()const
+// Function: Returns length of queue
+// Pre:		 Queue is initialized
+// Post:	 function value = (length)
+{
+	return length;
+}
+
+#endif
