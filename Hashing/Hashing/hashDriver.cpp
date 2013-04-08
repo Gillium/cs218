@@ -1,10 +1,11 @@
+#include <conio.h>
 #include <fstream>
 #include <iostream>
 #include <ostream>
 #include <string>
 #include <sys/stat.h>
 #include "hash.h"
-#include <conio.h>
+
 using namespace std;
 
 enum Roles {USER, ADMIN};
@@ -14,7 +15,6 @@ struct user {
 	string password;
 	Roles role;
 };
-
 
 bool operator!= (user u1, user u2) {
 	return (u1.email != u2.email);
@@ -29,14 +29,19 @@ ostream& operator<< (ostream& os, user& u) {
 	return os;
 }
 
+// Exception class
 class AuthenticationError {
 };
 
 const string PASSWORD_FILENAME = "password.txt"; // Should be put in protected directory
+
 void CreateAdminAccount(Hash<user> &users);
 void UpdatePasswordFile(Hash<user> &users);
 void ImportPasswordFile(Hash<user> &users);
 user AuthenticateUser(Hash<user> &users, string address, string password);
+void DisplayMenu(Roles role);
+void ChangePassword(Hash<user> &users, user &u);
+string InputPassword();
 
 int main() {
 	user emptyUser;
@@ -62,41 +67,70 @@ int main() {
 	} else
 		ImportPasswordFile(users);
 
-	cout << "Please Login" << endl;
-	// read in address and password
-	
 	do
 	{
-		string address;
-		string password;
-
-		cout << "Enter email address: ";
-		getline(cin, address);
+		cout << "Please Login" << endl;
+		// read in address and password
 	
-		cout << "Enter password: ";
-
-		char c=' ';
-		while (c!=13)
+		do
 		{
-			c=getch();
-			if (c!=13)
-			{
-				password+=c;
-				cout<<"*";
-			}
-		}
-		cout << endl;
+			string address;
+			string password;
 
-		try {
-			loggedInUser = AuthenticateUser(users, address, password);
-		} catch(AuthenticationError) {
-			cout << "Incorrect username and password" << endl << endl;
-		}
-
-	} while (loggedInUser == emptyUser);
-
-	cout << "Welcome back" << ((loggedInUser.role == ADMIN) ? " Admin" : "") << "!" << endl;
+			cout << "Enter email address: ";
+			getline(cin, address);
 	
+			password = InputPassword("Enter password: ");
+			
+			try {
+				loggedInUser = AuthenticateUser(users, address, password);
+			} catch(AuthenticationError) {
+				cout << "Incorrect username and password" << endl << endl;
+			}
+
+		} while (loggedInUser == emptyUser);
+
+		cout << "Welcome back" << ((loggedInUser.role == ADMIN) ? " Admin" : "") << "!" << endl << endl;
+
+		char command;
+		do
+		{
+			DisplayMenu(loggedInUser.role);
+
+			cin >> command;
+
+			if (command == 'C' || command == 'c')
+			{
+				cin.ignore();
+				ChangePassword(users, loggedInUser);
+			}
+			else if (command == 'L' || command == 'l')
+			{
+				loggedInUser = emptyUser;
+				cout << "You have been logged out." << endl << endl;
+				break;
+			}
+			else if ((command == 'S' || command == 's') && loggedInUser.role == ADMIN)
+			{
+
+			}
+			else if ((command == 'A' || command == 'a') && loggedInUser.role == ADMIN)
+			{
+
+			}
+			else if ((command == 'D' || command == 'd') && loggedInUser.role == ADMIN)
+			{
+
+			}
+			else
+				cout << "Invalid command! Please try again." << endl << endl;
+		} while (command != 'L' || command != 'l');
+
+		system("Pause");
+		system("CLS");
+		cin.ignore();
+	} while (true);
+
 	system("Pause");
 	return 0;
 }
@@ -114,24 +148,12 @@ void CreateAdminAccount(Hash<user> &users)
 	getline(cin, address);
 	
 	// currently displays in text format
-	cout << "Enter password: ";
-
-	char c=' ';
-	while (c!=13)
-	{
-		c=getch();
-		if (c!=13)
-		{
-			password+=c;
-			cout<<"*";
-		}
-	}
-	cout << endl;
+	password = InputPassword("Enter password: ");
 
 	// create admin account
 	user newUser;
 	newUser.email = address;
-	newUser.password = Hash<user>::GetMD5Hash(password);
+	newUser.password = password;
 	newUser.role = ADMIN;
 
 	users.InsertItem(newUser);
@@ -211,16 +233,82 @@ void ImportPasswordFile(Hash<user> &users)
 
 user AuthenticateUser(Hash<user> &users, string address, string password)
 // Function: Finds the user in hash and checks the encrypted password
-// Pre:		 users is a valid hash, password is cleartext
+// Pre:		 users is a valid hash, password is encrypted
 // Post:	 returns user if found and encrypted password matches, else throws exception
 {
 	user tmpUser;
 	tmpUser.email = address;
-	tmpUser.password = Hash<user>::GetMD5Hash(password);
+	tmpUser.password = password;
 
 	try {
 		return users.RetrieveItem(tmpUser);
 	} catch (ItemNotFound) {
 		throw AuthenticationError();
 	}
+}
+
+void DisplayMenu(Roles role)
+// Function: Displays menu for a user or admin
+// Pre:		 None 
+// Post:	 Menu will be displayed on cout
+{
+	cout << "Menu" << endl;
+	cout << "<C>hange Password" << endl;
+	if (role == ADMIN)
+	{
+		cout << "<S>how users" << endl;
+		cout << "<A>dd user" << endl;
+		cout << "<D>elete user" << endl;
+	}
+	cout << "<L>og out" << endl << endl;
+}
+
+void ChangePassword(Hash<user> &users, user &u)
+// Function: Changes user password
+// Pre:		 users is a valid hash, u is a valid user
+// Post:	 user u in users contain new password if old password is valid and new password and confirmation match
+{
+	string oldPassword, newPassword, confirmation;
+
+	oldPassword = InputPassword("Please enter old password: ");
+	newPassword = InputPassword("Please enter new password: ");
+	confirmation = InputPassword("Please re-enter new password: ");
+
+	// authenticate old password
+	if (strcmp(oldPassword.c_str(), u.password.c_str()) == 0) {
+		// confirm new password
+		if (strcmp(newPassword.c_str(), confirmation.c_str()) == 0) {
+			users.DeleteItem(u);
+			u.password = newPassword;
+			users.InsertItem(u);
+			UpdatePasswordFile(users);
+			cout << "Password has been changed." << endl << endl;
+		}
+		else
+			cout << "New password and confirmation do not match. Password not changed." << endl << endl;
+	}
+	else
+		cout << "Old password incorrect. Password not changed." << endl << endl; 
+}
+
+string InputPassword(string prompt)
+// Function: Returns encrypted password string from hidden user input
+// Pre:		 None
+// Post:	 function value = (encrypted password string)
+{
+	cout << prompt;
+	string password = "";
+	char c = ' ';
+	while (c != 13)
+	{
+		c = _getch();
+		if (c != 13)
+		{
+			password += c;
+			cout << "*";
+		}
+	}
+	cout << endl;
+
+	return Hash<user>::GetMD5Hash(password);
 }
