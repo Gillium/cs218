@@ -6,18 +6,20 @@
 #define TEMPLATE_HASH
 
 template <class ItemType>
-Hash<ItemType>::Hash(ItemType emptyVal, ItemType deletedVal)
+Hash<ItemType>::Hash(ItemType emptyVal, ItemType deletedVal, CollisionTypes ct)
 // Constructor
 // Pre:  None
-// Post: data is initialized, length is zero, emptyItem is set to emptyVal, deletedItem is set to deletedVal
+// Post: data is initialized, length is zero, collisions is zero, emptyItem is set to emptyVal, deletedItem is set to deletedVal
 {
 	emptyItem = emptyVal;
 	deletedItem = deletedVal;
-	
+	collisionType = ct;
+
 	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
 		data[i] = emptyItem;
 
 	length = 0;
+	collisions = 0;
 }
 
 template <class ItemType>
@@ -34,15 +36,17 @@ template <class ItemType>
 Hash<ItemType>::Hash(const Hash<ItemType>& orginalHash)
 // Copy constructor
 // Pre:  data is initialized, orginalHash is a valid hash with same size as this
-// Post: data contains a copy of the originalHash array, length is set to orginalHash length, emptyItem is set to orginalHash.emptyItem, deletedItem is set to orginalHash.deletedItem
+// Post: data contains a copy of the originalHash array, length is set to orginalHash length, collisions is set to orginalHash collisions, emptyItem is set to orginalHash.emptyItem, deletedItem is set to orginalHash.deletedItem
 {
 	emptyItem = orginalHash.emptyItem;
 	deletedItem = orginalHash.deletedItem;
+	collisionType = orginalHash.collisionType;
 
 	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
 		data[i] = orginalHash.data[i];
 
 	length = orginalHash.length;
+	collisions = orginalHash.collisions;
 }
 
 template <class ItemType>
@@ -55,9 +59,25 @@ void Hash<ItemType>::InsertItem(ItemType item)
 	{
 		int location;
 		location = GetASCIIHash(item);
+		unsigned int startCollisions = collisions;
 
 		while ((data[location] != emptyItem) && (data[location] != deletedItem))
-			location = (location + 1) % ARRAY_SIZE;
+		{
+			collisions++;
+			switch(collisionType)
+			{
+				case LINEAR:
+					location = (location + 1) % ARRAY_SIZE;
+					break;
+				case QUADRATIC:
+					unsigned int steps = collisions - startCollisions;
+					if (steps % 2 == 1) // odd
+						location = (int)(location + pow(steps, 2.0)) % ARRAY_SIZE;
+					else
+						location = (int)(location - pow(steps, 2.0)) % ARRAY_SIZE;
+					break;
+			}
+		}
 
 		data[location] = item;
 		length++;
@@ -150,6 +170,24 @@ unsigned int Hash<ItemType>::GetLength()
 // Post:	 None
 {
 	return length;
+}
+
+template <class ItemType>
+unsigned int Hash<ItemType>::getCollisions()
+// Function: Returns collisions
+// Pre:		 hash is initialized
+// Post:	 function value = (collisions)
+{
+	return collisions;
+}
+
+template <class ItemType>
+void Hash<ItemType>::resetCollisions()
+// Function: Resets collisions
+// Pre:		 None
+// Post:	 collisions = 0
+{
+	collisions = 0;
 }
 
 template <class ItemType>
@@ -346,16 +384,28 @@ unsigned int Hash<ItemType>::FindItemIndex(ItemType item)
 // Pre:		 data is intialized
 // Post:	 Function value = (index of item) if found, otherwise throws ItemNotFound exception
 {
-	int location;
+	int location, nextLocation;
 
 	if (!IsEmpty()) {
 		location = GetASCIIHash(item);
 
 		int startIndex = location;
+		unsigned int steps = 0;
 		while (data[location] != emptyItem)
 		{
-			// Linear probing
-			int nextLocation = (location + 1) % ARRAY_SIZE;
+			switch(collisionType)
+			{
+				case LINEAR:
+					nextLocation = (location + 1) % ARRAY_SIZE;
+					break;
+				case QUADRATIC:
+					steps++;
+					if (steps % 2 == 1) // odd
+						nextLocation = (int)(location + pow(steps, 2.0)) % ARRAY_SIZE;
+					else
+						nextLocation = (int)(location - pow(steps, 2.0)) % ARRAY_SIZE;
+					break;
+			}
 
 			if (data[location] == item) {
 				return location;

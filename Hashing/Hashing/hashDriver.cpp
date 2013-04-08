@@ -42,6 +42,9 @@ class AccountNotFound {
 class ConfirmationError {
 };
 
+class PermissionError {
+};
+
 const string PASSWORD_FILENAME = "password.txt"; // Should be put in protected directory
 
 void CreateAccount(Hash<user> &users, Roles role);
@@ -55,6 +58,7 @@ string InputPassword(string prompt);
 void ShowUsers(Hash<user> users); // does not change users
 void AddUser(Hash<user> &users);
 void DeleteUser(Hash<user> &users, user adminUser);
+void PerformanceTest();
 
 int main() {
 	user emptyUser;
@@ -65,7 +69,7 @@ int main() {
 	deletedUser.email = "deleted";
 	deletedUser.password = "";
 
-	Hash<user> users = Hash<user>(emptyUser, deletedUser);
+	Hash<user> users = Hash<user>(emptyUser, deletedUser, LINEAR);
 	user loggedInUser = emptyUser;
 
 	// check to see if password file exists
@@ -130,6 +134,10 @@ int main() {
 				loggedInUser = emptyUser;
 				cout << "You have been logged out." << endl << endl;
 				break;
+			}
+			else if (command == 'P' || command == 'p')
+			{
+				PerformanceTest();
 			}
 			else if ((command == 'S' || command == 's') && loggedInUser.role == ADMIN)
 			{
@@ -207,12 +215,14 @@ void RemoveAccount(Hash<user> &users, user adminUser)
 
 	cout << "Enter email address: ";
 	getline(cin, address);
+
+	if (strcmp(address.c_str(), adminUser.email.c_str()) == 0)
+		throw PermissionError();
 	
 	adminPassword = InputPassword("Enter admin password to confirm removal: ");
 
 	if (strcmp(adminPassword.c_str(), adminUser.password.c_str()) != 0) {
-		cout << "Admin password invalid. Account not removed." << endl;
-		return;
+		throw ConfirmationError();
 	}
 
 	// create temp account
@@ -334,6 +344,7 @@ void DisplayMenu(Roles role)
 {
 	cout << "Menu" << endl;
 	cout << "<C>hange Password" << endl;
+	cout << "<P>erformance test" << endl;
 	if (role == ADMIN)
 	{
 		cout << "<S>how users" << endl;
@@ -437,5 +448,32 @@ void DeleteUser(Hash<user> &users, user adminUser)
 		UpdatePasswordFile(users);
 	} catch(AccountNotFound) {
 		cout << "Account not found" << endl << endl;
+	} catch(PermissionError) {
+		cout << "You do not have permission to remove this account." << endl << endl;
+	} catch(ConfirmationError) {
+		cout << "Admin password invalid. Account not removed." << endl;
 	}
+}
+
+void PerformanceTest()
+// Function: Performance comparison of two hashes using different collision handling
+// Pre:		 None
+// Post:	 None
+{
+	Hash<int> hashL = Hash<int>(-1, -2, LINEAR);
+	Hash<int> hashQ = Hash<int>(-1, -2, QUADRATIC);
+
+	for (int i = 0; i < 50; i++)
+	{
+		hashL.InsertItem(i);
+		hashQ.InsertItem(i);
+	}
+
+	cout << "Linear Collisions: " << hashL.getCollisions() << endl;
+	cout << "Quadratic Collisions: " << hashQ.getCollisions() << endl;
+
+	cout << "Linear Hash contents:" << endl;
+	hashL.Display(cout);
+	cout << "Quadratic Hash contents:" << endl;
+	hashQ.Display(cout);
 }
