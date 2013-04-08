@@ -29,19 +29,32 @@ ostream& operator<< (ostream& os, user& u) {
 	return os;
 }
 
-// Exception class
+// Exception classes
 class AuthenticationError {
+};
+
+class DuplicateAccount {
+};
+
+class AccountNotFound {
+};
+
+class ConfirmationError {
 };
 
 const string PASSWORD_FILENAME = "password.txt"; // Should be put in protected directory
 
-void CreateAdminAccount(Hash<user> &users);
+void CreateAccount(Hash<user> &users, Roles role);
+void RemoveAccount(Hash<user> &users, user adminUser);
 void UpdatePasswordFile(Hash<user> &users);
 void ImportPasswordFile(Hash<user> &users);
 user AuthenticateUser(Hash<user> &users, string address, string password);
 void DisplayMenu(Roles role);
 void ChangePassword(Hash<user> &users, user &u);
-string InputPassword();
+string InputPassword(string prompt);
+void ShowUsers(Hash<user> users); // does not change users
+void AddUser(Hash<user> &users);
+void DeleteUser(Hash<user> &users, user adminUser);
 
 int main() {
 	user emptyUser;
@@ -61,9 +74,17 @@ int main() {
 
 	// if does not exist, create admin account
 	if(stat(PASSWORD_FILENAME.c_str(), &buf) == -1) {
-		CreateAdminAccount(users);
-		cout << "Admin account created" << endl << endl;
-		UpdatePasswordFile(users);
+		bool isCreated = false;
+		do {
+			try {
+				CreateAccount(users, ADMIN);
+				cout << "Admin account created" << endl << endl;
+				UpdatePasswordFile(users);
+				isCreated = true;
+			} catch (ConfirmationError) {
+				cout << "Password and confirmation do not match. Account not created."  << endl << endl;
+			}
+		} while (!isCreated);
 	} else
 		ImportPasswordFile(users);
 
@@ -112,15 +133,17 @@ int main() {
 			}
 			else if ((command == 'S' || command == 's') && loggedInUser.role == ADMIN)
 			{
-
+				ShowUsers(users);
 			}
 			else if ((command == 'A' || command == 'a') && loggedInUser.role == ADMIN)
 			{
-
+				cin.ignore();
+				AddUser(users);
 			}
 			else if ((command == 'D' || command == 'd') && loggedInUser.role == ADMIN)
 			{
-
+				cin.ignore();
+				DeleteUser(users, loggedInUser);
 			}
 			else
 				cout << "Invalid command! Please try again." << endl << endl;
@@ -135,28 +158,85 @@ int main() {
 	return 0;
 }
 
-void CreateAdminAccount(Hash<user> &users)
-// Function: Creates an admin account and stores in hash
+void CreateAccount(Hash<user> &users, Roles role)
+// Function: Creates an account and stores in hash
 // Pre:		 users is a valid hash
-// Post:	 users contains new admin account
+// Post:	 users contains new account, throws exception if account already exists
 {
-	// read in admin account and password
+	// read in account and password
 	string address;
 	string password;
+	string confirmation;
 
-	cout << "Enter admin email address: ";
+	cout << "Enter " << ((role == ADMIN) ? "Admin " : "") << "email address: ";
 	getline(cin, address);
 	
-	// currently displays in text format
 	password = InputPassword("Enter password: ");
+	confirmation = InputPassword("Re-enter password: ");
 
-	// create admin account
+	if (strcmp(password.c_str(), confirmation.c_str()) != 0) {
+		throw ConfirmationError();
+	}
+
+	// create new account
 	user newUser;
 	newUser.email = address;
 	newUser.password = password;
-	newUser.role = ADMIN;
+	newUser.role = role;
+
+	QueueType<user> items = QueueType<user>(users.RetrieveAllItems());
+	while (!items.IsEmpty())
+	{
+		user u;
+		items.DeQueue(u);
+		if (strcmp(newUser.email.c_str(), u.email.c_str()) == 0)
+			throw DuplicateAccount();
+	}
 
 	users.InsertItem(newUser);
+}
+
+void RemoveAccount(Hash<user> &users, user adminUser)
+// Function: Removes account from users
+// Pre:		 users is a valid hash
+// Post:	 users does not contain account, throws exception if account is not found
+{
+	// read in account
+	string address;
+	string adminPassword;
+
+	cout << "Enter email address: ";
+	getline(cin, address);
+	
+	adminPassword = InputPassword("Enter admin password to confirm removal: ");
+
+	if (strcmp(adminPassword.c_str(), adminUser.password.c_str()) != 0) {
+		cout << "Admin password invalid. Account not removed." << endl;
+		return;
+	}
+
+	// create temp account
+	user tempUser;
+	tempUser.email = address;
+	
+	QueueType<user> items = QueueType<user>(users.RetrieveAllItems());
+	
+	bool isFound = false;
+	while (!items.IsEmpty())
+	{
+		user u;
+		items.DeQueue(u);
+		if (strcmp(tempUser.email.c_str(), u.email.c_str()) == 0) {
+			tempUser.password = u.password;
+			tempUser.role = u.role;
+			isFound = true;
+		}
+	}
+
+	if (!isFound)
+		throw AccountNotFound();
+
+	users.DeleteItem(tempUser);
 }
 
 void UpdatePasswordFile(Hash<user> &users)
@@ -173,7 +253,7 @@ void UpdatePasswordFile(Hash<user> &users)
 		user tempUser;
 		temp.DeQueue(tempUser);
 		outFile << tempUser.email << ":" << tempUser.role << ":" << tempUser.password;
-		if (temp.Length() > 1)
+		if (temp.Length() > 0)
 			outFile << endl;
 	}
 
@@ -311,4 +391,51 @@ string InputPassword(string prompt)
 	cout << endl;
 
 	return Hash<user>::GetMD5Hash(password);
+}
+
+void ShowUsers(Hash<user> users)
+// Function: Shows all users and roles in hash table
+// Pre:		 users is a valid hash
+// Post:	 users displayed on cout
+{
+	QueueType<user> items = QueueType<user>(users.RetrieveAllItems());
+
+	while (!items.IsEmpty())
+	{
+		user u;
+		items.DeQueue(u);
+		cout << ((u.role == ADMIN) ? 'A' : 'U') << ":" << u.email << endl;
+	}
+
+	cout << endl;
+}
+
+void AddUser(Hash<user> &users)
+// Function: Adds new user to hash
+// Pre:		 users is a valid hash
+// Post:	 users contains new user
+{
+	try {
+		CreateAccount(users, USER);
+		cout << "User account created" << endl << endl;
+		UpdatePasswordFile(users);
+	} catch(DuplicateAccount) {
+		cout << "Account already exists" << endl << endl;
+	} catch (ConfirmationError) {
+		cout << "Password and confirmation do not match. Account not created."  << endl << endl;
+	}
+}
+
+void DeleteUser(Hash<user> &users, user adminUser)
+// Function: Deletes user from hash
+// Pre:		 users is a valid hash
+// Post:	 users does not contain user
+{
+	try{
+		RemoveAccount(users, adminUser);
+		cout << "User account removed" << endl << endl;
+		UpdatePasswordFile(users);
+	} catch(AccountNotFound) {
+		cout << "Account not found" << endl << endl;
+	}
 }

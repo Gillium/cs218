@@ -118,7 +118,7 @@ ItemType Hash<ItemType>::RetrieveItem(ItemType item)
 
 template <class ItemType>
 QueueType<ItemType> Hash<ItemType>::RetrieveAllItems()
-// Function: Retrievesw all items from hash
+// Function: Retrieves all items from hash
 // Pre:		 data is initialized
 // Post:	 None
 {
@@ -139,7 +139,6 @@ void Hash<ItemType>::Display(ostream& outStream)
 // Pre:		 data is intialized
 // Post:	 None
 {
-
 	for (unsigned int i = 0; i < ARRAY_SIZE; i++)
 		outStream << i << "\t" << data[i] << endl;
 }

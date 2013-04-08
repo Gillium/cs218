@@ -70,7 +70,7 @@ public:
 	// Post:	 function value = (item) else throws exception when item not found
 
 	QueueType<ItemType> RetrieveAllItems();
-	// Function: Retrievesw all items from hash
+	// Function: Retrieves all items from hash
 	// Pre:		 data is initialized
 	// Post:	 None
 

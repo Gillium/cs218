@@ -28,7 +28,11 @@ QueueType<T>::QueueType(const QueueType<T>& acopy)
 // Post: Queue is initialized with values from acopy
 {
 	if (acopy.IsEmpty())
+	{
+		rearPTR = NULL;
+		length = 0;
 		return;
+	}
 
 	NodeType<T>* currentPTR;
 	currentPTR = acopy.rearPTR->next;
