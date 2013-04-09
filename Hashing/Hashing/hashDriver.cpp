@@ -115,6 +115,7 @@ int main() {
 
 		} while (loggedInUser == emptyUser);
 
+		system("CLS");
 		cout << "Welcome back" << ((loggedInUser.role == ADMIN) ? " Admin" : "") << "!" << endl << endl;
 
 		char command;
@@ -123,46 +124,66 @@ int main() {
 			DisplayMenu(loggedInUser.role);
 
 			cin >> command;
+			cout << endl;
 
 			if (command == 'C' || command == 'c')
 			{
+				system("CLS");
 				cin.ignore();
 				ChangePassword(users, loggedInUser);
+				system("Pause");
+				system("CLS");
 			}
 			else if (command == 'L' || command == 'l')
 			{
+				system("CLS");
 				loggedInUser = emptyUser;
 				cout << "You have been logged out." << endl << endl;
 				break;
 			}
 			else if (command == 'P' || command == 'p')
 			{
+				
+				system("CLS");
 				PerformanceTest();
+				system("Pause");
+				system("CLS");
 			}
 			else if ((command == 'S' || command == 's') && loggedInUser.role == ADMIN)
 			{
+				system("CLS");
 				ShowUsers(users);
+				system("Pause");
+				system("CLS");
 			}
 			else if ((command == 'A' || command == 'a') && loggedInUser.role == ADMIN)
 			{
+				system("CLS");
 				cin.ignore();
 				AddUser(users);
+				system("Pause");
+				system("CLS");
 			}
 			else if ((command == 'D' || command == 'd') && loggedInUser.role == ADMIN)
 			{
+				system("CLS");
 				cin.ignore();
 				DeleteUser(users, loggedInUser);
+				system("Pause");
+				system("CLS");
 			}
-			else
-				cout << "Invalid command! Please try again." << endl << endl;
+			else {
+				cout << "Invalid command! Please try again.";
+				system("Pause");
+				system("CLS");
+			}
 		} while (command != 'L' || command != 'l');
-
+		
 		system("Pause");
 		system("CLS");
 		cin.ignore();
 	} while (true);
 
-	system("Pause");
 	return 0;
 }
 
@@ -343,7 +364,7 @@ void DisplayMenu(Roles role)
 // Post:	 Menu will be displayed on cout
 {
 	cout << "Menu" << endl;
-	cout << "<C>hange Password" << endl;
+	cout << "<C>hange password" << endl;
 	cout << "<P>erformance test" << endl;
 	if (role == ADMIN)
 	{
@@ -351,7 +372,7 @@ void DisplayMenu(Roles role)
 		cout << "<A>dd user" << endl;
 		cout << "<D>elete user" << endl;
 	}
-	cout << "<L>og out" << endl << endl;
+	cout << "<L>og out" << endl;
 }
 
 void ChangePassword(Hash<user> &users, user &u)
@@ -469,11 +490,58 @@ void PerformanceTest()
 		hashQ.InsertItem(i);
 	}
 
-	cout << "Linear Collisions: " << hashL.getCollisions() << endl;
-	cout << "Quadratic Collisions: " << hashQ.getCollisions() << endl;
+	cout << "Insert 50 consecutive integers" << endl;
+	cout << "Total Linear Collisions: " << hashL.getCollisions() << endl;
+	cout << "Total Quadratic Collisions: " << hashQ.getCollisions() << endl;
+	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
+	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
 
+	hashL.resetCollisions();
+	hashQ.resetCollisions();
+
+	int searchSuccessCountL = 0;
+	int searchSuccessCountQ = 0;
+	for (int i = 0; i < 50; i++)
+	{
+		if (hashL.Search(i))
+			searchSuccessCountL++;
+		if (hashQ.Search(i))
+			searchSuccessCountQ++;
+	}
+
+	cout << "Search 50 consecutive integers" << endl;
+	cout << "Linear Searches successful: " << searchSuccessCountL << endl;
+	cout << "Quadratic Searches successful: " << searchSuccessCountQ << endl;
+	cout << "Total Linear Collisions: " << hashL.getCollisions() << endl;
+	cout << "Total Quadratic Collisions: " << hashQ.getCollisions() << endl;
+	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
+	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
+
+	hashL.resetCollisions();
+	hashQ.resetCollisions();
+	
+	int searchUnsuccessCountL = 0;
+	int searchUnsuccessCountQ = 0;
+	for (int i = 50; i < 100; i++)
+	{
+		if (!hashL.Search(i))
+			searchUnsuccessCountL++;
+		if (!hashQ.Search(i))
+			searchUnsuccessCountQ++;
+	}
+
+	cout << "Search 50 consecutive integers" << endl;
+	cout << "Linear Searches unsuccessful: " << searchUnsuccessCountL << endl;
+	cout << "Quadratic Searches unsuccessful: " << searchUnsuccessCountQ << endl;
+	cout << "Total Linear Collisions: " << hashL.getCollisions() << endl;
+	cout << "Total Quadratic Collisions: " << hashQ.getCollisions() << endl;
+	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
+	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
+	
 	cout << "Linear Hash contents:" << endl;
 	hashL.Display(cout);
+	cout << endl;
 	cout << "Quadratic Hash contents:" << endl;
 	hashQ.Display(cout);
+	cout << endl;
 }

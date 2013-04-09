@@ -57,10 +57,11 @@ void Hash<ItemType>::InsertItem(ItemType item)
 {
 	if (!IsFull())
 	{
-		int location;
-		location = GetASCIIHash(item);
-		unsigned int startCollisions = collisions;
+		int startLocation = GetASCIIHash(item);
+		int location = startLocation;
 
+		int steps = 1;
+		bool isAdd = true;
 		while ((data[location] != emptyItem) && (data[location] != deletedItem))
 		{
 			collisions++;
@@ -70,11 +71,16 @@ void Hash<ItemType>::InsertItem(ItemType item)
 					location = (location + 1) % ARRAY_SIZE;
 					break;
 				case QUADRATIC:
-					unsigned int steps = collisions - startCollisions;
-					if (steps % 2 == 1) // odd
-						location = (int)(location + pow(steps, 2.0)) % ARRAY_SIZE;
-					else
-						location = (int)(location - pow(steps, 2.0)) % ARRAY_SIZE;
+					if (isAdd) {
+						location = (int)(startLocation + pow(steps, 2.0)) % ARRAY_SIZE;
+						isAdd = false;
+					}
+					else {
+						location = (int)(startLocation - pow(steps++, 2.0)) % ARRAY_SIZE;
+						if (location < 0)
+							location += ARRAY_SIZE;
+						isAdd = true;
+					}
 					break;
 			}
 		}
@@ -390,7 +396,8 @@ unsigned int Hash<ItemType>::FindItemIndex(ItemType item)
 		location = GetASCIIHash(item);
 
 		int startIndex = location;
-		unsigned int steps = 0;
+		int steps = 1;
+		bool isAdd = true;
 		while (data[location] != emptyItem)
 		{
 			switch(collisionType)
@@ -399,21 +406,27 @@ unsigned int Hash<ItemType>::FindItemIndex(ItemType item)
 					nextLocation = (location + 1) % ARRAY_SIZE;
 					break;
 				case QUADRATIC:
-					steps++;
-					if (steps % 2 == 1) // odd
-						nextLocation = (int)(location + pow(steps, 2.0)) % ARRAY_SIZE;
-					else
-						nextLocation = (int)(location - pow(steps, 2.0)) % ARRAY_SIZE;
+					if (isAdd) {
+						nextLocation = (int)(startIndex + pow(steps, 2.0)) % ARRAY_SIZE;
+						isAdd = false;
+					}
+					else {
+						nextLocation = (int)(startIndex - pow(steps++, 2.0)) % ARRAY_SIZE;
+						if (nextLocation < 0)
+							nextLocation += ARRAY_SIZE;
+						isAdd = true;
+					}
 					break;
 			}
 
-			if (data[location] == item) {
+			if (data[location] == item)
 				return location;
-			}
 			else if (nextLocation == startIndex)
 				break;
-			else
+			else {
+				collisions++;
 				location = nextLocation;
+			}
 		}
 	}
 
