@@ -38,7 +38,8 @@ public:
 	Hash(ItemType emptyVal, ItemType deletedVal, CollisionTypes ct);
 	// Overloaded constructor
 	// Pre:  None
-	// Post: data is initialized, length is zero, emptyItem is set to emptyVal, deletedItem is set to deletedVal, collisionType set to ct
+	// Post: data is initialized, length is zero, emptyItem is set to emptyVal,
+	//		 deletedItem is set to deletedVal, collisionType set to ct
 
 	~Hash();
 	// Deconstructor
@@ -48,22 +49,25 @@ public:
 	Hash(const Hash<ItemType>& orginalHash);
 	// Copy constructor
 	// Pre:  data is initialized, orginalHash is a valid hash with same size as this
-	// Post: data contains a copy of the originalHash array, length is set to orginalHash length, emptyItem is set to orginalHash.emptyItem, deletedItem is set to orginalHash.deletedItem, collisionType is set to orginalHash.collisionType
+	// Post: data contains a copy of the originalHash array, length is set to orginalHash
+	//		 length, emptyItem is set to orginalHash.emptyItem, deletedItem is set to
+	//		 orginalHash.deletedItem, collisionType is set to orginalHash.collisionType
 
 	void InsertItem(ItemType item);
 	// Function: Inserts item in hash using collisionType to handle collisions
-	// Pre:  data is initialized
-	// Post: data contains item, length is incremented
+	// Pre:		 data is initialized
+	// Post:	 data contains item, length is incremented
 
 	bool Search(ItemType item);
 	// Function: Searches hash array for item, if found return true otherwise false
-	// Pre:	 data is initialized
-	// Post: function value = (item found)
+	// Pre:		 data is initialized
+	// Post:	 function value = (item found)
 
 	void DeleteItem(ItemType item);
 	// Function: If item is found in hash array delete item else throw exception
-	// Pre:	 data is intialized
-	// Post: If item is found, data does not contain item and length is decremented, otherwise throws ItemNotFound
+	// Pre:		 data is intialized
+	// Post:	 If item is found, data does not contain item and length is decremented,
+	//			 otherwise throws ItemNotFound
 
 	ItemType RetrieveItem(ItemType item);
 	// Function: Retrieves item from hash
@@ -98,7 +102,8 @@ public:
 	static unsigned int GetASCIIHash(ItemType item);
 	// Function: Returns simple ASCII hash of item
 	// Pre:		 None
-	// Post:	 function value = (sum of ASCII values of individual characters in string representation of items)
+	// Post:	 function value = (sum of ASCII values of individual characters in string
+	//			 representation of items)
 
 	static string GetMD5Hash(string message);
 	// Function: Returns md5 hash of message (from http://en.wikipedia.org/wiki/MD5)
@@ -126,7 +131,8 @@ private:
 	unsigned int FindItemIndex(ItemType item);
 	// Function: Returns the index of item if found otherwise throw exception
 	// Pre:		 data is intialized
-	// Post:	 function value = (index of item) if found, otherwise throws ItemNotFound exception
+	// Post:	 function value = (index of item) if found, otherwise throws ItemNotFound
+	//			 exception
 };
 
 #include "hash.template"

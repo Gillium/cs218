@@ -11,15 +11,13 @@ class EmptyQueue
 };
 
 template <class T>
-struct NodeType
-{
+struct NodeType {
 	T data;
 	NodeType<T>* next;
 };
 
 template <class T>
-class QueueType
-{
+class QueueType {
 public:
 	QueueType();
 	// Constructor

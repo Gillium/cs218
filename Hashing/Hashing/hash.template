@@ -9,7 +9,8 @@ template <class ItemType>
 Hash<ItemType>::Hash(ItemType emptyVal, ItemType deletedVal, CollisionTypes ct)
 // Constructor
 // Pre:  None
-// Post: data is initialized, length is zero, collisions is zero, emptyItem is set to emptyVal, deletedItem is set to deletedVal
+// Post: data is initialized, length is zero, collisions is zero, emptyItem is set to
+//		 emptyVal, deletedItem is set to deletedVal
 {
 	emptyItem = emptyVal;
 	deletedItem = deletedVal;
@@ -36,7 +37,9 @@ template <class ItemType>
 Hash<ItemType>::Hash(const Hash<ItemType>& orginalHash)
 // Copy constructor
 // Pre:  data is initialized, orginalHash is a valid hash with same size as this
-// Post: data contains a copy of the originalHash array, length is set to orginalHash length, collisions is set to orginalHash collisions, emptyItem is set to orginalHash.emptyItem, deletedItem is set to orginalHash.deletedItem
+// Post: data contains a copy of the originalHash array, length is set to orginalHash
+//		 length, collisions is set to orginalHash collisions, emptyItem is set to
+//		 orginalHash.emptyItem, deletedItem is set to orginalHash.deletedItem
 {
 	emptyItem = orginalHash.emptyItem;
 	deletedItem = orginalHash.deletedItem;
@@ -52,8 +55,8 @@ Hash<ItemType>::Hash(const Hash<ItemType>& orginalHash)
 template <class ItemType>
 void Hash<ItemType>::InsertItem(ItemType item)
 // Function: Inserts item in hash
-// Pre:  data is initialized
-// Post: data contains item, length is incremented
+// Pre:		 data is initialized
+// Post:	 data contains item, length is incremented
 {
 	if (!IsFull())
 	{
@@ -74,8 +77,7 @@ void Hash<ItemType>::InsertItem(ItemType item)
 					if (isAdd) {
 						location = (int)(startLocation + pow(steps, 2.0)) % ARRAY_SIZE;
 						isAdd = false;
-					}
-					else {
+					} else {
 						location = (int)(startLocation - pow(steps++, 2.0)) % ARRAY_SIZE;
 						if (location < 0)
 							location += ARRAY_SIZE;
@@ -87,24 +89,21 @@ void Hash<ItemType>::InsertItem(ItemType item)
 
 		data[location] = item;
 		length++;
-	}
-	else
+	} else
 		throw HashIsFull();
 }
 
 template <class ItemType>
 bool Hash<ItemType>::Search(ItemType item)
 // Function: Searches hash array for item, if found return true otherwise false
-// Pre:	 data is initialized
-// Post: function value = (item found)
+// Pre:		 data is initialized
+// Post:	 function value = (item found)
 {
-	try
-	{
+	try {
 		FindItemIndex(item);
 		return true;
 	}
-	catch(ItemNotFound)
-	{
+	catch(ItemNotFound) {
 		return false;
 	}
 }
@@ -113,15 +112,14 @@ template <class ItemType>
 void Hash<ItemType>::DeleteItem(ItemType item)
 // Function: If item is found in hash array delete item else throw exception
 // Pre:	 data is intialized
-// Post: If item is found, data does not contain item and length is decremented, otherwise throws ItemNotFound
+// Post: If item is found, data does not contain item and length is decremented,
+//		 otherwise throws ItemNotFound
 {
-	try
-	{
+	try {
 		data[FindItemIndex(item)] = deletedItem;
 		length--;
 	}
-	catch(ItemNotFound)
-	{
+	catch(ItemNotFound) {
 		throw ItemNotFound();
 	}
 }
@@ -132,12 +130,10 @@ ItemType Hash<ItemType>::RetrieveItem(ItemType item)
 // Pre:		 data is initialized
 // Post:	 function value = (item) else throws exception when item not found
 {
-	try
-	{
+	try {
 		return (data[FindItemIndex(item)]);
 	}
-	catch(ItemNotFound)
-	{
+	catch(ItemNotFound) {
 		throw ItemNotFound();
 	}
 }
@@ -150,8 +146,7 @@ QueueType<ItemType> Hash<ItemType>::RetrieveAllItems()
 {
 	QueueType<ItemType> temp = QueueType<ItemType>();
 
-	for (unsigned int i = 0; i < ARRAY_SIZE ; i++)
-	{
+	for (unsigned int i = 0; i < ARRAY_SIZE ; i++) {
 		if (data[i] != deletedItem && data[i] != emptyItem)
 			temp.EnQueue(data[i]);
 	}
@@ -225,7 +220,7 @@ string Hash<ItemType>::GetMD5Hash(string message)
     size_t initial_len = strlen(tmp);
 	uint8_t *initial_msg = (uint8_t*)tmp;
 
-	// Constants are the integer part of the sines of integers (in radians) * 2^32.
+	// Constants are the integer part of the sines of integers (in radians) * 2^32
 	const uint32_t k[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee ,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501 ,
@@ -286,10 +281,10 @@ string Hash<ItemType>::GetMD5Hash(string message)
     msg = (uint8_t*)calloc(new_len + 64, 1); // also appends "0" bits 
                                    // (we alloc also 64 extra bytes...)
     memcpy(msg, initial_msg, initial_len);
-    msg[initial_len] = 128; // write the "1" bit
+    msg[initial_len] = 128;	// write the "1" bit
  
-    bits_len = 8*initial_len; // note, we append the len
-    memcpy(msg + new_len, &bits_len, 4);           // in bits at the end of the buffer
+    bits_len = 8*initial_len;	// note, we append the len
+    memcpy(msg + new_len, &bits_len, 4);	// in bits at the end of the buffer
  
     // Process the message in successive 512-bit chunks:
     //for each 512-bit chunk of message:
@@ -388,7 +383,8 @@ template <class ItemType>
 unsigned int Hash<ItemType>::FindItemIndex(ItemType item)
 // Function: Returns the index of item if found otherwise throw exception
 // Pre:		 data is intialized
-// Post:	 Function value = (index of item) if found, otherwise throws ItemNotFound exception
+// Post:	 Function value = (index of item) if found, otherwise throws ItemNotFound
+//			 exception
 {
 	int location, nextLocation;
 
@@ -409,8 +405,7 @@ unsigned int Hash<ItemType>::FindItemIndex(ItemType item)
 					if (isAdd) {
 						nextLocation = (int)(startIndex + pow(steps, 2.0)) % ARRAY_SIZE;
 						isAdd = false;
-					}
-					else {
+					} else {
 						nextLocation = (int)(startIndex - pow(steps++, 2.0)) % ARRAY_SIZE;
 						if (nextLocation < 0)
 							nextLocation += ARRAY_SIZE;

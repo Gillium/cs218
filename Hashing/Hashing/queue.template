@@ -27,8 +27,7 @@ QueueType<T>::QueueType(const QueueType<T>& acopy)
 // Pre:  acopy is a valid QueueType 
 // Post: Queue is initialized with values from acopy
 {
-	if (acopy.IsEmpty())
-	{
+	if (acopy.IsEmpty()) {
 		rearPTR = NULL;
 		length = 0;
 		return;
@@ -38,18 +37,14 @@ QueueType<T>::QueueType(const QueueType<T>& acopy)
 	currentPTR = acopy.rearPTR->next;
 	rearPTR = NULL;
 
-	for(int i = acopy.length; i > 0; i--)
-	{
+	for(int i = acopy.length; i > 0; i--) {
 		NodeType<T>* temp = new NodeType<T>;
 		temp->data = currentPTR->data;
 
-		if (rearPTR == NULL)
-		{
+		if (rearPTR == NULL) {
 			rearPTR = temp;
 			temp->next = rearPTR;
-		}
-		else
-		{
+		} else {
 			temp->next = rearPTR->next;
 			rearPTR->next = temp;
 		}
@@ -75,18 +70,14 @@ void QueueType<T>::operator=(const QueueType<T>& acopy)
 	NodeType<T>* currentPTR;
 	currentPTR = acopy.rearPTR->next;
 
-	for(int i = acopy.length; i > 0; i--)
-	{
+	for(int i = acopy.length; i > 0; i--) {
 		NodeType<T>* temp = new NodeType<T>;//
 		temp->data = currentPTR->data;
 
-		if (rearPTR == NULL)
-		{
+		if (rearPTR == NULL) {
 			rearPTR = temp;
 			temp->next = rearPTR;
-		}
-		else
-		{
+		} else {
 			temp->next = rearPTR->next;
 			rearPTR->next = temp;
 		}
@@ -104,14 +95,12 @@ bool QueueType<T>::IsFull()const
 // Post:	 Function value = (queue is full)
 {
 	NodeType<T>* location;
-	try
-	{
+	try {
 		location = new NodeType<T>;
 		delete location;
 		return false;
 	}
-	catch(std::bad_alloc exception)
-	{
+	catch(std::bad_alloc exception) {
 		return true;
 	}
 }
@@ -159,13 +148,10 @@ void QueueType<T>::EnQueue(T item)
 	NodeType<T>* temp = new NodeType<T>;
 	temp->data = item;
 
-	if(IsEmpty())
-	{
+	if(IsEmpty()) {
 		rearPTR = temp;
 		temp->next = rearPTR;
-	}
-	else
-	{
+	} else {
 		temp->next = rearPTR->next;
 		rearPTR->next = temp;
 		rearPTR = temp;
@@ -182,12 +168,9 @@ void QueueType<T>::DeQueue(T &item)
 //			 else front element is removed from queue and item is a copy of removed
 //			 element
 {
-	if(IsEmpty())
-	{
+	if(IsEmpty()) {
 		throw EmptyQueue();
-	}
-	else
-	{
+	} else {
 		NodeType<T>* temp;
 		temp = rearPTR->next;
 		rearPTR->next = temp->next;

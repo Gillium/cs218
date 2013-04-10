@@ -86,19 +86,18 @@ int main() {
 				UpdatePasswordFile(users);
 				isCreated = true;
 			} catch (ConfirmationError) {
-				cout << "Password and confirmation do not match. Account not created."  << endl << endl;
+				cout << "Password and confirmation do not match. Account not created."  << endl
+					 << endl;
 			}
 		} while (!isCreated);
 	} else
 		ImportPasswordFile(users);
 
-	do
-	{
+	do {
 		cout << "Please Login" << endl;
 		// read in address and password
 	
-		do
-		{
+		do {
 			string address;
 			string password;
 
@@ -116,63 +115,50 @@ int main() {
 		} while (loggedInUser == emptyUser);
 
 		system("CLS");
-		cout << "Welcome back" << ((loggedInUser.role == ADMIN) ? " Admin" : "") << "!" << endl << endl;
+		cout << "Welcome back" << ((loggedInUser.role == ADMIN) ? " Admin" : "") << "!" << endl
+			 << endl;
 
 		char command;
-		do
-		{
+		do {
 			DisplayMenu(loggedInUser.role);
 
 			cin >> command;
 			cout << endl;
 
-			if (command == 'C' || command == 'c')
-			{
+			if (command == 'C' || command == 'c') {
 				system("CLS");
 				cin.ignore();
 				ChangePassword(users, loggedInUser);
 				system("Pause");
 				system("CLS");
-			}
-			else if (command == 'L' || command == 'l')
-			{
+			} else if (command == 'L' || command == 'l') {
 				system("CLS");
 				loggedInUser = emptyUser;
 				cout << "You have been logged out." << endl << endl;
 				break;
-			}
-			else if (command == 'P' || command == 'p')
-			{
-				
+			} else if (command == 'P' || command == 'p'){
 				system("CLS");
 				PerformanceTest();
 				system("Pause");
 				system("CLS");
-			}
-			else if ((command == 'S' || command == 's') && loggedInUser.role == ADMIN)
-			{
+			} else if ((command == 'S' || command == 's') && loggedInUser.role == ADMIN) {
 				system("CLS");
 				ShowUsers(users);
 				system("Pause");
 				system("CLS");
-			}
-			else if ((command == 'A' || command == 'a') && loggedInUser.role == ADMIN)
-			{
+			} else if ((command == 'A' || command == 'a') && loggedInUser.role == ADMIN) {
 				system("CLS");
 				cin.ignore();
 				AddUser(users);
 				system("Pause");
 				system("CLS");
-			}
-			else if ((command == 'D' || command == 'd') && loggedInUser.role == ADMIN)
-			{
+			} else if ((command == 'D' || command == 'd') && loggedInUser.role == ADMIN) {
 				system("CLS");
 				cin.ignore();
 				DeleteUser(users, loggedInUser);
 				system("Pause");
 				system("CLS");
-			}
-			else {
+			} else {
 				cout << "Invalid command! Please try again.";
 				system("Pause");
 				system("CLS");
@@ -214,8 +200,7 @@ void CreateAccount(Hash<user> &users, Roles role)
 	newUser.role = role;
 
 	QueueType<user> items = QueueType<user>(users.RetrieveAllItems());
-	while (!items.IsEmpty())
-	{
+	while (!items.IsEmpty()) {
 		user u;
 		items.DeQueue(u);
 		if (strcmp(newUser.email.c_str(), u.email.c_str()) == 0)
@@ -253,8 +238,7 @@ void RemoveAccount(Hash<user> &users, user adminUser)
 	QueueType<user> items = QueueType<user>(users.RetrieveAllItems());
 	
 	bool isFound = false;
-	while (!items.IsEmpty())
-	{
+	while (!items.IsEmpty()) {
 		user u;
 		items.DeQueue(u);
 		if (strcmp(tempUser.email.c_str(), u.email.c_str()) == 0) {
@@ -299,8 +283,7 @@ void ImportPasswordFile(Hash<user> &users)
 	ifstream inFile;
 	inFile.open(PASSWORD_FILENAME.c_str());
 
-	while(!inFile.eof())
-	{
+	while(!inFile.eof()) {
 		user newUser;
 		string account, name, role, passwrd;
 		getline(inFile, account);
@@ -366,8 +349,7 @@ void DisplayMenu(Roles role)
 	cout << "Menu" << endl;
 	cout << "<C>hange password" << endl;
 	cout << "<P>erformance test" << endl;
-	if (role == ADMIN)
-	{
+	if (role == ADMIN) {
 		cout << "<S>how users" << endl;
 		cout << "<A>dd user" << endl;
 		cout << "<D>elete user" << endl;
@@ -395,11 +377,10 @@ void ChangePassword(Hash<user> &users, user &u)
 			users.InsertItem(u);
 			UpdatePasswordFile(users);
 			cout << "Password has been changed." << endl << endl;
-		}
-		else
-			cout << "New password and confirmation do not match. Password not changed." << endl << endl;
-	}
-	else
+		} else
+			cout << "New password and confirmation do not match. Password not changed."
+				 << endl << endl;
+	} else
 		cout << "Old password incorrect. Password not changed." << endl << endl; 
 }
 
@@ -411,11 +392,9 @@ string InputPassword(string prompt)
 	cout << prompt;
 	string password = "";
 	char c = ' ';
-	while (c != 13)
-	{
+	while (c != 13) {
 		c = _getch();
-		if (c != 13)
-		{
+		if (c != 13) {
 			password += c;
 			cout << "*";
 		}
@@ -432,8 +411,7 @@ void ShowUsers(Hash<user> users)
 {
 	QueueType<user> items = QueueType<user>(users.RetrieveAllItems());
 
-	while (!items.IsEmpty())
-	{
+	while (!items.IsEmpty()) {
 		user u;
 		items.DeQueue(u);
 		cout << ((u.role == ADMIN) ? 'A' : 'U') << ":" << u.email << endl;
@@ -484,8 +462,7 @@ void PerformanceTest()
 	Hash<int> hashL = Hash<int>(-1, -2, LINEAR);
 	Hash<int> hashQ = Hash<int>(-1, -2, QUADRATIC);
 
-	for (int i = 0; i < 50; i++)
-	{
+	for (int i = 0; i < 50; i++) {
 		hashL.InsertItem(i);
 		hashQ.InsertItem(i);
 	}
@@ -496,13 +473,21 @@ void PerformanceTest()
 	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
 	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
 
+	cout << "Linear Hash contents:" << endl;
+	hashL.Display(cout);
+	cout << endl;
+	cout << "Quadratic Hash contents:" << endl;
+	hashQ.Display(cout);
+	cout << endl;
+	system("Pause");
+	system("CLS");
+
 	hashL.resetCollisions();
 	hashQ.resetCollisions();
 
 	int searchSuccessCountL = 0;
 	int searchSuccessCountQ = 0;
-	for (int i = 0; i < 50; i++)
-	{
+	for (int i = 0; i < 50; i++) {
 		if (hashL.Search(i))
 			searchSuccessCountL++;
 		if (hashQ.Search(i))
@@ -517,13 +502,21 @@ void PerformanceTest()
 	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
 	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
 
+	cout << "Linear Hash contents:" << endl;
+	hashL.Display(cout);
+	cout << endl;
+	cout << "Quadratic Hash contents:" << endl;
+	hashQ.Display(cout);
+	cout << endl;
+	system("Pause");
+	system("CLS");
+
 	hashL.resetCollisions();
 	hashQ.resetCollisions();
 	
 	int searchUnsuccessCountL = 0;
 	int searchUnsuccessCountQ = 0;
-	for (int i = 50; i < 100; i++)
-	{
+	for (int i = 50; i < 100; i++) {
 		if (!hashL.Search(i))
 			searchUnsuccessCountL++;
 		if (!hashQ.Search(i))
@@ -538,6 +531,33 @@ void PerformanceTest()
 	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
 	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
 	
+	cout << "Linear Hash contents:" << endl;
+	hashL.Display(cout);
+	cout << endl;
+	cout << "Quadratic Hash contents:" << endl;
+	hashQ.Display(cout);
+	cout << endl;
+	system("Pause");
+	system("CLS");
+
+	hashL.resetCollisions();
+	hashQ.resetCollisions();
+
+	int deleteCountL = 0;
+	int deleteCountQ = 0;
+	for (int i = 0; i < 50; i++) {
+		hashL.DeleteItem(i);
+		deleteCountL++;
+		hashQ.DeleteItem(i);
+		deleteCountQ++;
+	}
+
+	cout << "Delete 50 consecutive integers" << endl;
+	cout << "Total Linear Collisions: " << hashL.getCollisions() << endl;
+	cout << "Total Quadratic Collisions: " << hashQ.getCollisions() << endl;
+	cout << "Average Linear Collisions: " << (hashL.getCollisions() / 50) << endl;
+	cout << "Average Quadratic Collisions: " << (hashQ.getCollisions() / 50) << endl << endl;
+
 	cout << "Linear Hash contents:" << endl;
 	hashL.Display(cout);
 	cout << endl;
