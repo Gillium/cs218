@@ -125,8 +125,8 @@ public:
 private:
 	int numVertices;
 	VertexType vertices[MAX_VERTICES];
-	int edges[MAX_VERTICES][MAX_VERTICES];
-	bool* marks;
+	EdgeValueType edges[MAX_VERTICES][MAX_VERTICES];
+	bool* marks[MAX_VERTICES];
 };
 
 #include "graphType.template"

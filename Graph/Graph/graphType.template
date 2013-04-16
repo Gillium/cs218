@@ -6,9 +6,20 @@ template <class VertexType, class EdgeValueType>
 GraphType<VertexType, EdgeValueType>::GraphType()
 // Constructor
 // Pre:	 None
-// Post: GraphType is intialized
+// Post: GraphType is intialized, numVertices set to zero
 {
+	numVertices = 0;
 
+	// vertices does not need to be initialized since we are storing numVertices
+
+	for (int i = 0; i < MAX_VERTICES; i++) {
+		for (int j = 0; j < MAX_VERTICES; j++) {
+			edges[i][j] = (EdgeValueType)(0);
+		}
+	}
+
+	for (int i = 0; i < MAX_VERTICES; i++)
+		marks[i] = false;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -17,16 +28,33 @@ GraphType<VertexType, EdgeValueType>::~GraphType()
 // Pre:	 GraphType is initialized
 // Post: deletes vertices, edges
 {
+	for (int i = 0; i < MAX_VERTICES; i++)
+		delete [] edges[i];
 
+	delete [] edges;
+	delete [] vetices;
+	delete [] marks;
 }
 
 template <class VertexType, class EdgeValueType>
-GraphType<VertexType, EdgeValueType>::GraphType(const GraphType<VertexType>& acopy)
+GraphType<VertexType, EdgeValueType>::GraphType(const GraphType<VertexType, EdgeValueType>& acopy)
 // Copy constructor
 // Pre:	 GraphType is initialized
 // Post: Graph is initialized with values from acopy
 {
+	numVertices = acopy.numVertices
 
+	for (int i = 0; i < MAX_VERTICES; i++)
+		vertices[i] = acopy.vertices[i];
+
+	for (int i = 0; i < MAX_VERTICES; i++) {
+		for (int j = 0; j < MAX_VERTICES; j++) {
+			edges[i][j] = acopy.edges[i][j];
+		}
+	}
+
+	for (int i = 0; i < MAX_VERTICES; i++)
+		marks[i] = acopy.marks[i];
 }
 
 template <class VertexType, class EdgeValueType>
@@ -35,7 +63,18 @@ void GraphType<VertexType, EdgeValueType>::MakeEmpty()
 // Pre:		 GraphType is initialized
 // Post:	 marks, vertices, edges are empty, numVertices is zero
 {
+	numVertices = 0;
 
+	// vertices does not need to be initialized since we are storing numVertices
+
+	for (int i = 0; i < MAX_VERTICES; i++) {
+		for (int j = 0; j < MAX_VERTICES; j++) {
+			edges[i][j] = (EdgeValueType)(0);
+		}
+	}
+
+	for (int i = 0; i < MAX_VERTICES; i++)
+		marks[i] = false;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -44,7 +83,7 @@ bool GraphType<VertexType, EdgeValueType>::IsEmpty()
 // Pre:		 GraphType is initialized
 // Post:	 Function value = (graph is empty)
 {
-
+	return (numVertices == 0);
 }
 
 template <class VertexType, class EdgeValueType>
@@ -53,7 +92,7 @@ bool GraphType<VertexType, EdgeValueType>::IsFull()
 // Pre:		 GraphType is initialized
 // Post:	 Function value = (graph is full)
 {
-
+	return (numVertices == MAX_VERTICES);
 }
 
 template <class VertexType, class EdgeValueType>
@@ -62,7 +101,7 @@ void GraphType<VertexType, EdgeValueType>::AddVertex(VertexType vertex)
 // Pre:		 GraphType is initialized, Graph is not full
 // Post:	 vertex is in vertices, numVertices is incremented
 {
-
+	vertices[numVertices++] = vertex;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -71,7 +110,7 @@ void GraphType<VertexType, EdgeValueType>::AddEdge(VertexType fromVertex, Vertex
 // Pre:		 GraphType is initialized, fromVertex and toVertex are in vertices
 // Post:	 (fromVertex, toVertex) is in edges with the specified weight
 {
-
+	edges[Search(fromVertex)][Search(toVertex)] = weight;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -80,7 +119,7 @@ EdgeValueType GraphType<VertexType, EdgeValueType>::GetWeight(VertexType fromVer
 // Pre:		 GraphType is initialized, fromVertex and toVertex are vertices
 // Post:	 Function value = weight of edge from fromVertex to toVertex if edge exists, if edge does not exist function value = special "null-edge" value
 {
-
+	return edges[Search(fromVertex)][Search(toVertex)];
 }
 
 template <class VertexType, class EdgeValueType>
@@ -89,7 +128,9 @@ void GraphType<VertexType, EdgeValueType>::GetToVertices(VertexType vertex, QueT
 // Pre:		 GraphType is initialized, vertex is in vertices
 // Post:	 vertexQ contains the names of all vertices that are adjacent from vertex
 {
-
+	for (int i = 0; i < numVertices; i++)
+		vertexQ.EnQueue
+		Search(vertex) 
 }
 
 template <class VertexType, class EdgeValueType>
