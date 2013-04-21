@@ -20,6 +20,12 @@ namespace Graph {
 		bool operator==(Vertex v) {
 			return (name == v.name);
 		}
+
+		void operator=(Vertex v) {
+			name = v.name;
+			x = v.x;
+			y = v.y;
+		}
 	};
 
 	/// <summary>
@@ -63,6 +69,16 @@ namespace Graph {
 	private: System::Windows::Forms::TextBox^  vertexX;
 	private: System::Windows::Forms::TextBox^  vertexY;
 	private: System::Windows::Forms::Button^  deleteVertex;
+	private: System::Windows::Forms::Button^  addEdge;
+	private: System::Windows::Forms::TextBox^  weight;
+	private: System::Windows::Forms::TextBox^  toVertex;
+	private: System::Windows::Forms::Label^  label4;
+	private: System::Windows::Forms::Label^  label5;
+	private: System::Windows::Forms::Label^  label6;
+	private: System::Windows::Forms::TextBox^  fromVertex;
+	private: System::Windows::Forms::Button^  deleteEdge;
+	private: System::Windows::Forms::Button^  isConnected;
+
 			 GraphType<Vertex, int>* graph;
 
 #pragma region Windows Form Designer generated code
@@ -80,6 +96,15 @@ namespace Graph {
 			this->vertexX = (gcnew System::Windows::Forms::TextBox());
 			this->vertexY = (gcnew System::Windows::Forms::TextBox());
 			this->deleteVertex = (gcnew System::Windows::Forms::Button());
+			this->addEdge = (gcnew System::Windows::Forms::Button());
+			this->weight = (gcnew System::Windows::Forms::TextBox());
+			this->toVertex = (gcnew System::Windows::Forms::TextBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->fromVertex = (gcnew System::Windows::Forms::TextBox());
+			this->deleteEdge = (gcnew System::Windows::Forms::Button());
+			this->isConnected = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// btn_addVertex
@@ -150,11 +175,100 @@ namespace Graph {
 			this->deleteVertex->UseVisualStyleBackColor = true;
 			this->deleteVertex->Click += gcnew System::EventHandler(this, &Form1::deleteVertex_Click);
 			// 
+			// addEdge
+			// 
+			this->addEdge->Location = System::Drawing::Point(504, 141);
+			this->addEdge->Name = L"addEdge";
+			this->addEdge->Size = System::Drawing::Size(144, 50);
+			this->addEdge->TabIndex = 9;
+			this->addEdge->Text = L"Add Edge";
+			this->addEdge->UseVisualStyleBackColor = true;
+			this->addEdge->Click += gcnew System::EventHandler(this, &Form1::addEdge_Click);
+			// 
+			// weight
+			// 
+			this->weight->Location = System::Drawing::Point(726, 175);
+			this->weight->Name = L"weight";
+			this->weight->Size = System::Drawing::Size(115, 20);
+			this->weight->TabIndex = 15;
+			// 
+			// toVertex
+			// 
+			this->toVertex->Location = System::Drawing::Point(726, 157);
+			this->toVertex->Name = L"toVertex";
+			this->toVertex->Size = System::Drawing::Size(115, 20);
+			this->toVertex->TabIndex = 14;
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(654, 175);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(44, 13);
+			this->label4->TabIndex = 13;
+			this->label4->Text = L"Weight:";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(654, 157);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(56, 13);
+			this->label5->TabIndex = 12;
+			this->label5->Text = L"To Vertex:";
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(654, 141);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(66, 13);
+			this->label6->TabIndex = 11;
+			this->label6->Text = L"From Vertex:";
+			// 
+			// fromVertex
+			// 
+			this->fromVertex->Location = System::Drawing::Point(726, 138);
+			this->fromVertex->Name = L"fromVertex";
+			this->fromVertex->Size = System::Drawing::Size(115, 20);
+			this->fromVertex->TabIndex = 10;
+			// 
+			// deleteEdge
+			// 
+			this->deleteEdge->Location = System::Drawing::Point(504, 197);
+			this->deleteEdge->Name = L"deleteEdge";
+			this->deleteEdge->Size = System::Drawing::Size(144, 50);
+			this->deleteEdge->TabIndex = 16;
+			this->deleteEdge->Tag = L"";
+			this->deleteEdge->Text = L" Delete Edge";
+			this->deleteEdge->UseVisualStyleBackColor = true;
+			this->deleteEdge->Click += gcnew System::EventHandler(this, &Form1::deleteEdge_Click);
+			// 
+			// isConnected
+			// 
+			this->isConnected->Location = System::Drawing::Point(504, 253);
+			this->isConnected->Name = L"isConnected";
+			this->isConnected->Size = System::Drawing::Size(144, 50);
+			this->isConnected->TabIndex = 17;
+			this->isConnected->Tag = L"";
+			this->isConnected->Text = L"Is Connected\?";
+			this->isConnected->UseVisualStyleBackColor = true;
+			this->isConnected->Click += gcnew System::EventHandler(this, &Form1::isConnected_Click);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(867, 583);
+			this->Controls->Add(this->isConnected);
+			this->Controls->Add(this->deleteEdge);
+			this->Controls->Add(this->weight);
+			this->Controls->Add(this->toVertex);
+			this->Controls->Add(this->label4);
+			this->Controls->Add(this->label5);
+			this->Controls->Add(this->label6);
+			this->Controls->Add(this->fromVertex);
+			this->Controls->Add(this->addEdge);
 			this->Controls->Add(this->deleteVertex);
 			this->Controls->Add(this->vertexY);
 			this->Controls->Add(this->vertexX);
@@ -174,8 +288,8 @@ namespace Graph {
 		// Location and dimension constants
 		static const int headX = 25;
 		static const int headY = 45;
-		static const int nodeLength = 50;
-		static const int nodeHeight = 25;
+		//static const int nodeLength = 50;
+		//static const int nodeHeight = 25;
 		static const int arrowLength = 30;
 
 		// Declare graphics and drawing objects
@@ -204,9 +318,7 @@ namespace Graph {
 							v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
 							 v.x = System::Int32::Parse(this->vertexX->Text);
 							 v.y = System::Int32::Parse(this->vertexY->Text);
-							 bool isFound;
-							 this->graph->Search(v, isFound);
-							 if (isFound) {
+							 if (this->graph->Search(v)) {
 							   this->graph->UpdateVertex(v);
 							 }
 							 else
@@ -219,7 +331,7 @@ namespace Graph {
 					 MessageBox::Show("Cannot leave inputs blank!");
 			 }
 
-	private: void drawGraph(){
+	private: void drawGraph() {
 			 this->Refresh();
 			 QueueType<Vertex> vertexQ;
 			 this->graph->GetAllVertices(vertexQ);
@@ -229,6 +341,14 @@ namespace Graph {
 				g->DrawEllipse(blackPen, v.x, v.y, 50, 50);
 				String^ drawString = gcnew String(v.name.c_str());
 				g->DrawString(drawString, arialFont, blackBrush, v.x + 18 , v.y + 17, drawFormat);
+				QueueType<Vertex> adjQ;
+				this->graph->GetToVertices(v, adjQ);
+				while (!adjQ.IsEmpty()) {
+					Vertex adjV;
+					adjQ.DeQueue(adjV);
+					int w = this->graph->GetWeight(v, adjV);
+					g->DrawLine(blackPen, v.x + 25, v.y + 25, adjV.x + 25, adjV.y + 25);
+				}
 			 }
 		}
 	private: System::Void deleteVertex_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -240,7 +360,59 @@ namespace Graph {
 			 } catch(NotFound) {
 				MessageBox::Show("Vertex Not Found!");
 			 }
-			 
+		 }
+	private: System::Void addEdge_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
+					 !String::IsNullOrWhiteSpace(this->toVertex->Text) &&
+					 !String::IsNullOrWhiteSpace(this->weight->Text)) {
+				Vertex fv, tv;
+				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+					
+					if (!this->graph->Search(fv)) {
+					MessageBox::Show("From Vertex Not Found!");
+					}
+					else {
+					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+					if (!this->graph->Search(tv)) {
+						MessageBox::Show("To Vertex Not Found!");
+					} else {
+							try {
+							int w = System::Int32::Parse(this->weight->Text);
+							this->graph->AddEdge(fv, tv, w);
+							drawGraph();
+						} catch(FormatException ^) {
+							MessageBox::Show("Must be an integer input for Weight!");
+						}
+					}
+					}
+				 } else
+					 MessageBox::Show("Cannot leave inputs blank!");
+		 }
+private: System::Void deleteEdge_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
+					 !String::IsNullOrWhiteSpace(this->toVertex->Text)) {
+				Vertex fv, tv;
+				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+					if (!this->graph->Search(fv)) {
+					MessageBox::Show("From Vertex Not Found!");
+					}
+					else {
+					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+					if (!this->graph->Search(tv)) {
+						MessageBox::Show("To Vertex Not Found!");
+					} else {
+							this->graph->DeleteEdge(fv, tv);
+							drawGraph();
+					}
+					}
+				 } else
+					 MessageBox::Show("Cannot leave inputs blank!");
+		 }
+private: System::Void isConnected_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (this->graph->IsConnected())
+				MessageBox::Show("Graph Is Connected!");
+			 else
+				MessageBox::Show("Graph Is Not Connected!");
 		 }
 };
 }

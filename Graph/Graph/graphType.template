@@ -30,12 +30,7 @@ GraphType<VertexType, EdgeValueType>::~GraphType()
 // Pre:	 GraphType is initialized
 // Post: deletes vertices, edges
 {
-	for (int i = 0; i < MAX_VERTICES; i++)
-		delete [] edges[i];
-
-	delete [] edges;
-	delete [] vetices;
-	delete [] marks;
+	
 }
 
 template <class VertexType, class EdgeValueType>
@@ -44,8 +39,8 @@ GraphType<VertexType, EdgeValueType>::GraphType(const GraphType<VertexType, Edge
 // Pre:	 GraphType is initialized
 // Post: Graph is initialized with values from acopy
 {
-	numVertices = acopy.numVertices
-	numEdges = acopy.numEdges
+	numVertices = acopy.numVertices;
+	numEdges = acopy.numEdges;
 
 	for (int i = 0; i < MAX_VERTICES; i++)
 		vertices[i] = acopy.vertices[i];
@@ -112,9 +107,14 @@ template <class VertexType, class EdgeValueType>
 void GraphType<VertexType, EdgeValueType>::AddEdge(VertexType fromVertex, VertexType toVertex, EdgeValueType weight)
 // Function: Adds an edge with the specified weight from fromVertex to toVertex
 // Pre:		 GraphType is initialized, fromVertex and toVertex are in vertices
-// Post:	 (fromVertex, toVertex) is in edges with the specified weight
+// Post:	 (fromVertex, toVertex) is in edges with the specified weight, throws NotFound exception when fromVertex or toVertex not in vertices
 {
-	edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+	try {
+		edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+		numEdges++;
+	} catch (NotFound) {
+		throw NotFound();
+	}
 }
 
 template <class VertexType, class EdgeValueType>
@@ -144,22 +144,21 @@ void GraphType<VertexType, EdgeValueType>::GetToVertices(VertexType fromVertex, 
 	int fromVertexIndex = GetVertexIndex(fromVertex);
 	for (int toVertexIndex = 0; toVertexIndex < numVertices; toVertexIndex++){
 		if (edges[fromVertexIndex][toVertexIndex] != (EdgeValueType)(0))
-			vertexQ.EnQueue(edges[fromVertexIndex][toVertexIndex]);
+			vertexQ.EnQueue(vertices[toVertexIndex]);
 	}
 }
 
 template <class VertexType, class EdgeValueType>
-VertexType GraphType<VertexType, EdgeValueType>::Search(VertexType vertex, bool& isFound)
-// Function: Searches and returns a vertex in the graph
+bool GraphType<VertexType, EdgeValueType>::Search(VertexType& vertex)
+// Function: Searches for a vertex in the graph
 // Pre:		 GraphType is initialized
-// Post:	 Function value = (vertex), isFound is set to true otherwise NULL is returned and isFound is set to false;
+// Post:	 Function value = (vertex in vertices), vertex is set to vertex in vertices
 {
 	try {
-		isFound = true;
-		return (vertices[GetVertexIndex(vertex)]);
+		vertex = vertices[GetVertexIndex(vertex)];
+		return true;
 	} catch(NotFound) {
-		isFound = false;
-		return vertex;
+		return false;
 	}
 }
 
@@ -210,8 +209,11 @@ bool GraphType<VertexType, EdgeValueType>::IsConnected()
 {
 	if (numVertices <= 1)
 		return true;
-	else
-		return (FindMinimalSpanningTree(vertices[0]).GetVerticesCount() == numVertices);
+	else {
+		GraphType<VertexType, EdgeValueType> subgraph;
+		FindMinimalSpanningTree(vertices[0], subgraph);
+		return (subgraph.GetVerticesCount() == numVertices);
+	}
 }
 
 template <class VertexType, class EdgeValueType>
@@ -228,7 +230,7 @@ void GraphType<VertexType, EdgeValueType>::ShortestPath(VertexType fromVertex, V
 }
 
 template <class VertexType, class EdgeValueType>
-GraphType<VertexType, EdgeValueType> GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType vertex)
+void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType vertex, GraphType<VertexType, EdgeValueType>& subgraph)
 // Function: Finds the subgraph of the graph containing the shortest paths between the vertices starting at vertex
 // Pre:		 GraphType is intialized
 // Post:	 Function value = (graph describing minimal spanning tree)
@@ -254,11 +256,14 @@ GraphType<VertexType, EdgeValueType> GraphType<VertexType, EdgeValueType>::FindM
 				}
 			}
 		}
-		subGraph.AddVertex(vertices[y]);
-		subGraph.AddEdge(vertices[x], vertices[y], min);
+
+		if (min != 0) {
+			subGraph.AddVertex(vertices[y]);
+			subGraph.AddEdge(vertices[x], vertices[y], min);
+		}
 		++ne;
 	}
-	return subGraph;
+	//return subGraph;
 }
 
 template <class VertexType, class EdgeValueType>

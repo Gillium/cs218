@@ -67,7 +67,7 @@ public:
 	void AddEdge(VertexType fromVertex, VertexType toVertex, EdgeValueType weight);
 	// Function: Adds an edge with the specified weight from fromVertex to toVertex
 	// Pre:		 GraphType is initialized, fromVertex and toVertex are in vertices
-	// Post:	 (fromVertex, toVertex) is in edges with the specified weight
+	// Post:	 (fromVertex, toVertex) is in edges with the specified weight, throws NotFound exception when fromVertex or toVertex not in vertices
 
 	void UpdateVertex(VertexType vertex);
 	// Function: Updates vertex in the graph
@@ -84,10 +84,10 @@ public:
 	// Pre:		 GraphType is initialized, fromVertex is in vertices
 	// Post:	 vertexQ contains the names of all vertices that are adjacent from fromVertex
 
-	VertexType Search(VertexType vertex, bool& isFound);
-	// Function: Searches and returns a vertex in the graph
+	bool Search(VertexType& vertex);
+	// Function: Searches for a vertex in the graph
 	// Pre:		 GraphType is initialized
-	// Post:	 Function value = (vertex), isFound is set to true otherwise NULL is returned and isFound is set to false;
+	// Post:	 Function value = (vertex in vertices), vertex is set to vertex in vertices
 
 	void DeleteVertex(VertexType vertex);
 	// Function: Deletes vertex from graph and associated edges
@@ -114,7 +114,7 @@ public:
 	// Pre:		 GraphType is intialized
 	// Post:	 pathQ contains vertices describing the shortest path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 
-	GraphType<VertexType, EdgeValueType> FindMinimalSpanningTree(VertexType vertex);
+	void FindMinimalSpanningTree(VertexType vertex, GraphType<VertexType, EdgeValueType>& subgraph);
 	// Function: Finds the subgraph of the graph containing the shortest paths between the vertices starting at vertex
 	// Pre:		 GraphType is intialized
 	// Post:	 Function value = (graph describing minimal spanning tree)
