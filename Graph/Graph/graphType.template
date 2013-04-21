@@ -1,4 +1,5 @@
 #include "graphType.h"
+#include "stack.h"
 #ifndef GRAPHTEMPLATE
 #define GRAPHTEMPLATE
 
@@ -9,6 +10,7 @@ GraphType<VertexType, EdgeValueType>::GraphType()
 // Post: GraphType is intialized, numVertices set to zero
 {
 	numVertices = 0;
+	numEdges = 0;
 
 	// vertices does not need to be initialized since we are storing numVertices
 
@@ -43,6 +45,7 @@ GraphType<VertexType, EdgeValueType>::GraphType(const GraphType<VertexType, Edge
 // Post: Graph is initialized with values from acopy
 {
 	numVertices = acopy.numVertices
+	numEdges = acopy.numEdges
 
 	for (int i = 0; i < MAX_VERTICES; i++)
 		vertices[i] = acopy.vertices[i];
@@ -64,6 +67,7 @@ void GraphType<VertexType, EdgeValueType>::MakeEmpty()
 // Post:	 marks, vertices, edges are empty, numVertices is zero
 {
 	numVertices = 0;
+	numEdges = 0;
 
 	// vertices does not need to be initialized since we are storing numVertices
 
@@ -110,7 +114,16 @@ void GraphType<VertexType, EdgeValueType>::AddEdge(VertexType fromVertex, Vertex
 // Pre:		 GraphType is initialized, fromVertex and toVertex are in vertices
 // Post:	 (fromVertex, toVertex) is in edges with the specified weight
 {
-	edges[Search(fromVertex)][Search(toVertex)] = weight;
+	edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+}
+
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::UpdateVertex(VertexType vertex)
+// Function: Updates vertex in the graph
+// Pre:      GraphType is initialized
+// Post:     vertex in vertices is replaced with vertex
+{
+	vertices[GetVertexIndex(vertex)] = vertex;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -119,27 +132,35 @@ EdgeValueType GraphType<VertexType, EdgeValueType>::GetWeight(VertexType fromVer
 // Pre:		 GraphType is initialized, fromVertex and toVertex are vertices
 // Post:	 Function value = weight of edge from fromVertex to toVertex if edge exists, if edge does not exist function value = special "null-edge" value
 {
-	return edges[Search(fromVertex)][Search(toVertex)];
+	return edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)];
 }
 
 template <class VertexType, class EdgeValueType>
-void GraphType<VertexType, EdgeValueType>::GetToVertices(VertexType vertex, QueType& vertexQ)
-// Function: Returns a queue of the vertices that are adjacent from vertex
-// Pre:		 GraphType is initialized, vertex is in vertices
-// Post:	 vertexQ contains the names of all vertices that are adjacent from vertex
+void GraphType<VertexType, EdgeValueType>::GetToVertices(VertexType fromVertex, QueueType<VertexType>& vertexQ)
+// Function: Returns a queue of the vertices that are adjacent from fromVertex
+// Pre:		 GraphType is initialized, fromVertex is in vertices
+// Post:	 vertexQ contains the names of all vertices that are adjacent from fromVertex
 {
-	for (int i = 0; i < numVertices; i++)
-		vertexQ.EnQueue
-		Search(vertex) 
+	int fromVertexIndex = GetVertexIndex(fromVertex);
+	for (int toVertexIndex = 0; toVertexIndex < numVertices; toVertexIndex++){
+		if (edges[fromVertexIndex][toVertexIndex] != (EdgeValueType)(0))
+			vertexQ.EnQueue(edges[fromVertexIndex][toVertexIndex]);
+	}
 }
 
 template <class VertexType, class EdgeValueType>
-int GraphType<VertexType, EdgeValueType>::Search(VertexType vertex)
-// Function: Returns the index for a vertex in the graph
+VertexType GraphType<VertexType, EdgeValueType>::Search(VertexType vertex, bool& isFound)
+// Function: Searches and returns a vertex in the graph
 // Pre:		 GraphType is initialized
-// Post:	 if found Function value = (index of vertex), otherwise throw NotFound exception
+// Post:	 Function value = (vertex), isFound is set to true otherwise NULL is returned and isFound is set to false;
 {
-
+	try {
+		isFound = true;
+		return (vertices[GetVertexIndex(vertex)]);
+	} catch(NotFound) {
+		isFound = false;
+		return vertex;
+	}
 }
 
 template <class VertexType, class EdgeValueType>
@@ -148,16 +169,28 @@ void GraphType<VertexType, EdgeValueType>::DeleteVertex(VertexType vertex)
 // Pre:		 GraphType is initialized
 // Post:	 vertices does not contain vertex and numVertices is decremented, NotFound exception thrown if vertex is not in vertices before function call
 {
-
+	try {
+		int vertexIndex = GetVertexIndex(vertex);
+		if (vertexIndex != numVertices - 1) {
+			ReplaceVertex(numVertices - 1, vertexIndex);
+		}
+		numVertices--;
+	} catch(NotFound) {
+		throw NotFound();
+	}
 }
 
 template <class VertexType, class EdgeValueType>
 void GraphType<VertexType, EdgeValueType>::DeleteEdge(VertexType fromVertex, VertexType toVertex)
 // Function: Deletes edge between fromVertex and toVertex
 // Pre:		 GraphType is initialized
-// Post:	 edges does not contain edge, NotFound exception thrown if edge is not in edges before function call
+// Post:	 edges does not contain edge, NotFound exception thrown if fromVertex or toVertex is not in vertices
 {
-
+	try {
+		edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = 0;
+	} catch (NotFound) {
+		throw NotFound();
+	}
 }
 
 template <class VertexType, class EdgeValueType>
@@ -166,7 +199,7 @@ int GraphType<VertexType, EdgeValueType>::GetVerticesCount()
 // Pre:		 GraphType is initialized
 // Post:	 Function return = (numVertices)
 {
-
+	return numVertices;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -175,25 +208,160 @@ bool GraphType<VertexType, EdgeValueType>::IsConnected()
 // Pre:		 GraphType is initialized
 // Post:	 Function value = (is graph connected)
 {
-
+	if (numVertices <= 1)
+		return true;
+	else
+		return (FindMinimalSpanningTree(vertices[0]).GetVerticesCount() == numVertices);
 }
 
 template <class VertexType, class EdgeValueType>
-QueueType<EdgeType> GraphType<VertexType, EdgeValueType>::ShortestPath(VertexType fromVertex, VertexType toVertex)
+void GraphType<VertexType, EdgeValueType>::ShortestPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ)
 // Function: Finds the shortest path between two vertices
 // Pre:		 GraphType is intialized
-// Post:	 Function value = (queue containing edges of shortest path)
+// Post:	 pathQ contains vertices describing the shortest path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 {
-
+	try {
+		DepthFirstSearch(FindMinimalSpanningTree(fromVertex), fromVertex, toVertex, pathQ);
+	} catch(PathNotFound) {
+		throw PathNotFound();
+	}
 }
 
 template <class VertexType, class EdgeValueType>
-GraphType<VertexType, EdgeValueType> GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree()
-// Function: Finds the subgraph of the graph containing the shortest paths between the vertices
+GraphType<VertexType, EdgeValueType> GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType vertex)
+// Function: Finds the subgraph of the graph containing the shortest paths between the vertices starting at vertex
 // Pre:		 GraphType is intialized
 // Post:	 Function value = (graph describing minimal spanning tree)
 {
+	GraphType<VertexType, EdgeValueType> subGraph = GraphType<VertexType, EdgeValueType>();
+	subGraph.AddVertex(vertex);
+	int fromVertexIndex = GetVertexIndex(vertex);
+	int ne = 0;
+	int x, y;
+	EdgeValueType min;
+	while (ne < numVertices - 1) {
+		min = (EdgeValueType)infinity;
+		for (int i = 0; i < numVertices; i++) {
+			if (subGraph.Search(vertices[i])) {
+				for (int j = 0; j < numVertices; j++) {
+					if (!subGraph.Search(vertices[j])) {
+						if (min > edges[i][j]) {
+							min = edges[i][j];
+							x = i;
+							y = j;
+						}
+					}
+				}
+			}
+		}
+		subGraph.AddVertex(vertices[y]);
+		subGraph.AddEdge(vertices[x], vertices[y], min);
+		++ne;
+	}
+	return subGraph;
+}
 
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::GetAllVertices(QueueType<VertexType>& vertexQ)
+// Function: Returns a queue of all the vertices
+// Pre:		 GraphType is initialized
+// Post:	 vertexQ contains all vertices in graph
+{
+	for (int i = 0; i < numVertices; i++)
+		vertexQ.EnQueue(vertices[i]);
+}
+
+//template <class VertexType, class EdgeValueType>
+//void GraphType<VertexType, EdgeValueType>::GetAllEdges(QueueType<EdgeType>& edgeQ)
+//// Function: Returns a queue of all the edges
+//// Pre: 	 GraphType is initialized
+//// Post:	 edgeQ contains all edges in graph
+//{
+//	for (int i = 0; i < numVertices; i++) {
+//		for (int j = 0; j < numVertices; j++) {
+//			if (edges[i][j] != 0) {
+//				EdgeType edge;
+//				edge.fromVertex = vertices[i];
+//				edge.toVertex = vertices[j];
+//				edge.weight = edges[i][j];
+//			}
+//		}
+//	}
+//}
+
+// Private functions
+template <class VertexType, class EdgeValueType>
+int GraphType<VertexType, EdgeValueType>::GetVertexIndex(VertexType vertex)
+// Function: Returns the index for a vertex in the graph
+// Pre:		 GraphType is initialized
+// Post:	 if found Function value = (index of vertex), otherwise throw NotFound exception
+{
+	for (int i = 0; i < numVertices; i++) {
+		if (vertices[i] == vertex)
+			return i;
+	}
+	throw NotFound();
+}
+
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::ReplaceVertex(int fromVertexIndex, int toVertexIndex)
+// Function: Replaces vertex and edges located at toVertexIndex with vertex and edges located at fromVertexIndex
+// Pre:		 GraphType is initialized, fromVertexIndex and toVertexIndex are less than numVertices
+// Post:	 Vertex and edges at toVertexIndex is replaced with values from fromVertexIndex
+{
+	vertices[toVertexIndex] = vertices[fromVertexIndex];
+
+	for (int i = 0; i < numVertices;i++) {
+		edges[toVertexIndex][i] = edges[fromVertexIndex][i];
+		edges[i][toVertexIndex] = edges[i][fromVertexIndex];
+	}
+}
+
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::DepthFirstSearch(GraphType<VertexType, EdgeValueType> graph, VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ)
+// Function: Finds a path by traversing the graph using a LIFO stack to keep track of vertices to explore while marking vertices already visited
+// Pre:		 GraphType is initialized
+// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if no path exists throws PathNotFound exception
+{
+	StackType<VertexType> stack;
+	QueueType<VertexType> vertexQ;
+
+	bool found = false;
+	VertexType vertex;
+	VertexType item:
+
+	graph.ClearMarks();
+	stack.Push(startVertex);
+	do
+	{ 
+		stack.Pop(vertex);
+		if (vertex == endVertex)
+		{
+			pathQ.Enqueue(vertex);
+			//cout << vertex;
+			found = true;
+		}
+		else
+		{
+			if (!graph.IsMarked(vertex))
+			{
+				graph.MarkVertex(vertex);
+				pathQ.Enqueue(vertex);
+				//cout << vertex;
+				graph.GetToVertices(vertex, vertexQ);
+
+				while (!vertexQ.IsEmpty())
+				{
+					vertexQ.Dequeue(item);
+					if (!vertexQ.IsEmpty())
+						stack.Push(item);
+				}
+			}
+		}
+	} while (!stack.IsEmpty() $$ !found);
+	if (!found)
+		//cout << "Path not found." endl;
+		throw PathNotFound();
 }
 
 template <class VertexType, class EdgeValueType>
@@ -202,7 +370,9 @@ void GraphType<VertexType, EdgeValueType>::ClearMarks()
 // Pre:		 GraphType is initialized
 // Post:	 All marks have been set to false
 {
-
+	for (int i =0; i < numVertices; i++) {
+		marks[i] = false;
+	}
 }
 
 template <class VertexType, class EdgeValueType>
@@ -211,7 +381,7 @@ void GraphType<VertexType, EdgeValueType>::MarkVertex(VertexType vertex)
 // Pre:		 vertex is in vertices
 // Post:	 IsMarked(vertex) is true
 {
-
+	marks[GetVertexIndex(vertex)] = true;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -220,7 +390,7 @@ bool GraphType<VertexType, EdgeValueType>::IsMarked(VertexType vertex)
 // Pre:		 vertex is in vertices
 // Post:	 Function value = (vertex is marked true)
 {
-
+	return (marks[GetVertexIndex(vertex)]);
 }
 
 #endif
