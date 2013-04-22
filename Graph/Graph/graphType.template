@@ -235,8 +235,8 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 // Pre:		 GraphType is intialized
 // Post:	 Function value = (graph describing minimal spanning tree)
 {
-	GraphType<VertexType, EdgeValueType> subGraph = GraphType<VertexType, EdgeValueType>();
-	subGraph.AddVertex(vertex);
+	//GraphType<VertexType, EdgeValueType> subGraph = GraphType<VertexType, EdgeValueType>();
+	subgraph.AddVertex(vertex);
 	int fromVertexIndex = GetVertexIndex(vertex);
 	int ne = 0;
 	int x, y;
@@ -244,9 +244,9 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 	while (ne < numVertices - 1) {
 		min = (EdgeValueType)infinity;
 		for (int i = 0; i < numVertices; i++) {
-			if (subGraph.Search(vertices[i])) {
+			if (subgraph.Search(vertices[i])) {
 				for (int j = 0; j < numVertices; j++) {
-					if (!subGraph.Search(vertices[j])) {
+					if (!subgraph.Search(vertices[j])) {
 						if (min > edges[i][j]) {
 							min = edges[i][j];
 							x = i;
@@ -255,13 +255,15 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 					}
 				}
 			}
-		}
-
-		if (min != 0) {
-			subGraph.AddVertex(vertices[y]);
-			subGraph.AddEdge(vertices[x], vertices[y], min);
+			if (min != 0) {
+				if (!subgraph.Search(vertices[y]))
+					subgraph.AddVertex(vertices[y]);
+				subgraph.AddEdge(vertices[x], vertices[y], min);
 		}
 		++ne;
+		}
+
+		
 	}
 	//return subGraph;
 }
