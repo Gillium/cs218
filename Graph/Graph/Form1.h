@@ -60,7 +60,7 @@ namespace Graph {
 		/// Required designer variable.
 		/// </summary>
 		System::ComponentModel::Container ^components;
-	private: System::Windows::Forms::Button^  btn_addVertex;
+
 
 	private: System::Windows::Forms::TextBox^  vertexName;
 
@@ -69,16 +69,16 @@ namespace Graph {
 	private: System::Windows::Forms::Label^  label3;
 	private: System::Windows::Forms::TextBox^  vertexX;
 	private: System::Windows::Forms::TextBox^  vertexY;
-	private: System::Windows::Forms::Button^  deleteVertex;
-	private: System::Windows::Forms::Button^  addEdge;
+
+
 	private: System::Windows::Forms::TextBox^  weight;
 	private: System::Windows::Forms::TextBox^  toVertex;
 	private: System::Windows::Forms::Label^  label4;
 	private: System::Windows::Forms::Label^  label5;
 	private: System::Windows::Forms::Label^  label6;
 	private: System::Windows::Forms::TextBox^  fromVertex;
-	private: System::Windows::Forms::Button^  deleteEdge;
-	private: System::Windows::Forms::Button^  isConnected;
+
+
 
 
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
@@ -89,6 +89,21 @@ namespace Graph {
 	private: System::Windows::Forms::ToolStripMenuItem^  quitToolStripMenuItem;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
+	private: System::Windows::Forms::ToolStripMenuItem^  vertexToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  addUpdateToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  deleteToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  edgeToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  addUpdateToolStripMenuItem1;
+	private: System::Windows::Forms::ToolStripMenuItem^  deleteToolStripMenuItem1;
+	private: System::Windows::Forms::ToolStripMenuItem^  analyzeToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  isConnectedToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  minimumSpanningTreeToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  shortestPathToolStripMenuItem;
+	private: System::Windows::Forms::TextBox^  adjMatrixTextBox;
+	private: System::Windows::Forms::Button^  prev;
+	private: System::Windows::Forms::Button^  next;
+	private: System::Windows::Forms::ToolStripMenuItem^  resetToolStripMenuItem;
+
 
 			 GraphType<Vertex, int>* graph;
 
@@ -99,47 +114,46 @@ namespace Graph {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->btn_addVertex = (gcnew System::Windows::Forms::Button());
 			this->vertexName = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->vertexX = (gcnew System::Windows::Forms::TextBox());
 			this->vertexY = (gcnew System::Windows::Forms::TextBox());
-			this->deleteVertex = (gcnew System::Windows::Forms::Button());
-			this->addEdge = (gcnew System::Windows::Forms::Button());
 			this->weight = (gcnew System::Windows::Forms::TextBox());
 			this->toVertex = (gcnew System::Windows::Forms::TextBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->fromVertex = (gcnew System::Windows::Forms::TextBox());
-			this->deleteEdge = (gcnew System::Windows::Forms::Button());
-			this->isConnected = (gcnew System::Windows::Forms::Button());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->loadToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveAsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->quitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->vertexToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->addUpdateToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->deleteToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->edgeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->addUpdateToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->deleteToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->analyzeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->isConnectedToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->minimumSpanningTreeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->shortestPathToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->adjMatrixTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->prev = (gcnew System::Windows::Forms::Button());
+			this->next = (gcnew System::Windows::Forms::Button());
+			this->resetToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// btn_addVertex
-			// 
-			this->btn_addVertex->Location = System::Drawing::Point(504, 29);
-			this->btn_addVertex->Name = L"btn_addVertex";
-			this->btn_addVertex->Size = System::Drawing::Size(144, 50);
-			this->btn_addVertex->TabIndex = 0;
-			this->btn_addVertex->Text = L"Add/Update Vertex";
-			this->btn_addVertex->UseVisualStyleBackColor = true;
-			this->btn_addVertex->Click += gcnew System::EventHandler(this, &Form1::btn_addVertex_Click);
-			// 
 			// vertexName
 			// 
-			this->vertexName->Location = System::Drawing::Point(726, 26);
+			this->vertexName->Location = System::Drawing::Point(738, 39);
 			this->vertexName->Name = L"vertexName";
 			this->vertexName->Size = System::Drawing::Size(115, 20);
 			this->vertexName->TabIndex = 2;
@@ -147,7 +161,7 @@ namespace Graph {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(654, 29);
+			this->label1->Location = System::Drawing::Point(666, 42);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(66, 13);
 			this->label1->TabIndex = 3;
@@ -156,7 +170,7 @@ namespace Graph {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(654, 45);
+			this->label2->Location = System::Drawing::Point(666, 58);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(50, 13);
 			this->label2->TabIndex = 4;
@@ -165,7 +179,7 @@ namespace Graph {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(654, 63);
+			this->label3->Location = System::Drawing::Point(666, 76);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(50, 13);
 			this->label3->TabIndex = 5;
@@ -173,48 +187,28 @@ namespace Graph {
 			// 
 			// vertexX
 			// 
-			this->vertexX->Location = System::Drawing::Point(726, 45);
+			this->vertexX->Location = System::Drawing::Point(738, 58);
 			this->vertexX->Name = L"vertexX";
 			this->vertexX->Size = System::Drawing::Size(115, 20);
 			this->vertexX->TabIndex = 6;
 			// 
 			// vertexY
 			// 
-			this->vertexY->Location = System::Drawing::Point(726, 63);
+			this->vertexY->Location = System::Drawing::Point(738, 76);
 			this->vertexY->Name = L"vertexY";
 			this->vertexY->Size = System::Drawing::Size(115, 20);
 			this->vertexY->TabIndex = 7;
 			// 
-			// deleteVertex
-			// 
-			this->deleteVertex->Location = System::Drawing::Point(504, 85);
-			this->deleteVertex->Name = L"deleteVertex";
-			this->deleteVertex->Size = System::Drawing::Size(144, 50);
-			this->deleteVertex->TabIndex = 8;
-			this->deleteVertex->Text = L"Delete Vertex";
-			this->deleteVertex->UseVisualStyleBackColor = true;
-			this->deleteVertex->Click += gcnew System::EventHandler(this, &Form1::deleteVertex_Click);
-			// 
-			// addEdge
-			// 
-			this->addEdge->Location = System::Drawing::Point(504, 141);
-			this->addEdge->Name = L"addEdge";
-			this->addEdge->Size = System::Drawing::Size(144, 50);
-			this->addEdge->TabIndex = 9;
-			this->addEdge->Text = L"Add Edge";
-			this->addEdge->UseVisualStyleBackColor = true;
-			this->addEdge->Click += gcnew System::EventHandler(this, &Form1::addEdge_Click);
-			// 
 			// weight
 			// 
-			this->weight->Location = System::Drawing::Point(726, 175);
+			this->weight->Location = System::Drawing::Point(738, 139);
 			this->weight->Name = L"weight";
 			this->weight->Size = System::Drawing::Size(115, 20);
 			this->weight->TabIndex = 15;
 			// 
 			// toVertex
 			// 
-			this->toVertex->Location = System::Drawing::Point(726, 157);
+			this->toVertex->Location = System::Drawing::Point(738, 121);
 			this->toVertex->Name = L"toVertex";
 			this->toVertex->Size = System::Drawing::Size(115, 20);
 			this->toVertex->TabIndex = 14;
@@ -222,7 +216,7 @@ namespace Graph {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(654, 175);
+			this->label4->Location = System::Drawing::Point(666, 139);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(44, 13);
 			this->label4->TabIndex = 13;
@@ -231,7 +225,7 @@ namespace Graph {
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(654, 157);
+			this->label5->Location = System::Drawing::Point(666, 121);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(56, 13);
 			this->label5->TabIndex = 12;
@@ -240,7 +234,7 @@ namespace Graph {
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(654, 141);
+			this->label6->Location = System::Drawing::Point(666, 105);
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(66, 13);
 			this->label6->TabIndex = 11;
@@ -248,36 +242,15 @@ namespace Graph {
 			// 
 			// fromVertex
 			// 
-			this->fromVertex->Location = System::Drawing::Point(726, 138);
+			this->fromVertex->Location = System::Drawing::Point(738, 102);
 			this->fromVertex->Name = L"fromVertex";
 			this->fromVertex->Size = System::Drawing::Size(115, 20);
 			this->fromVertex->TabIndex = 10;
 			// 
-			// deleteEdge
-			// 
-			this->deleteEdge->Location = System::Drawing::Point(504, 197);
-			this->deleteEdge->Name = L"deleteEdge";
-			this->deleteEdge->Size = System::Drawing::Size(144, 50);
-			this->deleteEdge->TabIndex = 16;
-			this->deleteEdge->Tag = L"";
-			this->deleteEdge->Text = L" Delete Edge";
-			this->deleteEdge->UseVisualStyleBackColor = true;
-			this->deleteEdge->Click += gcnew System::EventHandler(this, &Form1::deleteEdge_Click);
-			// 
-			// isConnected
-			// 
-			this->isConnected->Location = System::Drawing::Point(504, 253);
-			this->isConnected->Name = L"isConnected";
-			this->isConnected->Size = System::Drawing::Size(144, 50);
-			this->isConnected->TabIndex = 17;
-			this->isConnected->Tag = L"";
-			this->isConnected->Text = L"Is Connected\?";
-			this->isConnected->UseVisualStyleBackColor = true;
-			this->isConnected->Click += gcnew System::EventHandler(this, &Form1::isConnected_Click);
-			// 
 			// menuStrip1
 			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->fileToolStripMenuItem});
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->fileToolStripMenuItem, 
+				this->vertexToolStripMenuItem, this->edgeToolStripMenuItem, this->analyzeToolStripMenuItem});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
 			this->menuStrip1->Size = System::Drawing::Size(867, 24);
@@ -286,12 +259,12 @@ namespace Graph {
 			// 
 			// fileToolStripMenuItem
 			// 
-			this->fileToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->loadToolStripMenuItem, 
-				this->saveToolStripMenuItem, this->saveAsToolStripMenuItem, this->quitToolStripMenuItem});
+			this->fileToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {this->resetToolStripMenuItem, 
+				this->loadToolStripMenuItem, this->saveToolStripMenuItem, this->saveAsToolStripMenuItem, this->quitToolStripMenuItem});
 			this->fileToolStripMenuItem->Name = L"fileToolStripMenuItem";
 			this->fileToolStripMenuItem->Size = System::Drawing::Size(37, 20);
 			this->fileToolStripMenuItem->Text = L"File";
-			this->fileToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::fileToolStripMenuItem_Click);
+			this->fileToolStripMenuItem->DropDownClosed += gcnew System::EventHandler(this, &Form1::analyzeToolStripMenuItem_DropDownClosed);
 			// 
 			// loadToolStripMenuItem
 			// 
@@ -321,32 +294,143 @@ namespace Graph {
 			this->quitToolStripMenuItem->Text = L"Quit";
 			this->quitToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::quitToolStripMenuItem_Click);
 			// 
+			// vertexToolStripMenuItem
+			// 
+			this->vertexToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->addUpdateToolStripMenuItem, 
+				this->deleteToolStripMenuItem});
+			this->vertexToolStripMenuItem->Name = L"vertexToolStripMenuItem";
+			this->vertexToolStripMenuItem->Size = System::Drawing::Size(51, 20);
+			this->vertexToolStripMenuItem->Text = L"Vertex";
+			this->vertexToolStripMenuItem->DropDownClosed += gcnew System::EventHandler(this, &Form1::vertexToolStripMenuItem_DropDownClosed);
+			// 
+			// addUpdateToolStripMenuItem
+			// 
+			this->addUpdateToolStripMenuItem->Name = L"addUpdateToolStripMenuItem";
+			this->addUpdateToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->addUpdateToolStripMenuItem->Text = L"Add/Update";
+			this->addUpdateToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::addUpdateToolStripMenuItem_Click);
+			// 
+			// deleteToolStripMenuItem
+			// 
+			this->deleteToolStripMenuItem->Name = L"deleteToolStripMenuItem";
+			this->deleteToolStripMenuItem->Size = System::Drawing::Size(139, 22);
+			this->deleteToolStripMenuItem->Text = L"Delete";
+			this->deleteToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::deleteToolStripMenuItem_Click);
+			// 
+			// edgeToolStripMenuItem
+			// 
+			this->edgeToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->addUpdateToolStripMenuItem1, 
+				this->deleteToolStripMenuItem1});
+			this->edgeToolStripMenuItem->Name = L"edgeToolStripMenuItem";
+			this->edgeToolStripMenuItem->Size = System::Drawing::Size(45, 20);
+			this->edgeToolStripMenuItem->Text = L"Edge";
+			this->edgeToolStripMenuItem->DropDownClosed += gcnew System::EventHandler(this, &Form1::vertexToolStripMenuItem_DropDownClosed);
+			// 
+			// addUpdateToolStripMenuItem1
+			// 
+			this->addUpdateToolStripMenuItem1->Name = L"addUpdateToolStripMenuItem1";
+			this->addUpdateToolStripMenuItem1->Size = System::Drawing::Size(139, 22);
+			this->addUpdateToolStripMenuItem1->Text = L"Add/Update";
+			this->addUpdateToolStripMenuItem1->Click += gcnew System::EventHandler(this, &Form1::addUpdateToolStripMenuItem1_Click);
+			// 
+			// deleteToolStripMenuItem1
+			// 
+			this->deleteToolStripMenuItem1->Name = L"deleteToolStripMenuItem1";
+			this->deleteToolStripMenuItem1->Size = System::Drawing::Size(139, 22);
+			this->deleteToolStripMenuItem1->Text = L"Delete";
+			this->deleteToolStripMenuItem1->Click += gcnew System::EventHandler(this, &Form1::deleteToolStripMenuItem1_Click);
+			// 
+			// analyzeToolStripMenuItem
+			// 
+			this->analyzeToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {this->isConnectedToolStripMenuItem, 
+				this->minimumSpanningTreeToolStripMenuItem, this->shortestPathToolStripMenuItem});
+			this->analyzeToolStripMenuItem->Name = L"analyzeToolStripMenuItem";
+			this->analyzeToolStripMenuItem->Size = System::Drawing::Size(60, 20);
+			this->analyzeToolStripMenuItem->Text = L"Analyze";
+			this->analyzeToolStripMenuItem->DropDownClosed += gcnew System::EventHandler(this, &Form1::analyzeToolStripMenuItem_DropDownClosed);
+			// 
+			// isConnectedToolStripMenuItem
+			// 
+			this->isConnectedToolStripMenuItem->Name = L"isConnectedToolStripMenuItem";
+			this->isConnectedToolStripMenuItem->Size = System::Drawing::Size(206, 22);
+			this->isConnectedToolStripMenuItem->Text = L"Is Connected\?";
+			this->isConnectedToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::isConnectedToolStripMenuItem_Click);
+			// 
+			// minimumSpanningTreeToolStripMenuItem
+			// 
+			this->minimumSpanningTreeToolStripMenuItem->Name = L"minimumSpanningTreeToolStripMenuItem";
+			this->minimumSpanningTreeToolStripMenuItem->Size = System::Drawing::Size(206, 22);
+			this->minimumSpanningTreeToolStripMenuItem->Text = L"Minimum Spanning Tree";
+			// 
+			// shortestPathToolStripMenuItem
+			// 
+			this->shortestPathToolStripMenuItem->Name = L"shortestPathToolStripMenuItem";
+			this->shortestPathToolStripMenuItem->Size = System::Drawing::Size(206, 22);
+			this->shortestPathToolStripMenuItem->Text = L"Shortest Path";
+			// 
 			// openFileDialog1
 			// 
 			this->openFileDialog1->FileName = L"openFileDialog1";
+			// 
+			// adjMatrixTextBox
+			// 
+			this->adjMatrixTextBox->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->adjMatrixTextBox->Location = System::Drawing::Point(555, 271);
+			this->adjMatrixTextBox->MaximumSize = System::Drawing::Size(600, 600);
+			this->adjMatrixTextBox->Multiline = true;
+			this->adjMatrixTextBox->Name = L"adjMatrixTextBox";
+			this->adjMatrixTextBox->ReadOnly = true;
+			this->adjMatrixTextBox->ScrollBars = System::Windows::Forms::ScrollBars::Both;
+			this->adjMatrixTextBox->Size = System::Drawing::Size(300, 300);
+			this->adjMatrixTextBox->TabIndex = 21;
+			// 
+			// prev
+			// 
+			this->prev->Location = System::Drawing::Point(699, 242);
+			this->prev->Name = L"prev";
+			this->prev->Size = System::Drawing::Size(75, 23);
+			this->prev->TabIndex = 22;
+			this->prev->Text = L"<--";
+			this->prev->UseVisualStyleBackColor = true;
+			this->prev->Click += gcnew System::EventHandler(this, &Form1::prev_Click);
+			// 
+			// next
+			// 
+			this->next->Location = System::Drawing::Point(780, 242);
+			this->next->Name = L"next";
+			this->next->Size = System::Drawing::Size(75, 23);
+			this->next->TabIndex = 23;
+			this->next->Text = L"-->";
+			this->next->UseVisualStyleBackColor = true;
+			this->next->Click += gcnew System::EventHandler(this, &Form1::next_Click);
+			// 
+			// resetToolStripMenuItem
+			// 
+			this->resetToolStripMenuItem->Name = L"resetToolStripMenuItem";
+			this->resetToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->resetToolStripMenuItem->Text = L"New";
+			this->resetToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::resetToolStripMenuItem_Click);
 			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(867, 583);
-			this->Controls->Add(this->isConnected);
-			this->Controls->Add(this->deleteEdge);
+			this->Controls->Add(this->next);
+			this->Controls->Add(this->prev);
+			this->Controls->Add(this->adjMatrixTextBox);
 			this->Controls->Add(this->weight);
 			this->Controls->Add(this->toVertex);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->label6);
 			this->Controls->Add(this->fromVertex);
-			this->Controls->Add(this->addEdge);
-			this->Controls->Add(this->deleteVertex);
 			this->Controls->Add(this->vertexY);
 			this->Controls->Add(this->vertexX);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->vertexName);
-			this->Controls->Add(this->btn_addVertex);
 			this->Controls->Add(this->menuStrip1);
 			this->MainMenuStrip = this->menuStrip1;
 			this->Name = L"Form1";
@@ -375,6 +459,7 @@ namespace Graph {
 		static StringFormat^ drawFormat;
 
 		static String^ fileName;
+		static int matrixOffset = 0;
 
 	private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
 				 this->graph = new GraphType<Vertex, int>();
@@ -385,34 +470,17 @@ namespace Graph {
 				 arialFont = gcnew System::Drawing::Font("Arial", 12);
 				 drawFormat = gcnew System::Drawing::StringFormat();
 			 }
-	private: System::Void btn_addVertex_Click(System::Object^  sender, System::EventArgs^  e) {
-				 if (!String::IsNullOrWhiteSpace(this->vertexName->Text) &&
-					 !String::IsNullOrWhiteSpace(this->vertexX->Text) &&
-					 !String::IsNullOrWhiteSpace(this->vertexY->Text)) {
-						 try{
-							Vertex v;
-							v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
-							 if (this->graph->Search(v)) {
-								 v.x = System::Int32::Parse(this->vertexX->Text);
-								 v.y = System::Int32::Parse(this->vertexY->Text);
-								 this->graph->UpdateVertex(v);
-							 } else {
-								 v.x = System::Int32::Parse(this->vertexX->Text);
-								 v.y = System::Int32::Parse(this->vertexY->Text);
-								 this->graph->AddVertex(v);
-							 }
-							 
-						 } catch(FormatException ^) {
-							 MessageBox::Show("Must be an integer input for Vertex X and Vertex Y!");
-						 }
-				 } else
-					 MessageBox::Show("Cannot leave inputs blank!");
-
-				 drawGraph();
-			 }
 
 	private: void drawGraph() {
 			 this->Refresh();
+			 String^ weightMatrixStr = "Label\tIndex";
+			 for (int i = 0; i < this->graph->GetVerticesCount(); i++) {
+				 if ((i >= matrixOffset) && (i < (matrixOffset + 4))) {
+					weightMatrixStr += "\t" + System::Convert::ToString(i);
+				 }
+			 }
+			 weightMatrixStr += "\r\n";
+			 int vIndex = 0;
 			 QueueType<Vertex> vertexQ;
 			 this->graph->GetAllVertices(vertexQ);
 			 while (!vertexQ.IsEmpty()) {
@@ -427,80 +495,64 @@ namespace Graph {
 					Vertex adjV;
 					adjQ.DeQueue(adjV);
 					int w = this->graph->GetWeight(v, adjV);
-					g->DrawLine(blackPen, v.x + 25, v.y + 25, adjV.x + 25, adjV.y + 25);
+					double theta;
+					int endY, endX, startY, startX;
+					endY = adjV.y + 25;
+					endX = adjV.x + 25;
+					startY = v.y + 25;
+					startX = v.x + 25;
+					theta = -atan2((double)(endY-startY), (double)(endX-startX));
+					double length = sqrt(pow((adjV.x - v.x), 2.0) + pow((adjV.y - v.y), 2.0)) - 25.0;
+					double tipX = -25.0, tipY = 0.0;
+					double baseX = -35.0, baseY = -10.0;
+					double topX = -35.0, topY = 10.0;
+					//draw line
+					g->DrawLine(blackPen,
+					(int)((-length * cos(theta)) + (0 * sin(theta)) + (double)endX),
+					(int)((length * sin(theta)) + (0 * cos(theta)) + (double)endY),
+					(int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+					(int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+					//draw bottom of arrow
+					g->DrawLine(blackPen,
+					(int)((baseX * cos(theta)) + (baseY * sin(theta)) + (double)endX),
+					(int)((-baseX * sin(theta)) + (baseY * cos(theta)) + (double)endY),	
+					(int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+					(int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+					//draw top of arrow
+					g->DrawLine(blackPen,
+					(int)((topX * cos(theta)) + (topY * sin(theta)) + (double)endX),
+					(int)((-topX * sin(theta)) + (topY * cos(theta)) + (double)endY),	
+					(int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+					(int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
 				}
+				String^ name = gcnew String(v.name.c_str());
+				weightMatrixStr += name + "\t" + System::Convert::ToString(vIndex++);
+				QueueType<Vertex> allQ;
+				this->graph->GetAllVertices(allQ);
+				int counter = 0;
+				while (!allQ.IsEmpty()) {
+					Vertex v2;
+					allQ.DeQueue(v2);
+					if ((counter >= matrixOffset) && (counter < (matrixOffset + 4))) {
+						weightMatrixStr += "\t" + System::Convert::ToString(this->graph->GetWeight(v, v2));
+					}
+					++counter;
+				}
+				weightMatrixStr += "\r\n";
 			 }
+
+			this->adjMatrixTextBox->Text = weightMatrixStr;
+			if (matrixOffset == 0)
+				 prev->Enabled = false;
+			if ((matrixOffset + 4) < this->graph->GetVerticesCount())
+				 next->Enabled = true;
+			if (matrixOffset > 0)
+				 prev->Enabled = true;
+			if ((matrixOffset + 4) >= this->graph->GetVerticesCount())
+				 next->Enabled = false;
 		}
-	private: System::Void deleteVertex_Click(System::Object^  sender, System::EventArgs^  e) {
-			 Vertex v;
-			 v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
-			 try {
-				this->graph->DeleteVertex(v);
-				
-			 } catch(NotFound) {
-				MessageBox::Show("Vertex Not Found!");
-			 }
-
-			 drawGraph();
-		 }
-	private: System::Void addEdge_Click(System::Object^  sender, System::EventArgs^  e) {
-			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
-					 !String::IsNullOrWhiteSpace(this->toVertex->Text) &&
-					 !String::IsNullOrWhiteSpace(this->weight->Text)) {
-				Vertex fv, tv;
-				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
-					
-					if (!this->graph->Search(fv)) {
-					MessageBox::Show("From Vertex Not Found!");
-					}
-					else {
-					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
-					if (!this->graph->Search(tv)) {
-						MessageBox::Show("To Vertex Not Found!");
-					} else {
-							try {
-							int w = System::Int32::Parse(this->weight->Text);
-							this->graph->AddEdge(fv, tv, w);
-						} catch(FormatException ^) {
-							MessageBox::Show("Must be an integer input for Weight!");
-						}
-					}
-					}
-				 } else
-					 MessageBox::Show("Cannot leave inputs blank!");
-
-				 drawGraph();
-		 }
-private: System::Void deleteEdge_Click(System::Object^  sender, System::EventArgs^  e) {
-			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
-					 !String::IsNullOrWhiteSpace(this->toVertex->Text)) {
-				Vertex fv, tv;
-				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
-					if (!this->graph->Search(fv)) {
-					MessageBox::Show("From Vertex Not Found!");
-					}
-					else {
-					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
-					if (!this->graph->Search(tv)) {
-						MessageBox::Show("To Vertex Not Found!");
-					} else {
-							this->graph->DeleteEdge(fv, tv);
-					}
-					}
-				 } else
-					 MessageBox::Show("Cannot leave inputs blank!");
-
-				 drawGraph();
-		 }
-private: System::Void isConnected_Click(System::Object^  sender, System::EventArgs^  e) {
-			 if (this->graph->IsConnected())
-				MessageBox::Show("Graph Is Connected!");
-			 else
-				MessageBox::Show("Graph Is Not Connected!");
-
-			 drawGraph();
-		 }
 private: System::Void loadToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 this->graph->MakeEmpty();
 			 if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			 {
 				 fileName = gcnew String(openFileDialog1->FileName);
@@ -628,7 +680,127 @@ private: System::Void saveAsToolStripMenuItem_Click(System::Object^  sender, Sys
 private: System::Void quitToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 Application::Exit();
 		 }
-private: System::Void fileToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+private: System::Void addUpdateToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->vertexName->Text) &&
+					 !String::IsNullOrWhiteSpace(this->vertexX->Text) &&
+					 !String::IsNullOrWhiteSpace(this->vertexY->Text)) {
+						 try{
+							Vertex v;
+							v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
+							 if (this->graph->Search(v)) {
+								 v.x = System::Int32::Parse(this->vertexX->Text);
+								 v.y = System::Int32::Parse(this->vertexY->Text);
+								 this->graph->UpdateVertex(v);
+							 } else {
+								 v.x = System::Int32::Parse(this->vertexX->Text);
+								 v.y = System::Int32::Parse(this->vertexY->Text);
+								 this->graph->AddVertex(v);
+							 }
+							 
+						 } catch(FormatException ^) {
+							 MessageBox::Show("Must be an integer input for Vertex X and Vertex Y!");
+						 }
+				 } else
+					 MessageBox::Show("Cannot leave inputs blank!");
+
+				 drawGraph();
+		 }
+private: System::Void deleteToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 Vertex v;
+			 v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
+			 try {
+				this->graph->DeleteVertex(v);
+				
+			 } catch(NotFound) {
+				MessageBox::Show("Vertex Not Found!");
+			 }
+
+			 drawGraph();
+		 }
+private: System::Void addUpdateToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
+					 !String::IsNullOrWhiteSpace(this->toVertex->Text) &&
+					 !String::IsNullOrWhiteSpace(this->weight->Text)) {
+				Vertex fv, tv;
+				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+					
+					if (!this->graph->Search(fv)) {
+					MessageBox::Show("From Vertex Not Found!");
+					}
+					else {
+					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+					if (!this->graph->Search(tv)) {
+						MessageBox::Show("To Vertex Not Found!");
+					} else {
+							try {
+							int w = System::Int32::Parse(this->weight->Text);
+							this->graph->AddEdge(fv, tv, w);
+						} catch(FormatException ^) {
+							MessageBox::Show("Must be an integer input for Weight!");
+						}
+					}
+					}
+				 } else
+					 MessageBox::Show("Cannot leave inputs blank!");
+
+				 drawGraph();
+		 }
+private: System::Void deleteToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
+					 !String::IsNullOrWhiteSpace(this->toVertex->Text)) {
+				Vertex fv, tv;
+				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+					if (!this->graph->Search(fv)) {
+					MessageBox::Show("From Vertex Not Found!");
+					}
+					else {
+					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+					if (!this->graph->Search(tv)) {
+						MessageBox::Show("To Vertex Not Found!");
+					} else {
+							this->graph->DeleteEdge(fv, tv);
+					}
+					}
+				 } else
+					 MessageBox::Show("Cannot leave inputs blank!");
+
+				 drawGraph();
+		 }
+private: System::Void isConnectedToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (this->graph->IsConnected())
+				MessageBox::Show("Graph Is Connected!");
+			 else
+				MessageBox::Show("Graph Is Not Connected!");
+
+			 drawGraph();
+		 }
+private: System::Void vertexToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
+			 drawGraph();
+		 }
+private: System::Void edgeToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
+			 drawGraph();
+		 }
+private: System::Void analyzeToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
+			 drawGraph();
+		 }
+private: System::Void fileToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
+			 drawGraph();
+		 }
+private: System::Void prev_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (matrixOffset > 0) {
+				 matrixOffset--;
+				 drawGraph();
+			 }
+		 }
+private: System::Void next_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if ((matrixOffset + 4) < this->graph->GetVerticesCount()) {
+				matrixOffset++;
+				drawGraph();
+			 }
+			
+		 }
+private: System::Void resetToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 this->graph->MakeEmpty();
 			 drawGraph();
 		 }
 };
