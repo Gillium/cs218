@@ -265,7 +265,6 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 
 		
 	}
-	//return subGraph;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -278,23 +277,18 @@ void GraphType<VertexType, EdgeValueType>::GetAllVertices(QueueType<VertexType>&
 		vertexQ.EnQueue(vertices[i]);
 }
 
-//template <class VertexType, class EdgeValueType>
-//void GraphType<VertexType, EdgeValueType>::GetAllEdges(QueueType<EdgeType>& edgeQ)
-//// Function: Returns a queue of all the edges
-//// Pre: 	 GraphType is initialized
-//// Post:	 edgeQ contains all edges in graph
-//{
-//	for (int i = 0; i < numVertices; i++) {
-//		for (int j = 0; j < numVertices; j++) {
-//			if (edges[i][j] != 0) {
-//				EdgeType edge;
-//				edge.fromVertex = vertices[i];
-//				edge.toVertex = vertices[j];
-//				edge.weight = edges[i][j];
-//			}
-//		}
-//	}
-//}
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::GetPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ)
+// Function: Finds a path between fromVertex and toVertex using DFS
+// Pre:		 GraphType is initialized
+// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if not path exists throws PathNotFound Exception
+{
+	try {
+		DepthFirstSearch(*this, fromVertex, toVertex, pathQ);
+	} catch(PathNotFound) {
+		throw PathNotFound();
+	}
+}
 
 // Private functions
 template <class VertexType, class EdgeValueType>
@@ -330,21 +324,22 @@ void GraphType<VertexType, EdgeValueType>::DepthFirstSearch(GraphType<VertexType
 // Pre:		 GraphType is initialized
 // Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 {
-	StackType<VertexType> stack;
+	StackType<VertexType> stackV = StackType<VertexType>();
 	QueueType<VertexType> vertexQ;
 
 	bool found = false;
 	VertexType vertex;
-	VertexType item:
+	VertexType item;
 
 	graph.ClearMarks();
-	stack.Push(startVertex);
+	stackV.Push(fromVertex);
 	do
 	{ 
-		stack.Pop(vertex);
-		if (vertex == endVertex)
+		vertex = stackV.Top();
+		stackV.Pop();
+		if (vertex == toVertex)
 		{
-			pathQ.Enqueue(vertex);
+			pathQ.EnQueue(vertex);
 			//cout << vertex;
 			found = true;
 		}
@@ -353,19 +348,19 @@ void GraphType<VertexType, EdgeValueType>::DepthFirstSearch(GraphType<VertexType
 			if (!graph.IsMarked(vertex))
 			{
 				graph.MarkVertex(vertex);
-				pathQ.Enqueue(vertex);
+				pathQ.EnQueue(vertex);
 				//cout << vertex;
 				graph.GetToVertices(vertex, vertexQ);
 
 				while (!vertexQ.IsEmpty())
 				{
-					vertexQ.Dequeue(item);
+					vertexQ.DeQueue(item);
 					if (!vertexQ.IsEmpty())
-						stack.Push(item);
+						stackV.Push(item);
 				}
 			}
 		}
-	} while (!stack.IsEmpty() $$ !found);
+	} while (!stackV.IsEmpty() && !found);
 	if (!found)
 		//cout << "Path not found." endl;
 		throw PathNotFound();

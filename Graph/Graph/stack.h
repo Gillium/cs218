@@ -23,15 +23,15 @@ struct NodeTypeS {
 };
 
 template<class T>
-class Stack
+class StackType
 {
 public:
-	Stack();
+	StackType();
 	// Constructor
 	// Pre:  None
 	// Post: Stack is initialized
 
-	~Stack();
+	~StackType();
 	// Deconstructor
 	// Function: Deletes all pointers in the stack
 	// Pre:		 Stack is initialized

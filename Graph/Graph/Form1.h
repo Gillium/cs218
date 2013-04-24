@@ -103,6 +103,7 @@ namespace Graph {
 	private: System::Windows::Forms::Button^  prev;
 	private: System::Windows::Forms::Button^  next;
 	private: System::Windows::Forms::ToolStripMenuItem^  resetToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  depthFirstSearchToolStripMenuItem;
 
 
 			 GraphType<Vertex, int>* graph;
@@ -128,6 +129,7 @@ namespace Graph {
 			this->fromVertex = (gcnew System::Windows::Forms::TextBox());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->resetToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->loadToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->saveAsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -147,7 +149,7 @@ namespace Graph {
 			this->adjMatrixTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->prev = (gcnew System::Windows::Forms::Button());
 			this->next = (gcnew System::Windows::Forms::Button());
-			this->resetToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->depthFirstSearchToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -266,6 +268,13 @@ namespace Graph {
 			this->fileToolStripMenuItem->Text = L"File";
 			this->fileToolStripMenuItem->DropDownClosed += gcnew System::EventHandler(this, &Form1::analyzeToolStripMenuItem_DropDownClosed);
 			// 
+			// resetToolStripMenuItem
+			// 
+			this->resetToolStripMenuItem->Name = L"resetToolStripMenuItem";
+			this->resetToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->resetToolStripMenuItem->Text = L"New";
+			this->resetToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::resetToolStripMenuItem_Click);
+			// 
 			// loadToolStripMenuItem
 			// 
 			this->loadToolStripMenuItem->Name = L"loadToolStripMenuItem";
@@ -342,8 +351,8 @@ namespace Graph {
 			// 
 			// analyzeToolStripMenuItem
 			// 
-			this->analyzeToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {this->isConnectedToolStripMenuItem, 
-				this->minimumSpanningTreeToolStripMenuItem, this->shortestPathToolStripMenuItem});
+			this->analyzeToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {this->isConnectedToolStripMenuItem, 
+				this->depthFirstSearchToolStripMenuItem, this->minimumSpanningTreeToolStripMenuItem, this->shortestPathToolStripMenuItem});
 			this->analyzeToolStripMenuItem->Name = L"analyzeToolStripMenuItem";
 			this->analyzeToolStripMenuItem->Size = System::Drawing::Size(60, 20);
 			this->analyzeToolStripMenuItem->Text = L"Analyze";
@@ -404,12 +413,12 @@ namespace Graph {
 			this->next->UseVisualStyleBackColor = true;
 			this->next->Click += gcnew System::EventHandler(this, &Form1::next_Click);
 			// 
-			// resetToolStripMenuItem
+			// depthFirstSearchToolStripMenuItem
 			// 
-			this->resetToolStripMenuItem->Name = L"resetToolStripMenuItem";
-			this->resetToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->resetToolStripMenuItem->Text = L"New";
-			this->resetToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::resetToolStripMenuItem_Click);
+			this->depthFirstSearchToolStripMenuItem->Name = L"depthFirstSearchToolStripMenuItem";
+			this->depthFirstSearchToolStripMenuItem->Size = System::Drawing::Size(206, 22);
+			this->depthFirstSearchToolStripMenuItem->Text = L"Depth First Search";
+			this->depthFirstSearchToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::depthFirstSearchToolStripMenuItem_Click);
 			// 
 			// Form1
 			// 
@@ -472,85 +481,111 @@ namespace Graph {
 			 }
 
 	private: void drawGraph() {
-			 this->Refresh();
-			 String^ weightMatrixStr = "Label\tIndex";
-			 for (int i = 0; i < this->graph->GetVerticesCount(); i++) {
-				 if ((i >= matrixOffset) && (i < (matrixOffset + 4))) {
-					weightMatrixStr += "\t" + System::Convert::ToString(i);
-				 }
-			 }
-			 weightMatrixStr += "\r\n";
-			 int vIndex = 0;
-			 QueueType<Vertex> vertexQ;
-			 this->graph->GetAllVertices(vertexQ);
-			 while (!vertexQ.IsEmpty()) {
-				Vertex v;
-				vertexQ.DeQueue(v);
-				g->DrawEllipse(blackPen, v.x, v.y, 50, 50);
-				String^ drawString = gcnew String(v.name.c_str());
-				g->DrawString(drawString, arialFont, blackBrush, (float)(v.x + 18), (float)(v.y + 17), drawFormat);
-				QueueType<Vertex> adjQ;
-				this->graph->GetToVertices(v, adjQ);
-				while (!adjQ.IsEmpty()) {
-					Vertex adjV;
-					adjQ.DeQueue(adjV);
-					int w = this->graph->GetWeight(v, adjV);
-					double theta;
-					int endY, endX, startY, startX;
-					endY = adjV.y + 25;
-					endX = adjV.x + 25;
-					startY = v.y + 25;
-					startX = v.x + 25;
-					theta = -atan2((double)(endY-startY), (double)(endX-startX));
-					double length = sqrt(pow((adjV.x - v.x), 2.0) + pow((adjV.y - v.y), 2.0)) - 25.0;
-					double tipX = -25.0, tipY = 0.0;
-					double baseX = -35.0, baseY = -10.0;
-					double topX = -35.0, topY = 10.0;
-					//draw line
-					g->DrawLine(blackPen,
-					(int)((-length * cos(theta)) + (0 * sin(theta)) + (double)endX),
-					(int)((length * sin(theta)) + (0 * cos(theta)) + (double)endY),
-					(int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
-					(int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-					//draw bottom of arrow
-					g->DrawLine(blackPen,
-					(int)((baseX * cos(theta)) + (baseY * sin(theta)) + (double)endX),
-					(int)((-baseX * sin(theta)) + (baseY * cos(theta)) + (double)endY),	
-					(int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
-					(int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-					//draw top of arrow
-					g->DrawLine(blackPen,
-					(int)((topX * cos(theta)) + (topY * sin(theta)) + (double)endX),
-					(int)((-topX * sin(theta)) + (topY * cos(theta)) + (double)endY),	
-					(int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
-					(int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-				}
-				String^ name = gcnew String(v.name.c_str());
-				weightMatrixStr += name + "\t" + System::Convert::ToString(vIndex++);
-				QueueType<Vertex> allQ;
-				this->graph->GetAllVertices(allQ);
-				int counter = 0;
-				while (!allQ.IsEmpty()) {
-					Vertex v2;
-					allQ.DeQueue(v2);
-					if ((counter >= matrixOffset) && (counter < (matrixOffset + 4))) {
-						weightMatrixStr += "\t" + System::Convert::ToString(this->graph->GetWeight(v, v2));
-					}
-					++counter;
-				}
-				weightMatrixStr += "\r\n";
+				 //this->Refresh();
+				 drawVertices();
+				 drawEdges();
+				 drawMatrix();
 			 }
 
-			this->adjMatrixTextBox->Text = weightMatrixStr;
-			if (matrixOffset == 0)
-				 prev->Enabled = false;
-			if ((matrixOffset + 4) < this->graph->GetVerticesCount())
-				 next->Enabled = true;
-			if (matrixOffset > 0)
-				 prev->Enabled = true;
-			if ((matrixOffset + 4) >= this->graph->GetVerticesCount())
-				 next->Enabled = false;
-		}
+	private: void drawVertices() {
+				 QueueType<Vertex> vertexQ;
+				 this->graph->GetAllVertices(vertexQ);
+				 while (!vertexQ.IsEmpty()) {
+					 Vertex v;
+					 vertexQ.DeQueue(v);
+					 g->DrawEllipse(blackPen, v.x, v.y, 50, 50); //draws vertex
+					 String^ drawString = gcnew String(v.name.c_str());
+					 g->DrawString(drawString, arialFont, blackBrush, (float)(v.x + 18), (float)(v.y + 17), drawFormat); //draws label
+				 }
+			 }
+
+	private: void drawEdges() {
+				 QueueType<Vertex> vertexQ;
+				 this->graph->GetAllVertices(vertexQ);
+				 while (!vertexQ.IsEmpty()) {
+					 Vertex v;
+					 vertexQ.DeQueue(v);
+					 QueueType<Vertex> adjQ;
+					 this->graph->GetToVertices(v, adjQ);
+					 while (!adjQ.IsEmpty()) {
+						 Vertex adjV;
+						 adjQ.DeQueue(adjV);
+						 int w = this->graph->GetWeight(v, adjV);
+						 double theta;
+						 int endY, endX, startY, startX;
+						 endY = adjV.y + 25;
+						 endX = adjV.x + 25;
+						 startY = v.y + 25;
+						 startX = v.x + 25;
+						 theta = -atan2((double)(endY-startY), (double)(endX-startX));
+						 double length = sqrt(pow((adjV.x - v.x), 2.0) + pow((adjV.y - v.y), 2.0)) - 25.0;
+						 double tipX = -25.0, tipY = 0.0;
+						 double baseX = -35.0, baseY = -10.0;
+						 double topX = -35.0, topY = 10.0;
+						 //draw line
+						 g->DrawLine(blackPen,
+							 (int)((-length * cos(theta)) + (0 * sin(theta)) + (double)endX),
+							 (int)((length * sin(theta)) + (0 * cos(theta)) + (double)endY),
+							 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+							 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+						 //draw bottom of arrow
+						 g->DrawLine(blackPen,
+							 (int)((baseX * cos(theta)) + (baseY * sin(theta)) + (double)endX),
+							 (int)((-baseX * sin(theta)) + (baseY * cos(theta)) + (double)endY),	
+							 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+							 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+						 //draw top of arrow
+						 g->DrawLine(blackPen,
+							 (int)((topX * cos(theta)) + (topY * sin(theta)) + (double)endX),
+							 (int)((-topX * sin(theta)) + (topY * cos(theta)) + (double)endY),	
+							 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+							 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+					 }
+				 }
+			 }
+				 
+			 private: void drawMatrix() {
+						  String^ weightMatrixStr = "Label\tIndex";
+						  for (int i = 0; i < this->graph->GetVerticesCount(); i++) {
+							  if ((i >= matrixOffset) && (i < (matrixOffset + 4))) {
+								  weightMatrixStr += "\t" + System::Convert::ToString(i);
+							  }
+						  }
+						  weightMatrixStr += "\r\n";
+						  int vIndex = 0;
+
+						  QueueType<Vertex> vertexQ;
+						  this->graph->GetAllVertices(vertexQ);
+						  while (!vertexQ.IsEmpty()) {
+							  Vertex v;
+							  vertexQ.DeQueue(v);
+							  String^ name = gcnew String(v.name.c_str());
+							  weightMatrixStr += name + "\t" + System::Convert::ToString(vIndex++);
+							  QueueType<Vertex> allQ;
+							  this->graph->GetAllVertices(allQ);
+							  int counter = 0;
+							  while (!allQ.IsEmpty()) {
+								  Vertex v2;
+								  allQ.DeQueue(v2);
+								  if ((counter >= matrixOffset) && (counter < (matrixOffset + 4))) {
+									  weightMatrixStr += "\t" + System::Convert::ToString(this->graph->GetWeight(v, v2));
+								  }
+								  ++counter;
+							  }
+							  weightMatrixStr += "\r\n";
+						  }
+
+						  this->adjMatrixTextBox->Text = weightMatrixStr;
+						  if (matrixOffset == 0)
+							  prev->Enabled = false;
+						  if ((matrixOffset + 4) < this->graph->GetVerticesCount())
+							  next->Enabled = true;
+						  if (matrixOffset > 0)
+							  prev->Enabled = true;
+						  if ((matrixOffset + 4) >= this->graph->GetVerticesCount())
+							  next->Enabled = false;
+					  }
+
 private: System::Void loadToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 this->graph->MakeEmpty();
 			 if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
@@ -588,6 +623,7 @@ private: System::Void loadToolStripMenuItem_Click(System::Object^  sender, Syste
 				 drawGraph();
 			 }
 		 }
+
 private: System::Void saveToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 if (File::Exists(fileName))
 			 {
@@ -610,18 +646,18 @@ private: System::Void saveToolStripMenuItem_Click(System::Object^  sender, Syste
 				 this->graph->GetAllVertices(vertices);
 				 while (!vertices.IsEmpty())
 				 {
-					Vertex v;
-					vertices.DeQueue(v);
-					QueueType<Vertex> adjQ;
-					this->graph->GetToVertices(v, adjQ);
-					while (!adjQ.IsEmpty()) {
-						Vertex adjV;
-						adjQ.DeQueue(adjV);
-						int w = this->graph->GetWeight(v, adjV);
-						String^ from = gcnew String(v.name.c_str());
-						String^ to = gcnew String(adjV.name.c_str());
-						sw->WriteLine(from + ":" + to + ":" + System::Convert::ToString(w));
-					}
+					 Vertex v;
+					 vertices.DeQueue(v);
+					 QueueType<Vertex> adjQ;
+					 this->graph->GetToVertices(v, adjQ);
+					 while (!adjQ.IsEmpty()) {
+						 Vertex adjV;
+						 adjQ.DeQueue(adjV);
+						 int w = this->graph->GetWeight(v, adjV);
+						 String^ from = gcnew String(v.name.c_str());
+						 String^ to = gcnew String(adjV.name.c_str());
+						 sw->WriteLine(from + ":" + to + ":" + System::Convert::ToString(w));
+					 }
 				 }
 
 			 }
@@ -631,6 +667,7 @@ private: System::Void saveToolStripMenuItem_Click(System::Object^  sender, Syste
 			 }
 			 drawGraph();
 		 }
+
 private: System::Void saveAsToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 if (saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			 {
@@ -656,18 +693,18 @@ private: System::Void saveAsToolStripMenuItem_Click(System::Object^  sender, Sys
 					 this->graph->GetAllVertices(vertices);
 					 while (!vertices.IsEmpty())
 					 {
-						Vertex v;
-						vertices.DeQueue(v);
-						QueueType<Vertex> adjQ;
-						this->graph->GetToVertices(v, adjQ);
-						while (!adjQ.IsEmpty()) {
-							Vertex adjV;
-							adjQ.DeQueue(adjV);
-							int w = this->graph->GetWeight(v, adjV);
-							String^ from = gcnew String(v.name.c_str());
-							String^ to = gcnew String(adjV.name.c_str());
-							sw->WriteLine(from + ":" + to + ":" + System::Convert::ToString(w));
-						}
+						 Vertex v;
+						 vertices.DeQueue(v);
+						 QueueType<Vertex> adjQ;
+						 this->graph->GetToVertices(v, adjQ);
+						 while (!adjQ.IsEmpty()) {
+							 Vertex adjV;
+							 adjQ.DeQueue(adjV);
+							 int w = this->graph->GetWeight(v, adjV);
+							 String^ from = gcnew String(v.name.c_str());
+							 String^ to = gcnew String(adjV.name.c_str());
+							 sw->WriteLine(from + ":" + to + ":" + System::Convert::ToString(w));
+						 }
 					 }
 				 }
 				 finally
@@ -677,132 +714,170 @@ private: System::Void saveAsToolStripMenuItem_Click(System::Object^  sender, Sys
 			 }
 			 drawGraph();
 		 }
+
 private: System::Void quitToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 Application::Exit();
 		 }
+
 private: System::Void addUpdateToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 if (!String::IsNullOrWhiteSpace(this->vertexName->Text) &&
-					 !String::IsNullOrWhiteSpace(this->vertexX->Text) &&
-					 !String::IsNullOrWhiteSpace(this->vertexY->Text)) {
-						 try{
-							Vertex v;
-							v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
-							 if (this->graph->Search(v)) {
-								 v.x = System::Int32::Parse(this->vertexX->Text);
-								 v.y = System::Int32::Parse(this->vertexY->Text);
-								 this->graph->UpdateVertex(v);
-							 } else {
-								 v.x = System::Int32::Parse(this->vertexX->Text);
-								 v.y = System::Int32::Parse(this->vertexY->Text);
-								 this->graph->AddVertex(v);
-							 }
-							 
-						 } catch(FormatException ^) {
-							 MessageBox::Show("Must be an integer input for Vertex X and Vertex Y!");
+				 !String::IsNullOrWhiteSpace(this->vertexX->Text) &&
+				 !String::IsNullOrWhiteSpace(this->vertexY->Text)) {
+					 try{
+						 Vertex v;
+						 v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
+						 if (this->graph->Search(v)) {
+							 v.x = System::Int32::Parse(this->vertexX->Text);
+							 v.y = System::Int32::Parse(this->vertexY->Text);
+							 this->graph->UpdateVertex(v);
+						 } else {
+							 v.x = System::Int32::Parse(this->vertexX->Text);
+							 v.y = System::Int32::Parse(this->vertexY->Text);
+							 this->graph->AddVertex(v);
 						 }
-				 } else
-					 MessageBox::Show("Cannot leave inputs blank!");
 
-				 drawGraph();
+					 } catch(FormatException ^) {
+						 MessageBox::Show("Must be an integer input for Vertex X and Vertex Y!");
+					 }
+			 } else
+				 MessageBox::Show("Cannot leave inputs blank!");
+
+			 drawGraph();
 		 }
+
 private: System::Void deleteToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 Vertex v;
 			 v.name = msclr::interop::marshal_as<string>(this->vertexName->Text);
 			 try {
-				this->graph->DeleteVertex(v);
-				
+				 this->graph->DeleteVertex(v);
+
 			 } catch(NotFound) {
-				MessageBox::Show("Vertex Not Found!");
+				 MessageBox::Show("Vertex Not Found!");
 			 }
 
 			 drawGraph();
 		 }
+
 private: System::Void addUpdateToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
 			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
-					 !String::IsNullOrWhiteSpace(this->toVertex->Text) &&
-					 !String::IsNullOrWhiteSpace(this->weight->Text)) {
-				Vertex fv, tv;
-				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
-					
-					if (!this->graph->Search(fv)) {
-					MessageBox::Show("From Vertex Not Found!");
-					}
-					else {
-					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
-					if (!this->graph->Search(tv)) {
-						MessageBox::Show("To Vertex Not Found!");
-					} else {
-							try {
-							int w = System::Int32::Parse(this->weight->Text);
-							this->graph->AddEdge(fv, tv, w);
-						} catch(FormatException ^) {
-							MessageBox::Show("Must be an integer input for Weight!");
-						}
-					}
-					}
-				 } else
-					 MessageBox::Show("Cannot leave inputs blank!");
+				 !String::IsNullOrWhiteSpace(this->toVertex->Text) &&
+				 !String::IsNullOrWhiteSpace(this->weight->Text)) {
+					 Vertex fv, tv;
+					 fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
 
-				 drawGraph();
-		 }
-private: System::Void deleteToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
-					 !String::IsNullOrWhiteSpace(this->toVertex->Text)) {
-				Vertex fv, tv;
-				fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
-					if (!this->graph->Search(fv)) {
-					MessageBox::Show("From Vertex Not Found!");
-					}
-					else {
-					tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
-					if (!this->graph->Search(tv)) {
-						MessageBox::Show("To Vertex Not Found!");
-					} else {
-							this->graph->DeleteEdge(fv, tv);
-					}
-					}
-				 } else
-					 MessageBox::Show("Cannot leave inputs blank!");
-
-				 drawGraph();
-		 }
-private: System::Void isConnectedToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-			 if (this->graph->IsConnected())
-				MessageBox::Show("Graph Is Connected!");
-			 else
-				MessageBox::Show("Graph Is Not Connected!");
+					 if (!this->graph->Search(fv)) {
+						 MessageBox::Show("From Vertex Not Found!");
+					 }
+					 else {
+						 tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+						 if (!this->graph->Search(tv)) {
+							 MessageBox::Show("To Vertex Not Found!");
+						 } else {
+							 try {
+								 int w = System::Int32::Parse(this->weight->Text);
+								 this->graph->AddEdge(fv, tv, w);
+							 } catch(FormatException ^) {
+								 MessageBox::Show("Must be an integer input for Weight!");
+							 }
+						 }
+					 }
+			 } else
+				 MessageBox::Show("Cannot leave inputs blank!");
 
 			 drawGraph();
 		 }
+
+private: System::Void deleteToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
+				 !String::IsNullOrWhiteSpace(this->toVertex->Text)) {
+					 Vertex fv, tv;
+					 fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+					 if (!this->graph->Search(fv)) {
+						 MessageBox::Show("From Vertex Not Found!");
+					 }
+					 else {
+						 tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+						 if (!this->graph->Search(tv)) {
+							 MessageBox::Show("To Vertex Not Found!");
+						 } else {
+							 this->graph->DeleteEdge(fv, tv);
+						 }
+					 }
+			 } else
+				 MessageBox::Show("Cannot leave inputs blank!");
+
+			 drawGraph();
+		 }
+
+private: System::Void isConnectedToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (this->graph->IsConnected())
+				 MessageBox::Show("Graph Is Connected!");
+			 else
+				 MessageBox::Show("Graph Is Not Connected!");
+
+			 drawGraph();
+		 }
+
 private: System::Void vertexToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
 			 drawGraph();
 		 }
+
 private: System::Void edgeToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
 			 drawGraph();
 		 }
+
 private: System::Void analyzeToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
 			 drawGraph();
 		 }
+
 private: System::Void fileToolStripMenuItem_DropDownClosed(System::Object^  sender, System::EventArgs^  e) {
 			 drawGraph();
 		 }
+
 private: System::Void prev_Click(System::Object^  sender, System::EventArgs^  e) {
 			 if (matrixOffset > 0) {
 				 matrixOffset--;
 				 drawGraph();
 			 }
 		 }
+
 private: System::Void next_Click(System::Object^  sender, System::EventArgs^  e) {
 			 if ((matrixOffset + 4) < this->graph->GetVerticesCount()) {
-				matrixOffset++;
-				drawGraph();
+				 matrixOffset++;
+				 drawGraph();
 			 }
-			
 		 }
+
 private: System::Void resetToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 this->graph->MakeEmpty();
 			 drawGraph();
 		 }
+
+private: System::Void depthFirstSearchToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text) &&
+				 !String::IsNullOrWhiteSpace(this->toVertex->Text)) {
+					 Vertex fv, tv;
+					 fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+					 if (!this->graph->Search(fv)) {
+						 MessageBox::Show("From Vertex Not Found!");
+					 }
+					 else {
+						 tv.name = msclr::interop::marshal_as<string>(this->toVertex->Text);
+						 if (!this->graph->Search(tv)) {
+							 MessageBox::Show("To Vertex Not Found!");
+						 } else {
+							 QueueType<Vertex> vertexQ;
+							 this->graph->GetPath(fv, tv, vertexQ);
+							 while (!vertexQ.IsEmpty()) {
+								 Vertex v;
+								 vertexQ.DeQueue(v);
+							 }		 
+						 }
+					 }
+			 } else
+				 MessageBox::Show("Cannot leave inputs blank!");
+		 }
+
 };
 }
 

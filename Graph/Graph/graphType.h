@@ -124,10 +124,10 @@ public:
 	// Pre:		 GraphType is initialized
 	// Post:	 vertexQ contains all vertices in graph
 
-	//void GetAllEdges(QueueType<EdgeType>& edgeQ);
-	// Function: Returns a queue of all the edges
-	// Pre: 	 GraphType is initialized
-	// Post:	 edgeQ contains all edges in graph
+	void GetPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ);
+	// Function: Finds a path between fromVertex and toVertex using DFS
+	// Pre:		 GraphType is initialized
+	// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if not path exists throws PathNotFound Exception
 
 private:
 	int numVertices;

@@ -3,7 +3,7 @@
 #define TEMPLATE_STACK
 
 template<class T>
-Stack<T>::Stack()
+StackType<T>::StackType()
 // Constructor
 // Pre:  None
 // Post: Stack has been initialized
@@ -12,7 +12,7 @@ Stack<T>::Stack()
 }
 
 template<class T>
-Stack<T>::~Stack()
+StackType<T>::~StackType()
 // Deconstructor
 // Function: Deletes all pointers in the stack
 // Pre:		 Stack is initialized
@@ -28,7 +28,7 @@ Stack<T>::~Stack()
 }
 
 template<class T>
-void Stack<T>::Push(T newItem)
+void StackType<T>::Push(T newItem)
 // Function: Adds newItem to the top of the stack
 // Pre:		 Stack has been initialized
 // Post:	 If (stack is full), exception FullStack is thrown, else item is at the top
@@ -46,7 +46,7 @@ void Stack<T>::Push(T newItem)
 }
 
 template<class T>	
-void Stack<T>::Pop()
+void StackType<T>::Pop()
 // Function: Removes top item from the stack
 // Pre:		 Stack has been initialized
 // Post:	 If (stack is empty), exception EmptyStack is thrown, else top item has been
@@ -63,7 +63,7 @@ void Stack<T>::Pop()
 }
 
 template<class T>
-T Stack<T>::Top() const
+T StackType<T>::Top() const
 // Function: Returns a copy of the top item on the stack
 // Pre:		 Stack has been initialized
 // Post:	 If (stack is empty), exception EmptyStack is thrown, else a copy of the top
@@ -76,7 +76,7 @@ T Stack<T>::Top() const
 }
 
 template<class T>
-bool Stack<T>::IsEmpty () const
+bool StackType<T>::IsEmpty () const
 // Function: Determines whether the stack is empty
 // Pre:		 Stack has been initialized
 // Post:	 Returns if stack is empty
@@ -85,7 +85,7 @@ bool Stack<T>::IsEmpty () const
 }
 
 template<class T>
-bool Stack<T>::IsFull () const
+bool StackType<T>::IsFull () const
 // Function: Determines whether the stack is empty
 // Pre:		 Stack has been initialized
 // Post:	 Returns if stack is full
