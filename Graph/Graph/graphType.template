@@ -278,12 +278,37 @@ void GraphType<VertexType, EdgeValueType>::ShortestPath(VertexType fromVertex, V
 }
 
 template <class VertexType, class EdgeValueType>
-void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType vertex, GraphType<VertexType, EdgeValueType>& subgraph)
-// Function: Finds the subgraph of the graph containing the shortest paths between the vertices starting at vertex
+void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType vertex, GraphType<VertexType, EdgeValueType>& mst)
+// Function: Finds the subgraph of the graph containing the shortest paths between the vertices starting at vertex using Prim's algorithm
 // Pre:		 GraphType is intialized
 // Post:	 Function value = (graph describing minimal spanning tree)
 {
-	subgraph.AddVertex(vertex);
+	EdgeValueType min;
+	Vertex vj, vk;
+
+	// Set V(T) = {u}
+	mst.AddVertex(vertex);
+	for (int i = 0; i < numVertices; i++) {
+		min = (EdgeValueType)INFINITY;
+		for (int j = 0; j < numVertices; j++) {
+			if (mst.Search(vertices[j])) {
+				// vj is in V(T)
+				for (int k = 0; k < numVertices; k++) {
+					if (!mst.Search(vertices[k]) && (GetWeightIndex(j, k) < min)) {
+						//if vk is not in T and weight[vj][vk] < minWeight
+						vj = vertices[j];
+						vk = vertices[k];
+						min = GetWeightIndex(j, k);
+					}
+				}
+			}
+		}
+		// V(T) = V(T) U {vk}
+		mst.AddVertex(vk);
+		// E(T) = E(T) U {(vj, vk)}
+		mst.AddEdge(vj, vk, min);
+	}
+/*
 	int fromVertexIndex = GetVertexIndex(vertex);
 	int ne = 0;
 	int x, y;
@@ -309,7 +334,7 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 			}
 			++ne;
 		}
-	}
+	}*/
 }
 
 template <class VertexType, class EdgeValueType>

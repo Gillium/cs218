@@ -141,6 +141,7 @@ namespace Graph {
 			this->deleteToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->analyzeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->isConnectedToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->breadthFirstSearchToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->depthFirstSearchToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->minimumSpanningTreeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->shortestPathToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -151,7 +152,6 @@ namespace Graph {
 			this->next = (gcnew System::Windows::Forms::Button());
 			this->weighted = (gcnew System::Windows::Forms::CheckBox());
 			this->directed = (gcnew System::Windows::Forms::CheckBox());
-			this->breadthFirstSearchToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -368,6 +368,13 @@ namespace Graph {
 			this->isConnectedToolStripMenuItem->Text = L"Is Connected\?";
 			this->isConnectedToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::isConnectedToolStripMenuItem_Click);
 			// 
+			// breadthFirstSearchToolStripMenuItem
+			// 
+			this->breadthFirstSearchToolStripMenuItem->Name = L"breadthFirstSearchToolStripMenuItem";
+			this->breadthFirstSearchToolStripMenuItem->Size = System::Drawing::Size(206, 22);
+			this->breadthFirstSearchToolStripMenuItem->Text = L"Breadth First Search";
+			this->breadthFirstSearchToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::breadthFirstSearchToolStripMenuItem_Click);
+			// 
 			// depthFirstSearchToolStripMenuItem
 			// 
 			this->depthFirstSearchToolStripMenuItem->Name = L"depthFirstSearchToolStripMenuItem";
@@ -380,6 +387,7 @@ namespace Graph {
 			this->minimumSpanningTreeToolStripMenuItem->Name = L"minimumSpanningTreeToolStripMenuItem";
 			this->minimumSpanningTreeToolStripMenuItem->Size = System::Drawing::Size(206, 22);
 			this->minimumSpanningTreeToolStripMenuItem->Text = L"Minimum Spanning Tree";
+			this->minimumSpanningTreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::minimumSpanningTreeToolStripMenuItem_Click);
 			// 
 			// shortestPathToolStripMenuItem
 			// 
@@ -448,13 +456,6 @@ namespace Graph {
 			this->directed->Text = L"Directed";
 			this->directed->UseVisualStyleBackColor = true;
 			this->directed->CheckedChanged += gcnew System::EventHandler(this, &Form1::directed_CheckedChanged);
-			// 
-			// breadthFirstSearchToolStripMenuItem
-			// 
-			this->breadthFirstSearchToolStripMenuItem->Name = L"breadthFirstSearchToolStripMenuItem";
-			this->breadthFirstSearchToolStripMenuItem->Size = System::Drawing::Size(206, 22);
-			this->breadthFirstSearchToolStripMenuItem->Text = L"Breadth First Search";
-			this->breadthFirstSearchToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::breadthFirstSearchToolStripMenuItem_Click);
 			// 
 			// Form1
 			// 
@@ -932,7 +933,7 @@ private: System::Void breadthFirstSearchToolStripMenuItem_Click(System::Object^ 
 						 } else {
 							 try {
 									QueueType<Vertex> vertexQ;
-									this->graph->GetPath(fv, tv, vertexQ, BFS); //TODO: add enum param for DFS, BFS
+									this->graph->GetPath(fv, tv, vertexQ, BFS);
 									Vertex lastV;
 									lastV.name = "";
 									while (!vertexQ.IsEmpty()) {
@@ -971,7 +972,7 @@ private: System::Void depthFirstSearchToolStripMenuItem_Click(System::Object^  s
 						 } else {
 							 try {
 									QueueType<Vertex> vertexQ;
-									this->graph->GetPath(fv, tv, vertexQ, DFS); //TODO: add enum param for DFS, BFS
+									this->graph->GetPath(fv, tv, vertexQ, DFS);
 									Vertex lastV;
 									lastV.name = "";
 									while (!vertexQ.IsEmpty()) {
@@ -1005,6 +1006,42 @@ private: System::Void directed_CheckedChanged(System::Object^  sender, System::E
 			  this->graph->SetGraphType(weighted->Checked, directed->Checked);
 			  this->Refresh();
 			  drawGraph();
+		 }
+
+private: System::Void minimumSpanningTreeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if (!String::IsNullOrWhiteSpace(this->fromVertex->Text)) {
+				 Vertex fv;
+				 fv.name = msclr::interop::marshal_as<string>(this->fromVertex->Text);
+				 if (!this->graph->Search(fv)) {
+					 MessageBox::Show("From Vertex Not Found!");
+				 }
+				 else {
+					 GraphType<Vertex, int> mst;
+					 this->graph->FindMinimalSpanningTree(fv, mst);
+					 //draw vertices
+					 QueueType<Vertex> vertexQ;
+					 mst.GetAllVertices(vertexQ);
+					 while (!vertexQ.IsEmpty()) {
+						 Vertex v;
+						 vertexQ.DeQueue(v);
+						 drawVertex(v, redPen, redBrush);
+					 }
+					 //draw edges
+					 mst.GetAllVertices(vertexQ);
+					 while (!vertexQ.IsEmpty()) {
+						 Vertex v;
+						 vertexQ.DeQueue(v);
+						 QueueType<Vertex> adjQ;
+						 mst.GetToVertices(v, adjQ);
+						 while (!adjQ.IsEmpty()) {
+							 Vertex adjV;
+							 adjQ.DeQueue(adjV);
+							 drawEdge(v, adjV, redPen, redBrush);
+						 }
+					 }
+					 //draw matrix
+				 }
+			 }
 		 }
 };
 }
