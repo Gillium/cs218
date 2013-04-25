@@ -70,16 +70,12 @@ namespace Graph {
 	private: System::Windows::Forms::TextBox^  vertexX;
 	private: System::Windows::Forms::TextBox^  vertexY;
 
-
 	private: System::Windows::Forms::TextBox^  weight;
 	private: System::Windows::Forms::TextBox^  toVertex;
 	private: System::Windows::Forms::Label^  label4;
 	private: System::Windows::Forms::Label^  label5;
 	private: System::Windows::Forms::Label^  label6;
 	private: System::Windows::Forms::TextBox^  fromVertex;
-
-
-
 
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
 	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
@@ -518,12 +514,12 @@ namespace Graph {
 					 while (!adjQ.IsEmpty()) {
 						 Vertex adjV;
 						 adjQ.DeQueue(adjV);
-						 drawEdge(v, adjV, blackPen);
+						 drawEdge(v, adjV, blackPen, blackBrush);
 					 }
 				 }
 			 }
 
-	private: void drawEdge(Vertex v, Vertex adjV, System::Drawing::Pen^ pen) {
+	private: void drawEdge(Vertex v, Vertex adjV, System::Drawing::Pen^ pen, System::Drawing::Brush^ brush) {
 				 int w = this->graph->GetWeight(v, adjV);
 				 double theta;
 				 int endY, endX, startY, startX;
@@ -542,18 +538,22 @@ namespace Graph {
 					 (int)((length * sin(theta)) + (0 * cos(theta)) + (double)endY),
 					 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
 					 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-				 //draw bottom of arrow
+				 //draw arrow
 				 g->DrawLine(pen,
 					 (int)((baseX * cos(theta)) + (baseY * sin(theta)) + (double)endX),
 					 (int)((-baseX * sin(theta)) + (baseY * cos(theta)) + (double)endY),	
 					 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
 					 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-				 //draw top of arrow
 				 g->DrawLine(pen,
 					 (int)((topX * cos(theta)) + (topY * sin(theta)) + (double)endX),
 					 (int)((-topX * sin(theta)) + (topY * cos(theta)) + (double)endY),	
 					 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
 					 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+				 //draw weight
+				 String^ weightStr = System::Convert::ToString(w);
+				 g->DrawString(weightStr, arialFont, brush, 
+					 (int)(((topX - 10.0) * cos(theta)) + (topY * sin(theta)) + (double)endX),
+					 (int)((-(topX - 10.0) * sin(theta)) + (topY * cos(theta)) + (double)endY), drawFormat); //draws label
 			 }
 
 	private: void drawMatrix() {
@@ -889,7 +889,7 @@ private: System::Void depthFirstSearchToolStripMenuItem_Click(System::Object^  s
 										drawVertex(v, redPen, redBrush);
 										if (lastV.name != "") {
 											//draw an edge from lastV to v
-											drawEdge(lastV, v, redPen);
+											drawEdge(lastV, v, redPen, redBrush);
 										}
 										lastV.name = v.name;
 										lastV.x = v.x;
