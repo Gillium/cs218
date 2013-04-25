@@ -8,7 +8,7 @@
 using namespace std;
 
 static const int MAX_VERTICES = 50;
-#define infinity 10000;
+static const int INFINITY = 10000;
 
 // Exception class used by GetVertexIndex and DeleteVertex when vertex is not found
 class NotFound{
@@ -26,13 +26,15 @@ struct EdgeType {
 	EdgeValueType weight;
 };
 
+enum SearchType { DFS, BFS };
+
 template <class VertexType, class EdgeValueType>
 class GraphType {
 public:
 	GraphType();
 	// Constructor
 	// Pre:	 None
-	// Post: GraphType is intialized
+	// Post: GraphType is intialized, isWeighted is true, isDirected is true
 
 	~GraphType();
 	// Deconstructor
@@ -124,22 +126,34 @@ public:
 	// Pre:		 GraphType is initialized
 	// Post:	 vertexQ contains all vertices in graph
 
-	void GetPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ);
-	// Function: Finds a path between fromVertex and toVertex using DFS
+	void GetPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ, SearchType st);
+	// Function: Finds a path between fromVertex and toVertex using DFS or BFS
 	// Pre:		 GraphType is initialized
 	// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if not path exists throws PathNotFound Exception
 
+	void SetGraphType(bool weighted, bool directed);
+	// Function: Sets the graph type as weighted/unweighted and directed/undirected
+	// Pre:      GraphType is initialized
+	// Post:     isWeighted and isDirected are set to weighted and directed 
 private:
 	int numVertices;
 	int numEdges;
+	bool isDirected;
+	bool isWeighted;
 	VertexType vertices[MAX_VERTICES];
 	EdgeValueType edges[MAX_VERTICES][MAX_VERTICES];
+	EdgeValueType edgesU[MAX_VERTICES][MAX_VERTICES];
 	bool marks[MAX_VERTICES];
 
 	int GetVertexIndex(VertexType vertex);
 	// Function: Returns the index for a vertex in the graph
 	// Pre:		 GraphType is initialized
 	// Post:	 if found Function value = (index of vertex), otherwise throw NotFound exception
+
+	EdgeValueType GraphType<VertexType, EdgeValueType>::GetWeightIndex(int fromV, int toV);
+	// Function: Returns the weight of the edge from fromV to toV
+	// Pre:		 GraphType is initialized, fromV and toV are indices of vertices
+	// Post:	 Function value = weight of edge from fromV to toV if edge exists, if edge does not exist function value = special "null-edge" value
 
 	void ReplaceVertex(int fromVertexIndex, int toVertexIndex);
 	// Function: Replaces vertex and edges located at toVertexIndex with vertex and edges located at fromVertexIndex
@@ -148,6 +162,11 @@ private:
 
 	void DepthFirstSearch(GraphType<VertexType, EdgeValueType> graph, VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ);
 	// Function: Finds a path by traversing the graph using a LIFO stack to keep track of vertices to explore while marking vertices already visited
+	// Pre:		 GraphType is initialized
+	// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if no path exists throws PathNotFound exception
+
+	void BreadthFirstSearch(GraphType<VertexType, EdgeValueType> graph, VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ);
+	// Function: Finds a path by traversing the graph using a FIFO queue to keep track of vertices to explore while marking vertices already visited
 	// Pre:		 GraphType is initialized
 	// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 

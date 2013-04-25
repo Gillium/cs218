@@ -11,12 +11,15 @@ GraphType<VertexType, EdgeValueType>::GraphType()
 {
 	numVertices = 0;
 	numEdges = 0;
+	isWeighted = true;
+	isDirected = true;
 
 	// vertices does not need to be initialized since we are storing numVertices
 
 	for (int i = 0; i < MAX_VERTICES; i++) {
 		for (int j = 0; j < MAX_VERTICES; j++) {
 			edges[i][j] = (EdgeValueType)(0);
+			edgesU[i][j] = (EdgeValueType)(0);
 		}
 	}
 
@@ -41,6 +44,8 @@ GraphType<VertexType, EdgeValueType>::GraphType(const GraphType<VertexType, Edge
 {
 	numVertices = acopy.numVertices;
 	numEdges = acopy.numEdges;
+	isWeighted = acopy.isWeighted;
+	isDirected = acopy.isDirected;
 
 	for (int i = 0; i < MAX_VERTICES; i++)
 		vertices[i] = acopy.vertices[i];
@@ -48,6 +53,7 @@ GraphType<VertexType, EdgeValueType>::GraphType(const GraphType<VertexType, Edge
 	for (int i = 0; i < MAX_VERTICES; i++) {
 		for (int j = 0; j < MAX_VERTICES; j++) {
 			edges[i][j] = acopy.edges[i][j];
+			edgesU[i][j] = acopy.edgesU[i][j];
 		}
 	}
 
@@ -69,6 +75,7 @@ void GraphType<VertexType, EdgeValueType>::MakeEmpty()
 	for (int i = 0; i < MAX_VERTICES; i++) {
 		for (int j = 0; j < MAX_VERTICES; j++) {
 			edges[i][j] = (EdgeValueType)(0);
+			edgesU[i][j] = (EdgeValueType)(0);
 		}
 	}
 
@@ -110,8 +117,17 @@ void GraphType<VertexType, EdgeValueType>::AddEdge(VertexType fromVertex, Vertex
 // Post:	 (fromVertex, toVertex) is in edges with the specified weight, throws NotFound exception when fromVertex or toVertex not in vertices
 {
 	try {
-		edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
-		numEdges++;
+		if (isDirected) {
+		  edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+		  edgesU[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+		  edgesU[GetVertexIndex(toVertex)][GetVertexIndex(fromVertex)] = weight;
+		}
+		else {
+          edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+		  edges[GetVertexIndex(toVertex)][GetVertexIndex(fromVertex)] = weight;
+		  edgesU[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = weight;
+		  edgesU[GetVertexIndex(toVertex)][GetVertexIndex(fromVertex)] = weight;
+		}
 	} catch (NotFound) {
 		throw NotFound();
 	}
@@ -132,7 +148,24 @@ EdgeValueType GraphType<VertexType, EdgeValueType>::GetWeight(VertexType fromVer
 // Pre:		 GraphType is initialized, fromVertex and toVertex are vertices
 // Post:	 Function value = weight of edge from fromVertex to toVertex if edge exists, if edge does not exist function value = special "null-edge" value
 {
-	return edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)];
+	EdgeValueType retVal;
+	if (isWeighted && isDirected)
+	  retVal = edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)];
+	else if (!isWeighted && isDirected) {
+		if (edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] == 0)
+			retVal = (EdgeValueType)0;
+		else
+		    retVal = (EdgeValueType)1;
+	}
+	else if (isWeighted && !isDirected)
+		 retVal = edgesU[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)];
+	else if (!isWeighted && !isDirected) {
+		if (edgesU[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] == 0)
+			retVal = (EdgeValueType)0;
+		else
+		    retVal = (EdgeValueType)1;
+	}
+	return retVal;
 }
 
 template <class VertexType, class EdgeValueType>
@@ -143,8 +176,13 @@ void GraphType<VertexType, EdgeValueType>::GetToVertices(VertexType fromVertex, 
 {
 	int fromVertexIndex = GetVertexIndex(fromVertex);
 	for (int toVertexIndex = 0; toVertexIndex < numVertices; toVertexIndex++){
-		if (edges[fromVertexIndex][toVertexIndex] != (EdgeValueType)(0))
-			vertexQ.EnQueue(vertices[toVertexIndex]);
+		if (isDirected) {
+			if (edges[fromVertexIndex][toVertexIndex] != (EdgeValueType)(0))
+				vertexQ.EnQueue(vertices[toVertexIndex]);
+		} else {
+			if (edgesU[fromVertexIndex][toVertexIndex] != (EdgeValueType)(0))
+				vertexQ.EnQueue(vertices[toVertexIndex]);
+		}
 	}
 }
 
@@ -186,7 +224,16 @@ void GraphType<VertexType, EdgeValueType>::DeleteEdge(VertexType fromVertex, Ver
 // Post:	 edges does not contain edge, NotFound exception thrown if fromVertex or toVertex is not in vertices
 {
 	try {
-		edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = 0;
+		if (isDirected) {
+			edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = 0;
+		    edgesU[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = 0;
+			edgesU[GetVertexIndex(toVertex)][GetVertexIndex(fromVertex)] = 0;
+		} else {
+			edges[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = 0;
+			edges[GetVertexIndex(toVertex)][GetVertexIndex(fromVertex)] = 0;
+			edgesU[GetVertexIndex(fromVertex)][GetVertexIndex(toVertex)] = 0;
+			edgesU[GetVertexIndex(toVertex)][GetVertexIndex(fromVertex)] = 0;
+		}
 	} catch (NotFound) {
 		throw NotFound();
 	}
@@ -223,7 +270,8 @@ void GraphType<VertexType, EdgeValueType>::ShortestPath(VertexType fromVertex, V
 // Post:	 pathQ contains vertices describing the shortest path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 {
 	try {
-		DepthFirstSearch(FindMinimalSpanningTree(fromVertex), fromVertex, toVertex, pathQ);
+		GraphType<VertexType, EdgeValueType> subGraph;
+		DepthFirstSearch(FindMinimalSpanningTree(fromVertex, subgraph), fromVertex, toVertex, pathQ);
 	} catch(PathNotFound) {
 		throw PathNotFound();
 	}
@@ -235,35 +283,32 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 // Pre:		 GraphType is intialized
 // Post:	 Function value = (graph describing minimal spanning tree)
 {
-	//GraphType<VertexType, EdgeValueType> subGraph = GraphType<VertexType, EdgeValueType>();
 	subgraph.AddVertex(vertex);
 	int fromVertexIndex = GetVertexIndex(vertex);
 	int ne = 0;
 	int x, y;
 	EdgeValueType min;
 	while (ne < numVertices - 1) {
-		min = (EdgeValueType)infinity;
+		min = (EdgeValueType)INFINITY;
 		for (int i = 0; i < numVertices; i++) {
 			if (subgraph.Search(vertices[i])) {
 				for (int j = 0; j < numVertices; j++) {
 					if (!subgraph.Search(vertices[j])) {
-						if (min > edges[i][j]) {
-							min = edges[i][j];
+						if (min > GetWeightIndex(i, j)) {
+							min = GetWeightIndex(i, j);
 							x = i;
 							y = j;
 						}
 					}
 				}
 			}
-			if (min != 0) {
+			if ((min != 0) && (min != INFINITY)) {
 				if (!subgraph.Search(vertices[y]))
 					subgraph.AddVertex(vertices[y]);
 				subgraph.AddEdge(vertices[x], vertices[y], min);
+			}
+			++ne;
 		}
-		++ne;
-		}
-
-		
 	}
 }
 
@@ -278,16 +323,34 @@ void GraphType<VertexType, EdgeValueType>::GetAllVertices(QueueType<VertexType>&
 }
 
 template <class VertexType, class EdgeValueType>
-void GraphType<VertexType, EdgeValueType>::GetPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ)
+void GraphType<VertexType, EdgeValueType>::GetPath(VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ, SearchType st)
 // Function: Finds a path between fromVertex and toVertex using DFS
 // Pre:		 GraphType is initialized
 // Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if not path exists throws PathNotFound Exception
 {
 	try {
-		DepthFirstSearch(*this, fromVertex, toVertex, pathQ);
+		switch (st)
+		{
+		case DFS:
+			DepthFirstSearch(*this, fromVertex, toVertex, pathQ);
+			break;
+		case BFS:
+			BreadthFirstSearch(*this, fromVertex, toVertex, pathQ);
+			break;
+		}
 	} catch(PathNotFound) {
 		throw PathNotFound();
 	}
+}
+
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::SetGraphType(bool weighted, bool directed)
+// Function: Sets the graph type as weighted/unweighted and directed/undirected
+// Pre:      GraphType is initialized
+// Post:     isWeighted and isDirected are set to weighted and directed 
+{
+	isWeighted = weighted;
+	isDirected = directed;
 }
 
 // Private functions
@@ -305,6 +368,32 @@ int GraphType<VertexType, EdgeValueType>::GetVertexIndex(VertexType vertex)
 }
 
 template <class VertexType, class EdgeValueType>
+EdgeValueType GraphType<VertexType, EdgeValueType>::GetWeightIndex(int fromV, int toV)
+// Function: Returns the weight of the edge from fromV to toV
+// Pre:		 GraphType is initialized, fromV and toV are indices of vertices
+// Post:	 Function value = weight of edge from fromV to toV if edge exists, if edge does not exist function value = special "null-edge" value
+{
+	EdgeValueType retVal;
+	if (isWeighted && isDirected)
+	  retVal = edges[fromV][toV];
+	else if (!isWeighted && isDirected) {
+		if (edges[fromV][toV] == 0)
+			retVal = (EdgeValueType)0;
+		else
+		    retVal = (EdgeValueType)1;
+	}
+	else if (isWeighted && !isDirected)
+		 retVal = edgesU[fromV][toV];
+	else if (!isWeighted && !isDirected) {
+		if (edgesU[fromV][toV] == 0)
+			retVal = (EdgeValueType)0;
+		else
+		    retVal = (EdgeValueType)1;
+	}
+	return retVal;
+}
+
+template <class VertexType, class EdgeValueType>
 void GraphType<VertexType, EdgeValueType>::ReplaceVertex(int fromVertexIndex, int toVertexIndex)
 // Function: Replaces vertex and edges located at toVertexIndex with vertex and edges located at fromVertexIndex
 // Pre:		 GraphType is initialized, fromVertexIndex and toVertexIndex are less than numVertices
@@ -315,6 +404,8 @@ void GraphType<VertexType, EdgeValueType>::ReplaceVertex(int fromVertexIndex, in
 	for (int i = 0; i < numVertices;i++) {
 		edges[toVertexIndex][i] = edges[fromVertexIndex][i];
 		edges[i][toVertexIndex] = edges[i][fromVertexIndex];
+		edgesU[toVertexIndex][i] = edgesU[fromVertexIndex][i];
+		edgesU[i][toVertexIndex] = edgesU[i][fromVertexIndex];
 	}
 }
 
@@ -365,6 +456,54 @@ void GraphType<VertexType, EdgeValueType>::DepthFirstSearch(GraphType<VertexType
 		//cout << "Path not found." endl;
 		throw PathNotFound();
 }
+
+template <class VertexType, class EdgeValueType>
+void GraphType<VertexType, EdgeValueType>::BreadthFirstSearch(GraphType<VertexType, EdgeValueType> graph, VertexType fromVertex, VertexType toVertex, QueueType<VertexType> &pathQ)
+// Function: Finds a path by traversing the graph using a FIFO queue to keep track of vertices to explore while marking vertices already visited
+// Pre:		 GraphType is initialized
+// Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if no path exists throws PathNotFound exception
+{
+	QueueType<VertexType> queueV;
+	QueueType<VertexType> vertexQ;
+
+	bool found = false;
+	VertexType vertex;
+	VertexType item;
+
+	graph.ClearMarks();
+	queueV.EnQueue(fromVertex);
+	do
+	{ 
+		queueV.DeQueue(vertex);
+		if (vertex == toVertex)
+		{
+			pathQ.EnQueue(vertex);
+			//cout << vertex;
+			found = true;
+		}
+		else
+		{
+			if (!graph.IsMarked(vertex))
+			{
+				graph.MarkVertex(vertex);
+				pathQ.EnQueue(vertex);
+				//cout << vertex;
+				graph.GetToVertices(vertex, vertexQ);
+
+				while (!vertexQ.IsEmpty())
+				{
+					vertexQ.DeQueue(item);
+					if (!graph.IsMarked(item))
+						queueV.EnQueue(item);
+				}
+			}
+		}
+	} while (!queueV.IsEmpty() && !found);
+	if (!found)
+		//cout << "Path not found." endl;
+		throw PathNotFound();
+}
+
 
 template <class VertexType, class EdgeValueType>
 void GraphType<VertexType, EdgeValueType>::ClearMarks()
