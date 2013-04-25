@@ -262,7 +262,7 @@ namespace Graph {
 			// fileToolStripMenuItem
 			// 
 			this->fileToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {this->resetToolStripMenuItem, 
-				this->loadToolStripMenuItem, this->saveToolStripMenuItem, this->saveAsToolStripMenuItem, this->quitToolStripMenuItem});
+			this->loadToolStripMenuItem, this->saveToolStripMenuItem, this->saveAsToolStripMenuItem, this->quitToolStripMenuItem});
 			this->fileToolStripMenuItem->Name = L"fileToolStripMenuItem";
 			this->fileToolStripMenuItem->Size = System::Drawing::Size(37, 20);
 			this->fileToolStripMenuItem->Text = L"File";
@@ -464,6 +464,8 @@ namespace Graph {
 		static Brush^ whiteBrush;
 		static Pen^ blackPen;
 		static SolidBrush^ blackBrush;
+		static Pen^ redPen;
+		static SolidBrush^ redBrush;
 		static Drawing::Font^ arialFont;
 		static StringFormat^ drawFormat;
 
@@ -475,7 +477,9 @@ namespace Graph {
 				 g = this->CreateGraphics();
 				 whiteBrush = gcnew System::Drawing::SolidBrush(Color::White);
 				 blackPen = gcnew System::Drawing::Pen(Color::Black);
+				 redPen = gcnew System::Drawing::Pen(Color::Red);
 				 blackBrush = gcnew System::Drawing::SolidBrush(Color::Black);
+				 redBrush = gcnew System::Drawing::SolidBrush(Color::Red);
 				 arialFont = gcnew System::Drawing::Font("Arial", 12);
 				 drawFormat = gcnew System::Drawing::StringFormat();
 			 }
@@ -493,10 +497,14 @@ namespace Graph {
 				 while (!vertexQ.IsEmpty()) {
 					 Vertex v;
 					 vertexQ.DeQueue(v);
-					 g->DrawEllipse(blackPen, v.x, v.y, 50, 50); //draws vertex
-					 String^ drawString = gcnew String(v.name.c_str());
-					 g->DrawString(drawString, arialFont, blackBrush, (float)(v.x + 18), (float)(v.y + 17), drawFormat); //draws label
+					 drawVertex(v, blackPen, blackBrush);
 				 }
+			 }
+
+	private: void drawVertex(Vertex v, System::Drawing::Pen^ pen, System::Drawing::Brush^ brush) {
+                     g->DrawEllipse(pen, v.x, v.y, 50, 50); //draws vertex
+					 String^ drawString = gcnew String(v.name.c_str());
+					 g->DrawString(drawString, arialFont, brush, (float)(v.x + 18), (float)(v.y + 17), drawFormat); //draws label
 			 }
 
 	private: void drawEdges() {
@@ -510,81 +518,85 @@ namespace Graph {
 					 while (!adjQ.IsEmpty()) {
 						 Vertex adjV;
 						 adjQ.DeQueue(adjV);
-						 int w = this->graph->GetWeight(v, adjV);
-						 double theta;
-						 int endY, endX, startY, startX;
-						 endY = adjV.y + 25;
-						 endX = adjV.x + 25;
-						 startY = v.y + 25;
-						 startX = v.x + 25;
-						 theta = -atan2((double)(endY-startY), (double)(endX-startX));
-						 double length = sqrt(pow((adjV.x - v.x), 2.0) + pow((adjV.y - v.y), 2.0)) - 25.0;
-						 double tipX = -25.0, tipY = 0.0;
-						 double baseX = -35.0, baseY = -10.0;
-						 double topX = -35.0, topY = 10.0;
-						 //draw line
-						 g->DrawLine(blackPen,
-							 (int)((-length * cos(theta)) + (0 * sin(theta)) + (double)endX),
-							 (int)((length * sin(theta)) + (0 * cos(theta)) + (double)endY),
-							 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
-							 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-						 //draw bottom of arrow
-						 g->DrawLine(blackPen,
-							 (int)((baseX * cos(theta)) + (baseY * sin(theta)) + (double)endX),
-							 (int)((-baseX * sin(theta)) + (baseY * cos(theta)) + (double)endY),	
-							 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
-							 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
-						 //draw top of arrow
-						 g->DrawLine(blackPen,
-							 (int)((topX * cos(theta)) + (topY * sin(theta)) + (double)endX),
-							 (int)((-topX * sin(theta)) + (topY * cos(theta)) + (double)endY),	
-							 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
-							 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+						 drawEdge(v, adjV, blackPen);
 					 }
 				 }
 			 }
-				 
-			 private: void drawMatrix() {
-						  String^ weightMatrixStr = "Label\tIndex";
-						  for (int i = 0; i < this->graph->GetVerticesCount(); i++) {
-							  if ((i >= matrixOffset) && (i < (matrixOffset + 4))) {
-								  weightMatrixStr += "\t" + System::Convert::ToString(i);
-							  }
-						  }
-						  weightMatrixStr += "\r\n";
-						  int vIndex = 0;
 
-						  QueueType<Vertex> vertexQ;
-						  this->graph->GetAllVertices(vertexQ);
-						  while (!vertexQ.IsEmpty()) {
-							  Vertex v;
-							  vertexQ.DeQueue(v);
-							  String^ name = gcnew String(v.name.c_str());
-							  weightMatrixStr += name + "\t" + System::Convert::ToString(vIndex++);
-							  QueueType<Vertex> allQ;
-							  this->graph->GetAllVertices(allQ);
-							  int counter = 0;
-							  while (!allQ.IsEmpty()) {
-								  Vertex v2;
-								  allQ.DeQueue(v2);
-								  if ((counter >= matrixOffset) && (counter < (matrixOffset + 4))) {
-									  weightMatrixStr += "\t" + System::Convert::ToString(this->graph->GetWeight(v, v2));
-								  }
-								  ++counter;
-							  }
-							  weightMatrixStr += "\r\n";
-						  }
+	private: void drawEdge(Vertex v, Vertex adjV, System::Drawing::Pen^ pen) {
+				 int w = this->graph->GetWeight(v, adjV);
+				 double theta;
+				 int endY, endX, startY, startX;
+				 endY = adjV.y + 25;
+				 endX = adjV.x + 25;
+				 startY = v.y + 25;
+				 startX = v.x + 25;
+				 theta = -atan2((double)(endY-startY), (double)(endX-startX));
+				 double length = sqrt(pow((adjV.x - v.x), 2.0) + pow((adjV.y - v.y), 2.0)) - 25.0;
+				 double tipX = -25.0, tipY = 0.0;
+				 double baseX = -35.0, baseY = -10.0;
+				 double topX = -35.0, topY = 10.0;
+				 //draw line
+				 g->DrawLine(pen,
+					 (int)((-length * cos(theta)) + (0 * sin(theta)) + (double)endX),
+					 (int)((length * sin(theta)) + (0 * cos(theta)) + (double)endY),
+					 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+					 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+				 //draw bottom of arrow
+				 g->DrawLine(pen,
+					 (int)((baseX * cos(theta)) + (baseY * sin(theta)) + (double)endX),
+					 (int)((-baseX * sin(theta)) + (baseY * cos(theta)) + (double)endY),	
+					 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+					 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+				 //draw top of arrow
+				 g->DrawLine(pen,
+					 (int)((topX * cos(theta)) + (topY * sin(theta)) + (double)endX),
+					 (int)((-topX * sin(theta)) + (topY * cos(theta)) + (double)endY),	
+					 (int)((tipX * cos(theta)) + (tipY * sin(theta)) + (double)endX),
+					 (int)((-tipX * sin(theta)) + (tipY * cos(theta)) + (double)endY));
+			 }
 
-						  this->adjMatrixTextBox->Text = weightMatrixStr;
-						  if (matrixOffset == 0)
-							  prev->Enabled = false;
-						  if ((matrixOffset + 4) < this->graph->GetVerticesCount())
-							  next->Enabled = true;
-						  if (matrixOffset > 0)
-							  prev->Enabled = true;
-						  if ((matrixOffset + 4) >= this->graph->GetVerticesCount())
-							  next->Enabled = false;
-					  }
+	private: void drawMatrix() {
+				 String^ weightMatrixStr = "Label\tIndex";
+				 for (int i = 0; i < this->graph->GetVerticesCount(); i++) {
+					 if ((i >= matrixOffset) && (i < (matrixOffset + 4))) {
+						 weightMatrixStr += "\t" + System::Convert::ToString(i);
+					 }
+				 }
+				 weightMatrixStr += "\r\n";
+				 int vIndex = 0;
+
+				 QueueType<Vertex> vertexQ;
+				 this->graph->GetAllVertices(vertexQ);
+				 while (!vertexQ.IsEmpty()) {
+					 Vertex v;
+					 vertexQ.DeQueue(v);
+					 String^ name = gcnew String(v.name.c_str());
+					 weightMatrixStr += name + "\t" + System::Convert::ToString(vIndex++);
+					 QueueType<Vertex> allQ;
+					 this->graph->GetAllVertices(allQ);
+					 int counter = 0;
+					 while (!allQ.IsEmpty()) {
+						 Vertex v2;
+						 allQ.DeQueue(v2);
+						 if ((counter >= matrixOffset) && (counter < (matrixOffset + 4))) {
+							 weightMatrixStr += "\t" + System::Convert::ToString(this->graph->GetWeight(v, v2));
+						 }
+						 ++counter;
+					 }
+					 weightMatrixStr += "\r\n";
+				 }
+
+				 this->adjMatrixTextBox->Text = weightMatrixStr;
+				 if (matrixOffset == 0)
+					 prev->Enabled = false;
+				 if ((matrixOffset + 4) < this->graph->GetVerticesCount())
+					 next->Enabled = true;
+				 if (matrixOffset > 0)
+					 prev->Enabled = true;
+				 if ((matrixOffset + 4) >= this->graph->GetVerticesCount())
+					 next->Enabled = false;
+			 }
 
 private: System::Void loadToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 this->graph->MakeEmpty();
@@ -866,12 +878,26 @@ private: System::Void depthFirstSearchToolStripMenuItem_Click(System::Object^  s
 						 if (!this->graph->Search(tv)) {
 							 MessageBox::Show("To Vertex Not Found!");
 						 } else {
-							 QueueType<Vertex> vertexQ;
-							 this->graph->GetPath(fv, tv, vertexQ);
-							 while (!vertexQ.IsEmpty()) {
-								 Vertex v;
-								 vertexQ.DeQueue(v);
-							 }		 
+							 try {
+									QueueType<Vertex> vertexQ;
+									this->graph->GetPath(fv, tv, vertexQ); //TODO: add enum param for DFS, BFS
+									Vertex lastV;
+									lastV.name = "";
+									while (!vertexQ.IsEmpty()) {
+										Vertex v;
+										vertexQ.DeQueue(v);
+										drawVertex(v, redPen, redBrush);
+										if (lastV.name != "") {
+											//draw an edge from lastV to v
+											drawEdge(lastV, v, redPen);
+										}
+										lastV.name = v.name;
+										lastV.x = v.x;
+										lastV.y = v.y;
+									}
+						     } catch(PathNotFound) {
+								 MessageBox::Show("Path Not Found!");
+							 }
 						 }
 					 }
 			 } else

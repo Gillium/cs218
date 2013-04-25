@@ -324,7 +324,7 @@ void GraphType<VertexType, EdgeValueType>::DepthFirstSearch(GraphType<VertexType
 // Pre:		 GraphType is initialized
 // Post:	 pathQ contains vertices describing a path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 {
-	StackType<VertexType> stackV = StackType<VertexType>();
+	StackType<VertexType> stackV;
 	QueueType<VertexType> vertexQ;
 
 	bool found = false;
@@ -355,7 +355,7 @@ void GraphType<VertexType, EdgeValueType>::DepthFirstSearch(GraphType<VertexType
 				while (!vertexQ.IsEmpty())
 				{
 					vertexQ.DeQueue(item);
-					if (!vertexQ.IsEmpty())
+					if (!graph.IsMarked(item))
 						stackV.Push(item);
 				}
 			}
