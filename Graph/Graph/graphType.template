@@ -257,9 +257,10 @@ bool GraphType<VertexType, EdgeValueType>::IsConnected()
 	if (numVertices <= 1)
 		return true;
 	else {
-		GraphType<VertexType, EdgeValueType> subgraph;
-		FindMinimalSpanningTree(vertices[0], subgraph);
-		return (subgraph.GetVerticesCount() == numVertices);
+		GraphType<VertexType, EdgeValueType> mst;
+		mst.SetGraphType(true, false);
+		FindMinimalSpanningTree(vertices[0], mst);
+		return (mst.GetVerticesCount() == numVertices);
 	}
 }
 
@@ -270,8 +271,9 @@ void GraphType<VertexType, EdgeValueType>::ShortestPath(VertexType fromVertex, V
 // Post:	 pathQ contains vertices describing the shortest path between fromVertex and toVertex, if no path exists throws PathNotFound exception
 {
 	try {
-		GraphType<VertexType, EdgeValueType> subGraph;
-		DepthFirstSearch(FindMinimalSpanningTree(fromVertex, subgraph), fromVertex, toVertex, pathQ);
+		GraphType<VertexType, EdgeValueType> mst;
+		mst.SetGraphType(true, false);
+		DepthFirstSearch(FindMinimalSpanningTree(fromVertex, mst), fromVertex, toVertex, pathQ);
 	} catch(PathNotFound) {
 		throw PathNotFound();
 	}
@@ -303,6 +305,7 @@ void GraphType<VertexType, EdgeValueType>::FindMinimalSpanningTree(VertexType ve
 				}
 			}
 		}
+		
 		// V(T) = V(T) U {vk}
 		mst.AddVertex(vk);
 		// E(T) = E(T) U {(vj, vk)}

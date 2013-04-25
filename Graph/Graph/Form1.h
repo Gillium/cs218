@@ -653,8 +653,17 @@ private: System::Void loadToolStripMenuItem_Click(System::Object^  sender, Syste
 			 {
 				 fileName = gcnew String(openFileDialog1->FileName);
 				 System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(fileName);
-				 int numVertices;
-				 Int32::TryParse(sr->ReadLine(), numVertices);
+				 int numVertices, isWeighted, isDirected;
+				 array<String^>^graphData = (sr->ReadLine())->Split(':');
+				 Int32::TryParse(graphData[0], numVertices);
+				 if (graphData->Length == 3)
+				 {
+					 Int32::TryParse(graphData[1], isWeighted);
+					 Int32::TryParse(graphData[2], isDirected);
+					 weighted->Checked = (isWeighted == 0) ? false : true;
+					 directed->Checked = (isDirected == 0) ? false : true;
+				 }
+
 				 for (int i = 0; i < numVertices; i++)
 				 {
 					 array<String^>^vertexData = (sr->ReadLine())->Split(':');
@@ -693,7 +702,9 @@ private: System::Void saveToolStripMenuItem_Click(System::Object^  sender, Syste
 			 StreamWriter^ sw = gcnew StreamWriter(fileName);
 			 try
 			 {
-				 sw->WriteLine(System::Convert::ToString(this->graph->GetVerticesCount()));
+				 sw->WriteLine(System::Convert::ToString(this->graph->GetVerticesCount())
+					 + ":" + (weighted->Checked ? "1" : "0") + ":"
+					 + (directed->Checked ? "1" : "0"));
 				 QueueType<Vertex> vertices;
 				 this->graph->GetAllVertices(vertices);
 				 while (!vertices.IsEmpty())
@@ -740,7 +751,9 @@ private: System::Void saveAsToolStripMenuItem_Click(System::Object^  sender, Sys
 				 StreamWriter^ sw = gcnew StreamWriter(fileName);
 				 try
 				 {
-					 sw->WriteLine(System::Convert::ToString(this->graph->GetVerticesCount()));
+				     sw->WriteLine(System::Convert::ToString(this->graph->GetVerticesCount())
+					 + ":" + (weighted->Checked ? "1" : "0") + ":"
+					 + (directed->Checked ? "1" : "0"));
 					 QueueType<Vertex> vertices;
 					 this->graph->GetAllVertices(vertices);
 					 while (!vertices.IsEmpty())
@@ -1017,6 +1030,7 @@ private: System::Void minimumSpanningTreeToolStripMenuItem_Click(System::Object^
 				 }
 				 else {
 					 GraphType<Vertex, int> mst;
+					 mst.SetGraphType(true, false);
 					 this->graph->FindMinimalSpanningTree(fv, mst);
 					 //draw vertices
 					 QueueType<Vertex> vertexQ;
